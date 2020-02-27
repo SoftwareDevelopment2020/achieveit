@@ -5,7 +5,7 @@ import com.softwaredevelopment.achieveit.http.response.HttpResponse;
 public class BaseController {
 
     /**
-     * 成功 返回数据或默认信息
+     * 成功 返回数据或默认信息 a
      */
     protected <T> HttpResponse<T> responseOK(T data) {
         HttpResponse<T> response = new HttpResponse<>();
