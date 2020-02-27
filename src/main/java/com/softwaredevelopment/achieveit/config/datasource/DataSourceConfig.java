@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 import java.io.FileInputStream;
@@ -20,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
+@EnableTransactionManagement
 @MapperScan(basePackages = "com.softwaredevelopment.achieveit.mapper", sqlSessionTemplateRef = "SqlSessionTemplate")
 public class DataSourceConfig {
 
@@ -58,6 +60,7 @@ public class DataSourceConfig {
         MybatisSqlSessionFactoryBean bean = new MybatisSqlSessionFactoryBean();
         bean.setDataSource(dataSource);
         bean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:mapper/*.xml"));
+        //TODO 强转 目前没问题
         bean.setConfiguration((MybatisConfiguration) getSqlSessionFactory().getConfiguration());
         return bean.getObject();
     }

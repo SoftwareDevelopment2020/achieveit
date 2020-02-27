@@ -2,6 +2,7 @@ package com.softwaredevelopment.achieveit;
 
 import com.softwaredevelopment.achieveit.entity.Bug;
 import com.softwaredevelopment.achieveit.mapper.BugMapper;
+import com.softwaredevelopment.achieveit.mapper.RoleBasicsMapper;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +25,8 @@ public class BaseMapperTest {
 
     @Autowired
     private BugMapper bugMapper;
+    @Autowired
+    private RoleBasicsMapper roleBasicsMapper;
 
     @Test
     public void testSelect() {
