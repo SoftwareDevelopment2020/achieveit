@@ -1,8 +1,9 @@
 package com.softwaredevelopment.achieveit.config.datasource;
 
+import com.baomidou.mybatisplus.core.MybatisConfiguration;
+import com.baomidou.mybatisplus.core.MybatisSqlSessionFactoryBuilder;
+import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -36,7 +37,7 @@ public class DataSourceConfig {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream, ENVIRONMENT_ID);
+            sqlSessionFactory = new MybatisSqlSessionFactoryBuilder().build(inputStream, ENVIRONMENT_ID);
             sqlSessionFactoryMap.put(ENVIRONMENT_ID, sqlSessionFactory);
         }
         return sqlSessionFactory;
@@ -54,10 +55,10 @@ public class DataSourceConfig {
 
     @Bean(name = "SqlSessionFactory")
     public SqlSessionFactory setSqlSessionFactory(@Qualifier("DataSource") DataSource dataSource) throws Exception {
-        SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
+        MybatisSqlSessionFactoryBean bean = new MybatisSqlSessionFactoryBean();
         bean.setDataSource(dataSource);
         bean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:mapper/*.xml"));
-        bean.setConfiguration(getSqlSessionFactory().getConfiguration());
+        bean.setConfiguration((MybatisConfiguration) getSqlSessionFactory().getConfiguration());
         return bean.getObject();
     }
 
