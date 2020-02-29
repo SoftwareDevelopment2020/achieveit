@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.softwaredevelopment.achieveit.mapper.UserDetailMapper">
+
+	<select id="selectOneUserByUsername" parameterType="string"
+			resultType="com.softwaredevelopment.achieveit.entity.UserDetail">
+		SELECT `user`.id,
+			   `user`.username,
+			   `user`.`password`,
+			   `user`.is_account_non_expired     AS account_non_expired,
+			   `user`.is_account_non_locked      AS account_non_locked,
+			   `user`.is_credentials_non_expired as credentials_non_expired,
+			   `user`.is_enabled                 AS enabled,
+			   employee_basics.id                AS employee_id,
+			   employee_basics.`name`,
+			   employee_basics.email_address,
+			   employee_basics.department,
+			   employee_basics.tel
+		FROM `user`
+				 LEFT JOIN
+			 employee_basics
+			 ON
+				 `user`.employee_basics_id = employee_basics.id
+		WHERE `user`.username = #{username}
+	</select>
+	<select id="selectPermissionsPerProjectByUserId"
+			resultType="com.softwaredevelopment.achieveit.entity.PermissionByProject">
+		SELECT project_employee.project_id,
+			   GROUP_CONCAT(permission_basics.`name`) AS permissions
+		FROM `user`
+				 INNER JOIN
+			 project_employee
+			 ON
+				 `user`.employee_basics_id = project_employee.employee_id
+				 INNER JOIN
+			 person_permission
+			 ON
+				 project_employee.id = person_permission.project_employee_id
+				 INNER JOIN
+			 permission_basics
+			 ON
+				 person_permission.permission_id = permission_basics.id
+		WHERE `user`.id = #{id}
+		GROUP BY project_employee.project_id
+	</select>
+
+	<insert id="insertUserToAdd">
+
+	</insert>
+</mapper>

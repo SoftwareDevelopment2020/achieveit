@@ -1,11 +1,10 @@
 package com.softwaredevelopment.achieveit.controller;
 
-import com.softwaredevelopment.achieveit.entity.RoleBasics;
 import com.softwaredevelopment.achieveit.http.request.TestRequest;
 import com.softwaredevelopment.achieveit.http.response.HttpResponse;
 import com.softwaredevelopment.achieveit.http.response.TestResponse;
-import com.softwaredevelopment.achieveit.service.IRoleBasicsService;
 import com.softwaredevelopment.achieveit.service.TestService;
+import com.softwaredevelopment.achieveit.service.UserDetailService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,7 @@ public class TestController extends BaseController {
     @Autowired
     private TestService testService;
     @Autowired
-    private IRoleBasicsService iRoleBasicsService;
+    private UserDetailService userDetailService;
 
     @GetMapping
     @ApiOperation("测试GET方法")
@@ -33,15 +32,10 @@ public class TestController extends BaseController {
         return responseOK(testService.testPost(testRequest));
     }
 
-    @GetMapping("/save")
-    @ApiOperation("测试save一个实例")
-    public HttpResponse<RoleBasics> testResponseHttpResponse() {
-        RoleBasics roleBasics = new RoleBasics();
-        roleBasics.setName("开发Leader");
-        if (iRoleBasicsService.save(roleBasics)) {
-            return responseOK(iRoleBasicsService.getById(roleBasics.getId()));
-        } else {
-            return responseFail(null);
-        }
+    @GetMapping("/test")
+    @ApiOperation("测试get一个数据")
+    public HttpResponse<Object> testgetuser() {
+
+        return responseOK("You are authenticated, OJBK");
     }
 }

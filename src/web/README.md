@@ -78,8 +78,8 @@ Become a sponsor and get your logo on our README on GitHub with a link to your s
 - Login / Logout
 
 - Permission Authentication
-  - Page permission
-  - Directive permission
+  - Page role
+  - Directive role
   - Permission configuration page
   - Two-step login
 

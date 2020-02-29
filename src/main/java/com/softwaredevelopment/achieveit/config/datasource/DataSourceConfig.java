@@ -23,6 +23,7 @@ import java.util.Map;
 @Configuration
 @EnableTransactionManagement
 @MapperScan(basePackages = "com.softwaredevelopment.achieveit.mapper", sqlSessionTemplateRef = "SqlSessionTemplate")
+@MapperScan(basePackages = "com.softwaredevelopment.achieveit.PO.mapper", sqlSessionTemplateRef = "SqlSessionTemplate")
 public class DataSourceConfig {
 
     private static final String ENVIRONMENT_ID = "achieveit";
