@@ -62,7 +62,12 @@ create table permission_basics
     detail varchar(511) null comment 'permission_detail  explaination'
 );
 
-
+INSERT INTO achieveit.permission_basics (id, name, detail)
+VALUES (1, 'git', 'git read permission');
+INSERT INTO achieveit.permission_basics (id, name, detail)
+VALUES (2, 'filesys', 'filesys read permission');
+INSERT INTO achieveit.permission_basics (id, name, detail)
+VALUES (3, 'mail', 'mail read permission');
 create table person_permission
 (
     id                  int(11) unsigned auto_increment
@@ -71,7 +76,16 @@ create table person_permission
     permission_id       int not null
 );
 
-
+INSERT INTO achieveit.person_permission (id, project_employee_id, permission_id)
+VALUES (1, 1, 1);
+INSERT INTO achieveit.person_permission (id, project_employee_id, permission_id)
+VALUES (2, 1, 2);
+INSERT INTO achieveit.person_permission (id, project_employee_id, permission_id)
+VALUES (3, 1, 3);
+INSERT INTO achieveit.person_permission (id, project_employee_id, permission_id)
+VALUES (4, 2, 1);
+INSERT INTO achieveit.person_permission (id, project_employee_id, permission_id)
+VALUES (5, 2, 2);
 create table person_role
 (
     id                  int(11) unsigned auto_increment
@@ -116,7 +130,26 @@ create table project_basics
     qa_summary                                   tinyint(1)   null comment 'QA总结'
 );
 
-
+INSERT INTO achieveit.project_basics (id, project_id, client_id, scheduled_date, delivery_date, superior,
+                                      major_milestone, main_technique, business_field, main_function, git_address,
+                                      status_id, is_archived, project_basic_datasheet, project_proposal,
+                                      project_quotation, project_estimates, project_plan, project_process_crop_table,
+                                      project_cost_management_table, project_requirements_change_management_table,
+                                      project_risk_management_table, client_check_problems_table, client_check_report,
+                                      project_summary, experience_and_lessons, development_tools, development_templates,
+                                      check_sheets, qa_summary)
+VALUES (1, '12345678901', 1, '2020-02-28', '2020-02-28', '1', '1', '1', '1', '1', '1', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1);
+INSERT INTO achieveit.project_basics (id, project_id, client_id, scheduled_date, delivery_date, superior,
+                                      major_milestone, main_technique, business_field, main_function, git_address,
+                                      status_id, is_archived, project_basic_datasheet, project_proposal,
+                                      project_quotation, project_estimates, project_plan, project_process_crop_table,
+                                      project_cost_management_table, project_requirements_change_management_table,
+                                      project_risk_management_table, client_check_problems_table, client_check_report,
+                                      project_summary, experience_and_lessons, development_tools, development_templates,
+                                      check_sheets, qa_summary)
+VALUES (2, '23456789012', 1, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null);
 create table project_employee
 (
     id          int(11) unsigned auto_increment comment 'project_employee_id'
@@ -128,7 +161,10 @@ create table project_employee
     superior_id int  null comment '上级id'
 );
 
-
+INSERT INTO achieveit.project_employee (id, project_id, employee_id, join_time, exit_time, superior_id)
+VALUES (1, 1, 1, null, null, null);
+INSERT INTO achieveit.project_employee (id, project_id, employee_id, join_time, exit_time, superior_id)
+VALUES (2, 2, 1, null, null, null);
 create table project_status_basics
 (
     id     int(11) unsigned auto_increment comment 'project_status_id'
@@ -181,13 +217,23 @@ INSERT INTO achieveit.role_basics (id, name, detail)
 VALUES (1, '开发Leader', null);
 create table user
 (
-    id                 int          not null comment 'user_id'
+    id                         int(11) unsigned auto_increment comment 'user_id'
         primary key,
-    username           varchar(255) not null,
-    password           varchar(255) null,
-    employee_basics_id int          null
+    username                   varchar(255)         not null,
+    password                   varchar(255)         null,
+    employee_basics_id         int                  null,
+    is_account_non_expired     tinyint(1) default 1 not null comment '是否未过期',
+    is_account_non_locked      tinyint(1) default 1 not null comment '是否未锁定',
+    is_credentials_non_expired tinyint(1) default 1 not null comment '密码是否未过期',
+    is_enabled                 tinyint(1) default 1 not null comment '是否启用'
 );
 
 create index idx_username
     on user (username);
 
+INSERT INTO achieveit.user (id, username, password, employee_basics_id, is_account_non_expired, is_account_non_locked,
+                            is_credentials_non_expired, is_enabled)
+VALUES (1, 'zhangsan', '$2a$10$c9sFXBKUZafiM1mmj85J1.lGFp8n9JaJ6gbLtOWQNw3yLRmw/VU0m', 1, 1, 1, 1, 1);
+INSERT INTO achieveit.user (id, username, password, employee_basics_id, is_account_non_expired, is_account_non_locked,
+                            is_credentials_non_expired, is_enabled)
+VALUES (2, 'lisi', '$2a$10$c9sFXBKUZafiM1mmj85J1.lGFp8n9JaJ6gbLtOWQNw3yLRmw/VU0m', null, 1, 1, 1, 1);
