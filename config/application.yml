@@ -1,0 +1,19 @@
+service:
+  name: Achieveit
+
+server:
+  port: 8443
+  ssl:
+    enabled: true
+    key-store: classpath:rainkq.tk.pfx
+    key-store-password: 9PYuKznP
+    key-store-type: PKCS12
+
+http-port: 8080
+
+
+#redis信息
+redis:
+  host: rainkq.tk
+  port: 6379
+  password: pass
