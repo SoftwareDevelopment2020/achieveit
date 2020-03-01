@@ -1,7 +1,7 @@
 package com.softwaredevelopment.achieveit.asp;
 
-import com.softwaredevelopment.achieveit.http.response.HttpResponse;
 import com.softwaredevelopment.achieveit.http.request.BaseRequest;
+import com.softwaredevelopment.achieveit.http.response.HttpResponse;
 import com.softwaredevelopment.achieveit.utils.JsonUtils;
 import com.softwaredevelopment.achieveit.utils.log.Logger;
 import io.swagger.annotations.ApiModelProperty;

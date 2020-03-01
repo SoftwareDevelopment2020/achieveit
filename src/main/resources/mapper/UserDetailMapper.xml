@@ -9,7 +9,7 @@
 			   `user`.`password`,
 			   `user`.is_account_non_expired     AS account_non_expired,
 			   `user`.is_account_non_locked      AS account_non_locked,
-			   `user`.is_credentials_non_expired as credentials_non_expired,
+			   `user`.is_credentials_non_expired AS credentials_non_expired,
 			   `user`.is_enabled                 AS enabled,
 			   employee_basics.id                AS employee_id,
 			   employee_basics.`name`,
@@ -41,7 +41,5 @@
 		GROUP BY project_employee.project_id
 	</select>
 
-	<insert id="insertUserToAdd">
 
-	</insert>
 </mapper>

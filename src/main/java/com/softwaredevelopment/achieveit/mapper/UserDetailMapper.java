@@ -20,7 +20,5 @@ public interface UserDetailMapper {
 
     List<PermissionByProject> selectPermissionsPerProjectByEmployeeId(Integer employeeId);
 
-    UserDetail insertUserToAdd(UserDetail userToAdd);
-
 
 }

@@ -35,17 +35,26 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
 
+        // get authHeader
         String authHeader = request.getHeader(Const.HEADER_STRING);
+        // if authHeader has token
         if (authHeader != null && authHeader.startsWith(Const.TOKEN_PREFIX)) {
+            // get token
             final String authToken = authHeader.substring(Const.TOKEN_PREFIX.length());
+            // get username from token
             String username = jwtTokenUtil.getUsernameFromToken(authToken);
+            // if got username and SecurityContext has no authentication
+            // will go to retrieve userDetail
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                // got userDetail from db (or cache)
                 UserDetails userDetails = this.userDetailService.loadUserByUsername(username);
+                // validate the token with the userDetail
                 if (jwtTokenUtil.validateToken(authToken, userDetails)) {
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                             userDetails, null, userDetails.getAuthorities());
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(
                             request));
+                    // set authentication
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             }

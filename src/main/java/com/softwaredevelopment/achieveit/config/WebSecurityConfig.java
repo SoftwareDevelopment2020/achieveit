@@ -1,6 +1,7 @@
 package com.softwaredevelopment.achieveit.config;
 
 
+import com.softwaredevelopment.achieveit.service.AuthService;
 import com.softwaredevelopment.achieveit.service.UserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +25,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserDetailService userDetailService;
+    @Autowired
+    private AuthService authService;
 
     @Bean
     public JwtTokenFilter authenticationTokenFilterBean() throws Exception {
@@ -58,6 +61,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/configuration/ui").permitAll()
                 .antMatchers("/configuration/security").permitAll()
                 // swagger end
+                // project authorities check
+                .antMatchers("/project/**")
+                .access("@authService.canAccess(request, authentication)")
+                // project authorities check end
                 .antMatchers(HttpMethod.POST).authenticated()
                 .antMatchers(HttpMethod.PUT).authenticated()
                 .antMatchers(HttpMethod.DELETE).authenticated()
