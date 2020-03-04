@@ -26,7 +26,7 @@ public class ProjectController extends BaseController {
     ProjectBasicsMapper projectBasicsMapper;
 
     // TODO just a test
-    @ApiOperation("项目基本信息")
+    @ApiOperation("项目基本信息 需要有该项目的权限才能访问")
     @GetMapping("project_basics")
     public HttpResponse<ProjectBasics> testAuthorities(Integer projectId) {
 
