@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("test")
 @Api(tags = "测试连接")
+@CrossOrigin(allowCredentials = "true", allowedHeaders = "*")
 public class TestController extends BaseController {
 
     @Autowired
@@ -35,7 +36,6 @@ public class TestController extends BaseController {
     @GetMapping("/test")
     @ApiOperation("测试get一个数据")
     public HttpResponse<Object> testgetuser() {
-
         return responseOK("You are authenticated, OJBK");
     }
 }

@@ -8,10 +8,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 /**
  * JwtAuthController
@@ -23,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("auth")
 @Api(tags = "登录注册接口")
 @RestController
+@CrossOrigin(allowCredentials = "true", allowedHeaders = "*")
 public class JwtAuthController extends BaseController {
 
     @Autowired
@@ -31,7 +31,9 @@ public class JwtAuthController extends BaseController {
     // 登录
     @ApiOperation("登录接口 post username 和 password 返回 jwt token")
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public HttpResponse<String> createToken(String username, String password) throws AuthenticationException {
+    public HttpResponse<String> createToken(@RequestBody Map<String,String> params) throws AuthenticationException {
+        String username = params.get("username");
+        String password = params.get("password");
         return responseOK(authService.login(username, password));
     }
 
@@ -41,5 +43,6 @@ public class JwtAuthController extends BaseController {
     public HttpResponse<UserDetail> register(@RequestBody UserDetail addedUser) throws AuthenticationException {
         return responseOK(authService.register(addedUser));
     }
+
 
 }
