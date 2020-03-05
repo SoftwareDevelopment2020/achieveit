@@ -48,6 +48,9 @@ public class AuthService {
         final Authentication authentication = authenticationManager.authenticate(upToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
+
+        // TODO 第三方登录？
+
         final UserDetails userDetails = userDetailService.loadUserByUsername(username);
         final String token = jwtTokenUtil.generateToken(userDetails);
         return token;

@@ -1,0 +1,37 @@
+package com.softwaredevelopment.achieveit;
+
+import com.softwaredevelopment.achieveit.entity.MailBean;
+import com.softwaredevelopment.achieveit.utils.MailUtil;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.Date;
+
+/**
+ * MailTest
+ *
+ * @author RainkQ
+ * @version 1.0.0
+ * created on 2020-03-05 20:50
+ */
+@SpringBootTest
+public class MailTest {
+    //接收人
+    private static final String RECIPINET = "1002376198@qq.com";
+    @Autowired
+    private MailUtil mailUtil;
+
+    /**
+     * 发送文本邮件
+     */
+    @Test
+    public void sendSimpleMail() {
+        MailBean mailBean = new MailBean();
+        mailBean.setRecipient(RECIPINET);
+        mailBean.setSubject("测试发mail");
+        mailBean.setContent("SpringBootMail发送一个简单格式的邮件，时间为：" + (new Date()));
+
+        mailUtil.sendSimpleMail(mailBean);
+    }
+}

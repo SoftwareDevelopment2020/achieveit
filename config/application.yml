@@ -17,3 +17,20 @@ redis:
   host: rainkq.tk
   port: 6379
   password: pass
+
+#mail
+spring:
+  mail:
+    host: smtp.126.com
+    username: achieveit@126.com
+    # 授权码
+    password: achieve1t1t
+    properties:
+      mail:
+        default-encoding: UTF-8
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
