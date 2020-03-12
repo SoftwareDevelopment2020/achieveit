@@ -43,13 +43,13 @@ public class AuthService {
      */
     public String login(String username, String password) {
 
+        // TODO 第三方登录？
+
         UsernamePasswordAuthenticationToken upToken = new UsernamePasswordAuthenticationToken(username, password);
 
         final Authentication authentication = authenticationManager.authenticate(upToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-
-        // TODO 第三方登录？
 
         final UserDetails userDetails = userDetailService.loadUserByUsername(username);
         final String token = jwtTokenUtil.generateToken(userDetails);
@@ -57,7 +57,12 @@ public class AuthService {
     }
 
 
-    // 注册
+    /**
+     * 注册
+     *
+     * @param userToAdd
+     * @return
+     */
     public UserDetail register(UserDetail userToAdd) {
 
         final String username = userToAdd.getUsername();
@@ -78,7 +83,13 @@ public class AuthService {
      * @return pass or not
      */
     public boolean canAccess(HttpServletRequest request, Authentication authentication) {
-        UserDetail userDetail = (UserDetail) authentication.getPrincipal();
+        UserDetail userDetail;
+        // 如果authentication的principal不正常 比如为空 直接拒绝
+        if (authentication.getPrincipal() instanceof UserDetail) {
+            userDetail = (UserDetail) authentication.getPrincipal();
+        } else {
+            return false;
+        }
         Map<Integer, List<String>> permissionsMap = userDetail.getPermissionsMap();
         String projectIdString = request.getParameter("projectId");
 

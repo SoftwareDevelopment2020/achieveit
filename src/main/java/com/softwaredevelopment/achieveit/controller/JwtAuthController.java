@@ -28,16 +28,28 @@ public class JwtAuthController extends BaseController {
     @Autowired
     private AuthService authService;
 
-    // 登录
+    /**
+     * 登录
+     *
+     * @param params
+     * @return
+     * @throws AuthenticationException
+     */
     @ApiOperation("登录接口 post username 和 password 返回 jwt token")
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public HttpResponse<String> createToken(@RequestBody Map<String,String> params) throws AuthenticationException {
+    public HttpResponse<String> createToken(@RequestBody Map<String, String> params) throws AuthenticationException {
         String username = params.get("username");
         String password = params.get("password");
         return responseOK(authService.login(username, password));
     }
 
-    // 注册
+    /**
+     * 注册
+     *
+     * @param addedUser
+     * @return
+     * @throws AuthenticationException
+     */
     @ApiOperation("注册接口 post 一个 UserDetail对象（只需要有username 和 password） 返回UserDetail对象")
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public HttpResponse<UserDetail> register(@RequestBody UserDetail addedUser) throws AuthenticationException {
