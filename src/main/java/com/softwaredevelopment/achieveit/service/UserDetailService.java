@@ -37,15 +37,22 @@ public class UserDetailService implements UserDetailsService {
     @Autowired
     UserMapper userMapper;
 
+    /**
+     * 从数据库拿取UserDetail 会缓存入Redis
+     *
+     * @param s username
+     * @return
+     * @throws UsernameNotFoundException
+     */
     @Cacheable(key = "#s")
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         UserDetail userDetail = userDetailMapper.selectOneUserByUsername(s);
-//        System.out.println(userDetail);
         Map<Integer, List<String>> map = new HashMap<>();
-        // 如果有这个用户 拿取权限
-        if (userDetail != null) {
-            List<PermissionByProject> permissionByProjects = userDetailMapper.selectPermissionsPerProjectByUserId(userDetail.getId());
+        // 如果有这个用户 并且有这个employee信息 拿取权限
+        if (userDetail != null && userDetail.getEmployeeId() != null) {
+            List<PermissionByProject> permissionByProjects =
+                    userDetailMapper.selectPermissionsPerProjectByEmployeeId(userDetail.getEmployeeId());
             for (PermissionByProject permissionByProject :
                     permissionByProjects) {
                 map.put(permissionByProject.getProjectId(),
@@ -53,11 +60,16 @@ public class UserDetailService implements UserDetailsService {
             }
             userDetail.setPermissionsMap(map);
         }
-//        System.out.println(userDetail);
         return userDetail;
     }
 
 
+    /**
+     * 注册用户 只需要有username 和 password
+     *
+     * @param userToAdd
+     * @return
+     */
     @Transactional
     public UserDetail save(UserDetail userToAdd) {
         User user = new User();

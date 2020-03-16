@@ -18,8 +18,7 @@ public interface UserDetailMapper {
 
     UserDetail selectOneUserByUsername(String username);
 
-    List<PermissionByProject> selectPermissionsPerProjectByUserId(Integer id);
+    List<PermissionByProject> selectPermissionsPerProjectByEmployeeId(Integer employeeId);
 
-    UserDetail insertUserToAdd(UserDetail userToAdd);
 
 }

@@ -9,7 +9,7 @@
 			   `user`.`password`,
 			   `user`.is_account_non_expired     AS account_non_expired,
 			   `user`.is_account_non_locked      AS account_non_locked,
-			   `user`.is_credentials_non_expired as credentials_non_expired,
+			   `user`.is_credentials_non_expired AS credentials_non_expired,
 			   `user`.is_enabled                 AS enabled,
 			   employee_basics.id                AS employee_id,
 			   employee_basics.`name`,
@@ -23,15 +23,12 @@
 				 `user`.employee_basics_id = employee_basics.id
 		WHERE `user`.username = #{username}
 	</select>
-	<select id="selectPermissionsPerProjectByUserId"
+
+	<select id="selectPermissionsPerProjectByEmployeeId"
 			resultType="com.softwaredevelopment.achieveit.entity.PermissionByProject">
 		SELECT project_employee.project_id,
 			   GROUP_CONCAT(permission_basics.`name`) AS permissions
-		FROM `user`
-				 INNER JOIN
-			 project_employee
-			 ON
-				 `user`.employee_basics_id = project_employee.employee_id
+		FROM project_employee
 				 INNER JOIN
 			 person_permission
 			 ON
@@ -40,11 +37,9 @@
 			 permission_basics
 			 ON
 				 person_permission.permission_id = permission_basics.id
-		WHERE `user`.id = #{id}
+		WHERE project_employee.employee_id = #{employeeId}
 		GROUP BY project_employee.project_id
 	</select>
 
-	<insert id="insertUserToAdd">
 
-	</insert>
 </mapper>

@@ -16,6 +16,7 @@
 
     <properties>
         <java.version>1.8</java.version>
+        <flowable.version>6.4.0</flowable.version>
     </properties>
 
     <dependencies>
@@ -133,6 +134,19 @@
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
         </dependency>
+        <!-- swagger ui-->
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-spring-boot-starter</artifactId>
+            <version>2.0.2</version>
+        </dependency>
+
+        <!-- mail -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
 
         <!-- test -->
         <dependency>
