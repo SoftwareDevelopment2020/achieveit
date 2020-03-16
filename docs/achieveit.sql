@@ -26,7 +26,10 @@ create table employee_basics
     tel           varchar(255) null
 );
 
-
+INSERT INTO achieveit.employee_basics (id, name, email_address, department, tel)
+VALUES (1, '张三', 'wowowo', null, null);
+INSERT INTO achieveit.employee_basics (id, name, email_address, department, tel)
+VALUES (2, '李四', 'lililili', null, null);
 create table feature
 (
     id             int(11) unsigned auto_increment
@@ -63,6 +66,8 @@ create table permission_basics
 );
 
 INSERT INTO achieveit.permission_basics (id, name, detail)
+VALUES (0, 'enter', 'basic permission to access to the project');
+INSERT INTO achieveit.permission_basics (id, name, detail)
 VALUES (1, 'git', 'git read permission');
 INSERT INTO achieveit.permission_basics (id, name, detail)
 VALUES (2, 'filesys', 'filesys read permission');
@@ -76,14 +81,17 @@ create table person_permission
     permission_id       int not null
 );
 
+create index idx_project_employee_id
+    on person_permission (project_employee_id);
+
 INSERT INTO achieveit.person_permission (id, project_employee_id, permission_id)
-VALUES (1, 1, 1);
+VALUES (1, 1, 0);
 INSERT INTO achieveit.person_permission (id, project_employee_id, permission_id)
 VALUES (2, 1, 2);
 INSERT INTO achieveit.person_permission (id, project_employee_id, permission_id)
 VALUES (3, 1, 3);
 INSERT INTO achieveit.person_permission (id, project_employee_id, permission_id)
-VALUES (4, 2, 1);
+VALUES (4, 2, 0);
 INSERT INTO achieveit.person_permission (id, project_employee_id, permission_id)
 VALUES (5, 2, 2);
 create table person_role
@@ -94,12 +102,16 @@ create table person_role
     role_id             int not null
 );
 
-
+INSERT INTO achieveit.person_role (id, project_employee_id, role_id)
+VALUES (1, 1, 1);
 create table project_basics
 (
     id                                           int(11) unsigned auto_increment
         primary key,
     project_id                                   char(11)     not null comment 'project_id  由“四位年份-四位客户代码-研发类型1位（开发：D，维护：M，服务：S，其他：O）-顺序号2位”构成，且从外部系统导入，是一个选择项，不可更改。',
+    project_manager_id                           int          not null comment '项目经理的id',
+    project_manager_name                         varchar(255) null,
+    name                                         varchar(255) null comment '项目名称',
     client_id                                    int          null comment '客户ID 从客户管理系统中拉取详细信息',
     scheduled_date                               date         null comment '预定时间 项目预期开始时间',
     delivery_date                                date         null comment '交付日期 项目预期结束时间',
@@ -130,26 +142,47 @@ create table project_basics
     qa_summary                                   tinyint(1)   null comment 'QA总结'
 );
 
-INSERT INTO achieveit.project_basics (id, project_id, client_id, scheduled_date, delivery_date, superior,
-                                      major_milestone, main_technique, business_field, main_function, git_address,
-                                      status_id, is_archived, project_basic_datasheet, project_proposal,
-                                      project_quotation, project_estimates, project_plan, project_process_crop_table,
-                                      project_cost_management_table, project_requirements_change_management_table,
-                                      project_risk_management_table, client_check_problems_table, client_check_report,
-                                      project_summary, experience_and_lessons, development_tools, development_templates,
-                                      check_sheets, qa_summary)
-VALUES (1, '12345678901', 1, '2020-02-28', '2020-02-28', '1', '1', '1', '1', '1', '1', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-        1, 1, 1, 1, 1, 1, 1, 1);
-INSERT INTO achieveit.project_basics (id, project_id, client_id, scheduled_date, delivery_date, superior,
-                                      major_milestone, main_technique, business_field, main_function, git_address,
-                                      status_id, is_archived, project_basic_datasheet, project_proposal,
-                                      project_quotation, project_estimates, project_plan, project_process_crop_table,
-                                      project_cost_management_table, project_requirements_change_management_table,
-                                      project_risk_management_table, client_check_problems_table, client_check_report,
-                                      project_summary, experience_and_lessons, development_tools, development_templates,
-                                      check_sheets, qa_summary)
-VALUES (2, '23456789012', 1, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null, null, null, null, null, null);
+create index idx_name
+    on project_basics (name)
+    comment '对项目名称的索引';
+
+create index idx_project_id
+    on project_basics (project_id)
+    comment '对项目ID的索引';
+
+INSERT INTO achieveit.project_basics (id, project_id, project_manager_id, project_manager_name, name, client_id,
+                                      scheduled_date, delivery_date, superior, major_milestone, main_technique,
+                                      business_field, main_function, git_address, status_id, is_archived,
+                                      project_basic_datasheet, project_proposal, project_quotation, project_estimates,
+                                      project_plan, project_process_crop_table, project_cost_management_table,
+                                      project_requirements_change_management_table, project_risk_management_table,
+                                      client_check_problems_table, client_check_report, project_summary,
+                                      experience_and_lessons, development_tools, development_templates, check_sheets,
+                                      qa_summary)
+VALUES (1, '12345678901', 1, '张三', '测试项目1', 1, '2020-02-28', '2020-02-28', '1', '1', '1', '1', '1', '1', 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+INSERT INTO achieveit.project_basics (id, project_id, project_manager_id, project_manager_name, name, client_id,
+                                      scheduled_date, delivery_date, superior, major_milestone, main_technique,
+                                      business_field, main_function, git_address, status_id, is_archived,
+                                      project_basic_datasheet, project_proposal, project_quotation, project_estimates,
+                                      project_plan, project_process_crop_table, project_cost_management_table,
+                                      project_requirements_change_management_table, project_risk_management_table,
+                                      client_check_problems_table, client_check_report, project_summary,
+                                      experience_and_lessons, development_tools, development_templates, check_sheets,
+                                      qa_summary)
+VALUES (2, '23456789012', 1, '张三', '测试项目2', 1, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO achieveit.project_basics (id, project_id, project_manager_id, project_manager_name, name, client_id,
+                                      scheduled_date, delivery_date, superior, major_milestone, main_technique,
+                                      business_field, main_function, git_address, status_id, is_archived,
+                                      project_basic_datasheet, project_proposal, project_quotation, project_estimates,
+                                      project_plan, project_process_crop_table, project_cost_management_table,
+                                      project_requirements_change_management_table, project_risk_management_table,
+                                      client_check_problems_table, client_check_report, project_summary,
+                                      experience_and_lessons, development_tools, development_templates, check_sheets,
+                                      qa_summary)
+VALUES (3, '12310239109', 1, '张三', '测试项目3', 2, '2020-03-01', '2020-03-01', null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
 create table project_employee
 (
     id          int(11) unsigned auto_increment comment 'project_employee_id'
@@ -160,6 +193,10 @@ create table project_employee
     exit_time   date null,
     superior_id int  null comment '上级id'
 );
+
+create index idx_employee_id
+    on project_employee (employee_id)
+    comment '从employee_id查找';
 
 INSERT INTO achieveit.project_employee (id, project_id, employee_id, join_time, exit_time, superior_id)
 VALUES (1, 1, 1, null, null, null);
@@ -173,7 +210,8 @@ create table project_status_basics
     detail varchar(511) null comment 'project_status_detail explaination'
 );
 
-
+INSERT INTO achieveit.project_status_basics (id, name, detail)
+VALUES (1, '申请立项', '项目新建，等待审批中');
 create table property
 (
     id               int(11) unsigned auto_increment comment '资产ID'
@@ -214,7 +252,15 @@ create table role_basics
 );
 
 INSERT INTO achieveit.role_basics (id, name, detail)
-VALUES (1, '开发Leader', null);
+VALUES (1, '项目经理', null);
+INSERT INTO achieveit.role_basics (id, name, detail)
+VALUES (2, '开发Leader', null);
+INSERT INTO achieveit.role_basics (id, name, detail)
+VALUES (3, '开发', null);
+INSERT INTO achieveit.role_basics (id, name, detail)
+VALUES (4, '测试Leader', null);
+INSERT INTO achieveit.role_basics (id, name, detail)
+VALUES (5, '测试', null);
 create table user
 (
     id                         int(11) unsigned auto_increment comment 'user_id'
@@ -236,4 +282,4 @@ INSERT INTO achieveit.user (id, username, password, employee_basics_id, is_accou
 VALUES (1, 'zhangsan', '$2a$10$c9sFXBKUZafiM1mmj85J1.lGFp8n9JaJ6gbLtOWQNw3yLRmw/VU0m', 1, 1, 1, 1, 1);
 INSERT INTO achieveit.user (id, username, password, employee_basics_id, is_account_non_expired, is_account_non_locked,
                             is_credentials_non_expired, is_enabled)
-VALUES (2, 'lisi', '$2a$10$c9sFXBKUZafiM1mmj85J1.lGFp8n9JaJ6gbLtOWQNw3yLRmw/VU0m', null, 1, 1, 1, 1);
+VALUES (2, 'lisi', '$2a$10$c9sFXBKUZafiM1mmj85J1.lGFp8n9JaJ6gbLtOWQNw3yLRmw/VU0m', 2, 1, 1, 1, 1);
