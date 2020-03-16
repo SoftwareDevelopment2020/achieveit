@@ -64,6 +64,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/doc.html").permitAll()
                 // swagger end
                 // project authorities check
+                // 获取所有项目的名称等基本信息只需要登录
+                .antMatchers("/project/all_projects").authenticated()
+                // 某个项目的信息需要这个项目的权限
                 .antMatchers("/project/**")
                 .access("@authService.canAccess(request, authentication)")
                 // project authorities check end

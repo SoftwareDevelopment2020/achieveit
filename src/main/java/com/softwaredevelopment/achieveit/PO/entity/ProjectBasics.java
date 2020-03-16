@@ -25,13 +25,22 @@ import java.time.LocalDate;
 @ApiModel(value = "ProjectBasics对象", description = "")
 public class ProjectBasics implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     @TableId(type = IdType.AUTO)
     private Integer id;
 
-    private static final long serialVersionUID = 1L;
-
     @ApiModelProperty(value = "project_id  由“四位年份-四位客户代码-研发类型1位（开发：D，维护：M，服务：S，其他：O）-顺序号2位”构成，且从外部系统导入，是一个选择项，不可更改。")
     private String projectId;
+
+    @ApiModelProperty(value = "项目经理的ID")
+    private Integer projectManagerId;
+
+    @ApiModelProperty(value = "项目经理的姓名")
+    private String projectManagerName;
+
+    @ApiModelProperty(value = "项目名称")
+    private String name;
 
     @ApiModelProperty(value = "客户ID 从客户管理系统中拉取详细信息")
     private Integer clientId;
