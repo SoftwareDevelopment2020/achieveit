@@ -1,5 +1,5 @@
 <template>
-  <div>项目详情</div>
+  <div>首页</div>
 </template>
 
 <script>
