@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-
 /**
  * JwtAuthController
  *
@@ -37,9 +35,9 @@ public class JwtAuthController extends BaseController {
      */
     @ApiOperation("登录接口 post username 和 password 返回 jwt token")
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public HttpResponse<String> createToken(@RequestBody Map<String, String> params) throws AuthenticationException {
-        String username = params.get("username");
-        String password = params.get("password");
+    public HttpResponse<String> createToken(@RequestBody UserDetail userDetail) {
+        String username = userDetail.getUsername();
+        String password = userDetail.getPassword();
         return responseOK(authService.login(username, password));
     }
 
