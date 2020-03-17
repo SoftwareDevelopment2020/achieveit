@@ -3,6 +3,7 @@ package com.softwaredevelopment.achieveit.config.datasource;
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.MybatisSqlSessionFactoryBuilder;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.pagination.optimize.JsqlParserCountOptimize;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -63,7 +64,7 @@ public class DataSourceConfig {
         bean.setDataSource(dataSource);
         bean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:mapper/*.xml"));
         // 分页插件
-        bean.setPlugins(new PaginationInterceptor());
+        bean.setPlugins(new PaginationInterceptor().setCountSqlParser(new JsqlParserCountOptimize(true)));
         //TODO 强转 目前没问题
         bean.setConfiguration((MybatisConfiguration) getSqlSessionFactory().getConfiguration());
         return bean.getObject();

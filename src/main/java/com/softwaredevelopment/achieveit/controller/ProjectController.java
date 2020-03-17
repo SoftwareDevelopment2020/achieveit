@@ -29,10 +29,10 @@ public class ProjectController extends BaseController {
     @Autowired
     ProjectService projectService;
 
-    @ApiOperation("项目基本信息 需要有该项目的权限才能访问")
+    @ApiOperation("项目基本信息")
     @GetMapping("project_basics")
-    public HttpResponse<ProjectBasics> getProjectBasics(Integer projectId) {
-        return responseOK(projectService.selectById(projectId));
+    public HttpResponse<ProjectBasics> getProjectBasics(Integer id) {
+        return responseOK(projectService.selectById(id));
     }
 
     @ApiOperation("分页查询所有项目的基本信息")
@@ -44,13 +44,32 @@ public class ProjectController extends BaseController {
         return responseOK(projectsByPage);
     }
 
+    @ApiOperation("分页模糊查询名字")
+    @GetMapping("projects_by_name")
+    public HttpResponse<List<ProjectBasics>> getProjectBasicsByName(
+            @RequestParam(name = "current", required = false, defaultValue = "1") Integer current,
+            @RequestParam(name = "size", required = false, defaultValue = "10") Integer size,
+            @RequestParam(name = "name") String name) {
+        Page<ProjectBasics> page = new Page<>(current, size);
+        List<ProjectBasics> selectListByName = projectService.selectListByName(page, name);
+        return responseOK(selectListByName);
+    }
 
-    @ApiOperation("TODO  未完成 新建项目")
+    @ApiOperation("按project_id 查询一个")
+    @GetMapping("project_basics_by_id")
+    public HttpResponse<ProjectBasics> getProjectBasicsByProjectId(String projectId) {
+        return responseOK(projectService.selectByProjectId(projectId));
+    }
+
+
+    @ApiOperation("新建项目 要求project_id 不重复 否则返回Fail")
     @PostMapping("new_project")
-    public HttpResponse<Project> makeNewProjectBasics(@RequestBody Project newProject) {
-
-        // TODO 未完成
-        return responseOK(newProject);
+    public HttpResponse<Object> makeNewProjectBasics(@RequestBody ProjectBasics newProjectBasics) {
+        Integer insertProjectBasics = projectService.insertProjectBasics(newProjectBasics);
+        if (insertProjectBasics == -1) {
+            return responseFail("project_id duplicated");
+        }
+        return responseOK(newProjectBasics);
 
     }
 
