@@ -55,6 +55,7 @@ const actions = {
       } else {
         accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
       }
+      // 设定可访问路由信息
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)
     })

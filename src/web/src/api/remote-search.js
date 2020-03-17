@@ -8,6 +8,7 @@ export function searchUser(name) {
   })
 }
 
+// 在transactionTable.vue中有调用
 export function transactionList(query) {
   return request({
     url: '/vue-element-admin/transaction/list',
