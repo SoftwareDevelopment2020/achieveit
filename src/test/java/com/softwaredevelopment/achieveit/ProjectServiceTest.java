@@ -1,5 +1,6 @@
 package com.softwaredevelopment.achieveit;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.softwaredevelopment.achieveit.PO.entity.ProjectBasics;
 import com.softwaredevelopment.achieveit.service.ProjectService;
@@ -9,8 +10,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.List;
 
 /**
  * @author RainkQ
@@ -30,7 +29,7 @@ public class ProjectServiceTest {
         projectBasics.setProjectManagerName("张");
         projectBasics.setName("测");
         projectBasics.setIsArchived(false);
-        List<ProjectBasics> listHttpResponse = service.searchProjects(new Page<>(1, 10), projectBasics);
+        IPage<ProjectBasics> listHttpResponse = service.searchProjects(new Page<>(1, 10), projectBasics);
         System.out.println(listHttpResponse);
 
     }

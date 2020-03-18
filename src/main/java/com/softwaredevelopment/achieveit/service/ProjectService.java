@@ -3,6 +3,7 @@ package com.softwaredevelopment.achieveit.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.softwaredevelopment.achieveit.PO.entity.ProjectBasics;
 import com.softwaredevelopment.achieveit.PO.mapper.ProjectBasicsMapper;
@@ -65,7 +66,8 @@ public class ProjectService {
             qw.ge("status_id", 3000);
             projectBasics.setStatusId(null);
         }
-
+        // 时间降序
+        page.addOrder(OrderItem.desc("scheduled_date"));
         // 把实体剩下的条件全部加入qw 且是alleq条件
         qw.setEntity(projectBasics);
         return iProjectBasicsService.page(page, qw);
