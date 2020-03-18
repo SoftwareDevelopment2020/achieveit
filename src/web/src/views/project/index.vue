@@ -26,6 +26,9 @@
     <el-main>
       <div style="margin: 10px">
         <my-project v-if="activeMenu==='my-project'"></my-project>
+        <base-info v-if="activeMenu==='base-info'"></base-info>
+        <participant v-if="activeMenu==='participant'"></participant>
+        <function-list v-if="activeMenu==='function-list'"></function-list>
       </div>
     </el-main>
   </el-container>
@@ -33,10 +36,16 @@
 
 <script>
 import MyProject from './menu-item/my-project/index'
+import BaseInfo from './menu-item/base-info'
+import Participant from './menu-item/participant'
+import FunctionList from './menu-item/function-list'
 
 export default {
   components: {
-    MyProject
+    MyProject,
+    BaseInfo,
+    Participant,
+    FunctionList
   },
   data () {
     return {
