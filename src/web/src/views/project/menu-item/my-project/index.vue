@@ -5,19 +5,20 @@
         v-model="searchValue.name"
         placeholder="项目名称"
         style="width: 50%;min-width: 260px"
+        clearable
       >
       </el-input>
       <el-select
-        v-model="searchValue.status"
+        v-model="searchValue.statusId"
         placeholder="项目状态"
         style="width: 15%;min-width: 120px"
         clearable
       >
         <el-option
-          v-for="item in statusOptions"
-          :key="item.value"
+          v-for="(item,index) in statusOptions"
+          :key="index"
           :label="item.label"
-          :value="item.value">
+          :value="index">
         </el-option>
       </el-select>
       <el-button type="primary" style="margin-left: 10px" @click="search">
@@ -38,35 +39,50 @@
       >
         <el-table-column
           type="index"
-          :index="index+1"
+          :index="indexMethod"
+          align="center"
         >
         </el-table-column>
         <el-table-column
           prop="name"
           label="项目名称"
-          min-width="100">
+          align="center"
+        >
         </el-table-column>
         <el-table-column
           prop="projectManagerName"
           label="创建人"
-          width="150">
+          width="150"
+          align="center"
+        >
         </el-table-column>
         <el-table-column
           prop="scheduledDate"
           label="创建时间"
-          width="300">
+          width="150"
+          align="center"
+        >
         </el-table-column>
         <el-table-column
+          prop="statusId"
           label="项目状态"
-          width="150">
+          width="150"
+          align="center"
+        >
+          <template slot-scope="{ row }">
+            <span v-if="row.statusId !== null">
+              <svg-icon :icon-class="statusOptions[getStatusId(row.statusId)].svg"></svg-icon>
+              <span>{{ statusOptions[getStatusId(row.statusId)].label }}</span>
+            </span>
+          </template>
         </el-table-column>
         <el-table-column
-          width="200">
+          min-width="200">
           <el-button type="text" size="mini">进入项目</el-button>
         </el-table-column>
       </el-table>
 
-      <pagination :total="table.total" :page="table.page" :limit="table.limit"></pagination>
+      <pagination :total="table.total" :page="table.page" :limit="table.limit" @pagination="getProjects"></pagination>
     </div>
 
   </div>
@@ -75,6 +91,7 @@
 <script>
 
   import Pagination from '@/components/Pagination/index'
+  import {getProjects} from "../../../../api/project";
 
   export default {
     components: {
@@ -84,35 +101,51 @@
       return {
         searchValue: {
           name: '',
-          archive: '',
+          statusId: '',
         },
-        statusOptions: [{
-          value: 0,
-          label: '审核中',
-        }, {
-          value: 1,
-          label: '进行中'
-        }, {
-          value: 2,
-          label: '已归档'
-        }],
+        statusOptions: this.Constant.projectStatus,
 
         table: {
           data: [],
+          searchCondition: {
+            name: null,
+            statusId: null,
+          },
           total: 0,
           page: 1,
           limit: 10
         }
       }
     },
+    mounted () {
+      this.getProjects()
+    },
     methods: {
+      indexMethod (index) {
+        return index+1
+      },
+      getStatusId (statusId) {
+        return parseInt(statusId.toString().charAt(0))
+      },
+      getProjects () {
+        getProjects({
+          current: this.table.page,
+          size: this.table.limit,
+          searchCondition: this.table.searchCondition
+        }).then(response => {
+          this.table.data = response.data
+          this.searchValue.name = this.table.searchCondition.name
+          this.searchValue.statusId = this.table.searchCondition.statusId
+        }).catch(error => {
+          console.error(error)
+        })
+      },
       search() {
-
+        this.table.searchCondition.name = this.searchValue.name === '' ? null : this.searchValue.name
+        this.table.searchCondition.statusId = this.searchValue.statusId === '' ? null : this.searchValue.statusId
+        this.table.page = 1
+        this.getProjects()
       }
     }
   }
 </script>
-
-<style scoped>
-
-</style>

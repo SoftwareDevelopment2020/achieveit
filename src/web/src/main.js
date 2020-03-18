@@ -20,6 +20,12 @@ import './utils/error-log' // error log
 import * as filters from './filters' // global filters
 
 /**
+ * 全局常量
+ */
+import constant from './constant'
+Vue.prototype.Constant = constant
+
+/**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
  * you can execute: mockXHR()

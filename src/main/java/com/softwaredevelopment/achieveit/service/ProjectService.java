@@ -62,7 +62,7 @@ public class ProjectService {
             projectBasics.setProjectManagerName(null);
         }
         // 如果状态值为3 需要查询3xxx
-        if (projectBasics.getStatusId() == 3) {
+        if (projectBasics.getStatusId() != null && projectBasics.getStatusId() == 3) {
             qw.ge("status_id", 3000);
             projectBasics.setStatusId(null);
         }
