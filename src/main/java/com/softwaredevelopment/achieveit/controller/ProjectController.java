@@ -74,7 +74,7 @@ public class ProjectController extends BaseController {
 
 
     @ApiOperation("综合查询接口")
-    @GetMapping("search_projects")
+    @PostMapping("search_projects")
     public HttpResponse<List<ProjectBasics>> searchProjects(
             @RequestParam(name = "current", required = false, defaultValue = "1") Integer current,
             @RequestParam(name = "size", required = false, defaultValue = "10") Integer size,
