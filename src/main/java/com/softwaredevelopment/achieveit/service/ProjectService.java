@@ -53,10 +53,19 @@ public class ProjectService {
         QueryWrapper<ProjectBasics> qw = new QueryWrapper<>();
         // 先在qw里假如like的name和项目经理姓名的条件
         // 然后删掉实体的条件
-        qw.like("name", projectBasics.getName());
-        projectBasics.setName(null);
-        qw.like("project_manager_name", projectBasics.getProjectManagerName());
-        projectBasics.setProjectManagerName(null);
+        if (projectBasics.getName() != null) {
+            qw.like("name", projectBasics.getName());
+            projectBasics.setName(null);
+        }
+        if (projectBasics.getProjectManagerName() != null) {
+            qw.like("project_manager_name", projectBasics.getProjectManagerName());
+            projectBasics.setProjectManagerName(null);
+        }
+        // 如果状态值为3 需要查询3xxx
+        if (projectBasics.getStatusId() == 3) {
+            qw.ge("status_id", 3000);
+            projectBasics.setStatusId(null);
+        }
 
         // 把实体剩下的条件全部加入qw 且是alleq条件
         qw.setEntity(projectBasics);

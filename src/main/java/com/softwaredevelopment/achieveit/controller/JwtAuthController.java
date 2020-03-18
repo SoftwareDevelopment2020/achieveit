@@ -38,7 +38,13 @@ public class JwtAuthController extends BaseController {
     public HttpResponse<String> createToken(@RequestBody UserDetail userDetail) {
         String username = userDetail.getUsername();
         String password = userDetail.getPassword();
-        return responseOK(authService.login(username, password));
+        String token;
+        try {
+            token = authService.login(username, password);
+        } catch (AuthenticationException e) {
+            return responseFail("用户名或密码错误");
+        }
+        return responseOK(token);
     }
 
     /**

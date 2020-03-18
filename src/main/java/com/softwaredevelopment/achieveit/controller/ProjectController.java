@@ -2,6 +2,7 @@ package com.softwaredevelopment.achieveit.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.softwaredevelopment.achieveit.PO.entity.ProjectBasics;
+import com.softwaredevelopment.achieveit.entity.PageSearchRequest;
 import com.softwaredevelopment.achieveit.http.response.HttpResponse;
 import com.softwaredevelopment.achieveit.service.ProjectService;
 import io.swagger.annotations.Api;
@@ -76,9 +77,14 @@ public class ProjectController extends BaseController {
     @ApiOperation("综合查询接口")
     @PostMapping("search_projects")
     public HttpResponse<List<ProjectBasics>> searchProjects(
-            @RequestParam(name = "current", required = false, defaultValue = "1") Integer current,
-            @RequestParam(name = "size", required = false, defaultValue = "10") Integer size,
-            @RequestBody ProjectBasics projectBasics) {
-        return responseOK(projectService.searchProjects(new Page<>(current, size), projectBasics));
+//            @RequestParam(name = "current", required = false, defaultValue = "1") Integer current,
+//            @RequestParam(name = "size", required = false, defaultValue = "10") Integer size,
+//            @RequestBody ProjectBasics projectBasics
+            @RequestBody PageSearchRequest<ProjectBasics> projectBasics
+    ) {
+        return responseOK(projectService.searchProjects(
+                new Page<>(projectBasics.getCurrent(), projectBasics.getSize()),
+                projectBasics.getSearchCondition()
+        ));
     }
 }

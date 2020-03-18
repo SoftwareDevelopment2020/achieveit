@@ -3,6 +3,8 @@ service:
 
 server:
   port: 8080
+  tomcat:
+    uri-encoding: UTF-8
 #  port: 8443
 #  ssl:
 #    enabled: true
@@ -35,3 +37,10 @@ spring:
             enable: true
             required: true
 
+
+
+  http:
+    encoding:
+      force: true
+      charset: UTF-8
+      enabled: true

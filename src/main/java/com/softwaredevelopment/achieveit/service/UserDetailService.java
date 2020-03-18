@@ -8,7 +8,6 @@ import com.softwaredevelopment.achieveit.mapper.UserDetailMapper;
 import com.softwaredevelopment.achieveit.utils.StringHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -44,10 +43,14 @@ public class UserDetailService implements UserDetailsService {
      * @return
      * @throws UsernameNotFoundException
      */
-    @Cacheable(key = "#s")
+//    @Cacheable(key = "#s")
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         UserDetail userDetail = userDetailMapper.selectOneUserByUsername(s);
+        // 如果没有这个用户
+        if (userDetail == null) {
+            throw new UsernameNotFoundException("用户不存在");
+        }
         Map<Integer, List<String>> map = new HashMap<>();
         // 如果有这个用户 并且有这个employee信息 拿取权限
         if (userDetail != null && userDetail.getEmployeeId() != null) {
@@ -60,6 +63,7 @@ public class UserDetailService implements UserDetailsService {
             }
             userDetail.setPermissionsMap(map);
         }
+
         return userDetail;
     }
 

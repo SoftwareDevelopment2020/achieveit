@@ -69,10 +69,14 @@ public class ProjectBasics implements Serializable {
     @ApiModelProperty(value = "git仓库地址")
     private String gitAddress;
 
-    @ApiModelProperty(value = "项目状态id")
+    @ApiModelProperty(value = "项目状态id " +
+            "0 已归档\n" +
+            "1 审核中\n" +
+            "2 驳回\n" +
+            "3 进行中  小状态用后三位表示 比如3001 3101  只有3111时表示正式立项完成 开始干活")
     private Integer statusId;
 
-    @ApiModelProperty(value = "项目是否归档")
+    @ApiModelProperty(value = "项目是否归档 暂时废弃")
     private Boolean isArchived;
 
     @ApiModelProperty(value = "项目基础数据表是否提交")
