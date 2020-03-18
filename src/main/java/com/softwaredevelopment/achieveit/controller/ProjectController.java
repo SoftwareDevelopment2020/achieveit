@@ -1,5 +1,6 @@
 package com.softwaredevelopment.achieveit.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.softwaredevelopment.achieveit.PO.entity.ProjectBasics;
 import com.softwaredevelopment.achieveit.entity.PageSearchRequest;
@@ -9,8 +10,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * ProjectController
@@ -76,7 +75,7 @@ public class ProjectController extends BaseController {
 
     @ApiOperation("综合查询接口")
     @PostMapping("search_projects")
-    public HttpResponse<List<ProjectBasics>> searchProjects(
+    public HttpResponse<IPage<ProjectBasics>> searchProjects(
 //            @RequestParam(name = "current", required = false, defaultValue = "1") Integer current,
 //            @RequestParam(name = "size", required = false, defaultValue = "10") Integer size,
 //            @RequestBody ProjectBasics projectBasics

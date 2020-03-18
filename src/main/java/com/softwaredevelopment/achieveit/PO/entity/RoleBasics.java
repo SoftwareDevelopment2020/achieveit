@@ -32,7 +32,7 @@ public class RoleBasics implements Serializable {
     @ApiModelProperty(value = "role_name")
     private String name;
 
-    @ApiModelProperty(value = "role_detail  explaination")
+    @ApiModelProperty(value = "role_detail  explanation")
     private String detail;
 
 

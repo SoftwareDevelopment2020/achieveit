@@ -53,7 +53,7 @@ public class UserDetailService implements UserDetailsService {
         }
         Map<Integer, List<String>> map = new HashMap<>();
         // 如果有这个用户 并且有这个employee信息 拿取权限
-        if (userDetail != null && userDetail.getEmployeeId() != null) {
+        if (userDetail.getEmployeeId() != null) {
             List<PermissionByProject> permissionByProjects =
                     userDetailMapper.selectPermissionsPerProjectByEmployeeId(userDetail.getEmployeeId());
             for (PermissionByProject permissionByProject :

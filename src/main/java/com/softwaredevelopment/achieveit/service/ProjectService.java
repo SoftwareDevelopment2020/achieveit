@@ -2,14 +2,13 @@ package com.softwaredevelopment.achieveit.service;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.softwaredevelopment.achieveit.PO.entity.ProjectBasics;
 import com.softwaredevelopment.achieveit.PO.mapper.ProjectBasicsMapper;
 import com.softwaredevelopment.achieveit.PO.service.IProjectBasicsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * @author RainkQ
@@ -49,7 +48,7 @@ public class ProjectService {
      * @param projectBasics
      * @return
      */
-    public List<ProjectBasics> searchProjects(Page<ProjectBasics> page, ProjectBasics projectBasics) {
+    public IPage<ProjectBasics> searchProjects(Page<ProjectBasics> page, ProjectBasics projectBasics) {
         QueryWrapper<ProjectBasics> qw = new QueryWrapper<>();
         // 先在qw里假如like的name和项目经理姓名的条件
         // 然后删掉实体的条件
@@ -69,6 +68,6 @@ public class ProjectService {
 
         // 把实体剩下的条件全部加入qw 且是alleq条件
         qw.setEntity(projectBasics);
-        return iProjectBasicsService.page(page, qw).getRecords();
+        return iProjectBasicsService.page(page, qw);
     }
 }
