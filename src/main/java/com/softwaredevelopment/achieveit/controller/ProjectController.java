@@ -2,7 +2,6 @@ package com.softwaredevelopment.achieveit.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.softwaredevelopment.achieveit.PO.entity.ProjectBasics;
-import com.softwaredevelopment.achieveit.entity.Project;
 import com.softwaredevelopment.achieveit.http.response.HttpResponse;
 import com.softwaredevelopment.achieveit.service.ProjectService;
 import io.swagger.annotations.Api;
@@ -29,48 +28,57 @@ public class ProjectController extends BaseController {
     @Autowired
     ProjectService projectService;
 
-    @ApiOperation("项目基本信息")
-    @GetMapping("project_basics")
-    public HttpResponse<ProjectBasics> getProjectBasics(Integer id) {
-        return responseOK(projectService.selectById(id));
-    }
-
-    @ApiOperation("分页查询所有项目的基本信息")
-    @GetMapping("all_projects")
-    public HttpResponse<List<Project>> getAllProjects(
-            @RequestParam(name = "current", required = false, defaultValue = "1") Integer current,
-            @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
-        List<Project> projectsByPage = projectService.selectAllProjectsByPage(new Page<>(current, size));
-        return responseOK(projectsByPage);
-    }
-
-    @ApiOperation("分页模糊查询名字")
-    @GetMapping("projects_by_name")
-    public HttpResponse<List<ProjectBasics>> getProjectBasicsByName(
-            @RequestParam(name = "current", required = false, defaultValue = "1") Integer current,
-            @RequestParam(name = "size", required = false, defaultValue = "10") Integer size,
-            @RequestParam(name = "name") String name) {
-        Page<ProjectBasics> page = new Page<>(current, size);
-        List<ProjectBasics> selectListByName = projectService.selectListByName(page, name);
-        return responseOK(selectListByName);
-    }
-
-    @ApiOperation("按project_id 查询一个")
-    @GetMapping("project_basics_by_id")
-    public HttpResponse<ProjectBasics> getProjectBasicsByProjectId(String projectId) {
-        return responseOK(projectService.selectByProjectId(projectId));
-    }
+//    @ApiOperation("项目基本信息")
+//    @GetMapping("project_basics")
+//    public HttpResponse<ProjectBasics> getProjectBasics(Integer id) {
+//        return responseOK(projectService.selectById(id));
+//    }
+//
+//    @ApiOperation("分页查询所有项目的基本信息")
+//    @GetMapping("all_projects")
+//    public HttpResponse<List<Project>> getAllProjects(
+//            @RequestParam(name = "current", required = false, defaultValue = "1") Integer current,
+//            @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
+//        List<Project> projectsByPage = projectService.selectAllProjectsByPage(new Page<>(current, size));
+//        return responseOK(projectsByPage);
+//    }
+//
+//    @ApiOperation("分页模糊查询名字")
+//    @GetMapping("projects_by_name")
+//    public HttpResponse<List<ProjectBasics>> getProjectBasicsByName(
+//            @RequestParam(name = "current", required = false, defaultValue = "1") Integer current,
+//            @RequestParam(name = "size", required = false, defaultValue = "10") Integer size,
+//            @RequestParam(name = "name") String name) {
+//        Page<ProjectBasics> page = new Page<>(current, size);
+//        List<ProjectBasics> selectListByName = projectService.selectListByName(page, name);
+//        return responseOK(selectListByName);
+//    }
+//
+//    @ApiOperation("按project_id 查询一个")
+//    @GetMapping("project_basics_by_id")
+//    public HttpResponse<ProjectBasics> getProjectBasicsByProjectId(String projectId) {
+//        return responseOK(projectService.selectByProjectId(projectId));
+//    }
 
 
     @ApiOperation("新建项目 要求project_id 不重复 否则返回Fail")
     @PostMapping("new_project")
     public HttpResponse<Object> makeNewProjectBasics(@RequestBody ProjectBasics newProjectBasics) {
-        Integer insertProjectBasics = projectService.insertProjectBasics(newProjectBasics);
-        if (insertProjectBasics == -1) {
+        Boolean successToSave = projectService.saveProjectBasics(newProjectBasics);
+        if (!successToSave) {
             return responseFail("project_id duplicated");
         }
         return responseOK(newProjectBasics);
 
     }
 
+
+    @ApiOperation("综合查询接口")
+    @GetMapping("search_projects")
+    public HttpResponse<List<ProjectBasics>> searchProjects(
+            @RequestParam(name = "current", required = false, defaultValue = "1") Integer current,
+            @RequestParam(name = "size", required = false, defaultValue = "10") Integer size,
+            @RequestBody ProjectBasics projectBasics) {
+        return responseOK(projectService.searchProjects(new Page<>(current, size), projectBasics));
+    }
 }
