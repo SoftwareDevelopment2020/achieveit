@@ -1,12 +1,11 @@
 <template>
-  <el-container style="height: 800px">
+  <el-container>
     <el-aside style="width: auto;">
       <el-menu
       :default-active="activeMenu"
       class="el-menu-vertical-demo"
       :collapse="menuCollapse"
       @select="handleSelect"
-      style="height: 100%;"
       >
         <el-button
           type="text"

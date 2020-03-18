@@ -21,7 +21,7 @@
           :value="index">
         </el-option>
       </el-select>
-      <el-button type="primary" style="margin-left: 10px" @click="search">
+      <el-button type="primary" style="margin-left: 10px" @click="search" @keyup.enter="search">
         <i class="el-icon-search"></i>
         <span>搜索</span>
       </el-button>
@@ -92,6 +92,7 @@
 
   import Pagination from '@/components/Pagination/index'
   import {getProjects} from "../../../../api/project";
+  import {setTable} from "../../../../utils/common";
 
   export default {
     components: {
@@ -133,7 +134,7 @@
           size: this.table.limit,
           searchCondition: this.table.searchCondition
         }).then(response => {
-          this.table.data = response.data
+          setTable(response.data, this.table)
           this.searchValue.name = this.table.searchCondition.name
           this.searchValue.statusId = this.table.searchCondition.statusId
         }).catch(error => {
