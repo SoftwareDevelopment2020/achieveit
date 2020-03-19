@@ -4,6 +4,7 @@ import com.softwaredevelopment.achieveit.entity.UserDetail;
 import com.softwaredevelopment.achieveit.http.response.HttpResponse;
 import com.softwaredevelopment.achieveit.service.UserDetailService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,9 +25,9 @@ public class UserDetailController extends BaseController {
     @Autowired
     UserDetailService userDetailService;
 
+    @ApiOperation("如果没有username参数 返回自己的信息")
     @GetMapping("get_user_info")
     public HttpResponse<Object> getUserInfo(@RequestParam(name = "username", required = false) String username) {
-        // 如果没有username参数 返回自己的信息
         if (username == null) {
             UserDetail userDetail = (UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             userDetail.setPassword(null);
