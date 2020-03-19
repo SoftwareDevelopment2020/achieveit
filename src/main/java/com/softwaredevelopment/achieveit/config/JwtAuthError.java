@@ -10,6 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  * @author RainkQ
@@ -32,7 +33,15 @@ public class JwtAuthError implements AuthenticationEntryPoint, AccessDeniedHandl
 
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json;charset=utf-8");
-        response.getWriter().write("{\"status\":401,\"message\":\"认证失败\"}");
+        PrintWriter printWriter = response.getWriter();
+        printWriter.write("{\n" +
+                "    \"status\": 401,\n" +
+                "    \"error\": \"Forbidden\",\n" +
+                "    \"message\": \"认证失败\",\n" +
+                "    \"path\": \" " + request.getRequestURI() + "\"\n" +
+                "}");
+        printWriter.flush();
+        printWriter.close();
 
     }
 
@@ -51,6 +60,14 @@ public class JwtAuthError implements AuthenticationEntryPoint, AccessDeniedHandl
 
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         response.setContentType("application/json;charset=utf-8");
-        response.getWriter().write("{\"status\":403,\"message\":\"鉴权失败\"}");
+        PrintWriter printWriter = response.getWriter();
+        printWriter.write("{\n" +
+                "    \"status\": 403,\n" +
+                "    \"error\": \"Forbidden\",\n" +
+                "    \"message\": \"鉴权失败\",\n" +
+                "    \"path\": \" " + request.getRequestURI() + "\"\n" +
+                "}");
+        printWriter.flush();
+        printWriter.close();
     }
 }
