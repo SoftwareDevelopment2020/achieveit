@@ -15,7 +15,7 @@
           <i v-else class="el-icon-arrow-left"></i>
         </el-button>
 
-        <el-menu-item v-for="item in menu" :index="item.index">
+        <el-menu-item v-for="item in menu" :key="item.index" :index="item.index">
           <svg-icon :icon-class="item.class" />
           <span slot="title">{{ item.title }}</span>
         </el-menu-item>

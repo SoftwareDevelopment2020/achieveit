@@ -1,8 +1,9 @@
 import axios from 'axios'
 // import { MessageBox, Message } from 'element-ui'
-import { Message } from 'element-ui'
+import {Message} from 'element-ui'
 import store from '@/store'
-import { getToken } from '@/utils/auth'
+import {getToken} from '@/utils/auth'
+import router from "@/router";
 
 // create an axios instance
 const service = axios.create({
@@ -18,11 +19,7 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // do something before request is sent
-
     if (store.getters.token) {
-      // let each request carry token
-      // ['X-Token'] is a custom headers key
-      // please modify it according to the actual situation
       config.headers['Authorization'] = getToken()
     }
     return config
@@ -48,41 +45,37 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
-
-    // if the custom code is not 20000, it is judged as an error.
     if (!res.success) {
-      // TODO
-      // Message({
-      //   message: res.message || 'Error',
-      //   type: 'error',
-      //   duration: 5 * 1000
-      // })
-      //
-      // // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-      // if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
-      //   // to re-login
-      //   MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
-      //     confirmButtonText: 'Re-Login',
-      //     cancelButtonText: 'Cancel',
-      //     type: 'warning'
-      //   }).then(() => {
-      //     store.dispatch('user/resetToken').then(() => {
-      //       location.reload()
-      //     })
-      //   })
-      // }
+      Message({
+        message: res.data || 'Unknown Error',
+        type: 'error',
+        duration: 5 * 1000
+      })
       return Promise.reject(new Error(res.data || 'Error'))
     } else {
       return res
     }
   },
   error => {
-    console.log('err' + error) // for debug
-    Message({
-      message: error.message,
-      type: 'error',
-      duration: 5 * 1000
-    })
+    //登录过期,跳转到登陆界面，登录后返回原先路由界面
+    if (error.response.status === 401) {
+      console.log(error.response)
+      Message({
+        message: "登录已过期，请重新登录",
+        type: "error",
+        duration: 5 * 1000
+      })
+      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+    }
+    //其他错误，弹窗提示
+    else {
+      console.log('err' + error) // for debug
+      Message({
+        message: error.message,
+        type: 'error',
+        duration: 5 * 1000
+      })
+    }
     return Promise.reject(error)
   }
 )
