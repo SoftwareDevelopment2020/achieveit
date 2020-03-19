@@ -27,6 +27,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailService userDetailService;
     @Autowired
     private AuthService authService;
+    @Autowired
+    private JwtAuthError myAuthErrorHandler;
 
     @Bean
     public JwtTokenFilter authenticationTokenFilterBean() throws Exception {
@@ -49,6 +51,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         httpSecurity.csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                // 设置myUnauthorizedHandler处理认证失败、鉴权失败
+                .exceptionHandling().authenticationEntryPoint(myAuthErrorHandler).accessDeniedHandler(myAuthErrorHandler).and()
+
                 .authorizeRequests()
                 .antMatchers("/favicon.ico").permitAll()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()

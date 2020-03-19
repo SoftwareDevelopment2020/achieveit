@@ -82,11 +82,14 @@ public class ProjectController extends BaseController {
 //            @RequestParam(name = "current", required = false, defaultValue = "1") Integer current,
 //            @RequestParam(name = "size", required = false, defaultValue = "10") Integer size,
 //            @RequestBody ProjectBasics projectBasics
-            @RequestBody PageSearchRequest<ProjectBasics> projectBasics
+            @RequestBody PageSearchRequest<ProjectBasics> search
     ) {
+        if (search.getSearchCondition() == null) {
+            search.setSearchCondition(new ProjectBasics());
+        }
         return responseOK(projectService.searchProjects(
-                new Page<>(projectBasics.getCurrent(), projectBasics.getSize()),
-                projectBasics.getSearchCondition()
+                new Page<>(search.getCurrent(), search.getSize()),
+                search.getSearchCondition()
         ));
     }
 }
