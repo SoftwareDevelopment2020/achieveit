@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("test")
 @Api(tags = "测试连接")
-@CrossOrigin(allowCredentials = "true", allowedHeaders = "*")
+//@CrossOrigin(allowCredentials = "true", allowedHeaders = "*")
 public class TestController extends BaseController {
 
     @Autowired

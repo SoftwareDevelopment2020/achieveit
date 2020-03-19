@@ -8,7 +8,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * JwtAuthController
@@ -20,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("auth")
 @Api(tags = "登录注册接口")
 @RestController
-@CrossOrigin(allowCredentials = "true", allowedHeaders = "*")
+//@CrossOrigin(allowCredentials = "true", allowedHeaders = "*")
 public class JwtAuthController extends BaseController {
 
     @Autowired
