@@ -16,24 +16,24 @@ import java.io.Serializable;
  * </p>
  *
  * @author RainkQ
- * @since 2020-02-28
+ * @since 2020-03-19
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@ApiModel(value = "ProjectStatusBasics对象", description = "")
-public class ProjectStatusBasics implements Serializable {
+@ApiModel(value = "UserRole对象", description = "")
+public class UserRole implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @TableId(type = IdType.AUTO)
     private Integer id;
 
-    private static final long serialVersionUID = 1L;
+    @ApiModelProperty(value = "用户id")
+    private Integer userId;
 
-    @ApiModelProperty(value = "project_status_name")
-    private String name;
-
-    @ApiModelProperty(value = "project_status_detail explaination")
-    private String detail;
+    @ApiModelProperty(value = "角色id")
+    private Integer roleId;
 
 
 }

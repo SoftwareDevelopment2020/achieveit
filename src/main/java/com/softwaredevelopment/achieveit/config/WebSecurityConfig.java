@@ -63,10 +63,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/configuration/security").permitAll()
                 .antMatchers("/doc.html").permitAll()
                 // swagger end
+
                 // project authorities check
                 .antMatchers("/project/**").authenticated()
-//                .access("@authService.canAccess(request, authentication)")
+                // .access("@authService.canAccess(request, authentication)")
                 // project authorities check end
+
+                // 用户信息 开始
+                .antMatchers("/user_detail/**").authenticated()
+                // 用户信息 结束
+
                 // static resources
                 .antMatchers("/js/**", "/css/**", "/images/*", "/fonts/**", "/**/*.png", "/**/*.jpg").permitAll()
                 .antMatchers(HttpMethod.POST).authenticated()

@@ -1,5 +1,6 @@
 package com.softwaredevelopment.achieveit.entity;
 
+import com.softwaredevelopment.achieveit.PO.entity.RoleBasics;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -43,15 +44,23 @@ public class UserDetail implements UserDetails {
     @ApiModelProperty(value = "账户启用")
     private Boolean enabled;
 
+    @ApiModelProperty(value = "角色")
+    private List<RoleBasics> roles;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-//        List<GrantedAuthority> authorities = new ArrayList<>();
-//        for (Role role : roles) {
-//            authorities.add( new SimpleGrantedAuthority( role.getName() ) );
-//        }
-//        return authorities;
-        // TODO 本该返回一个role的list
-        return new ArrayList<GrantedAuthority>(Arrays.asList(new SimpleGrantedAuthority("authenticated")));
+        if (roles == null || roles.size() == 0) {
+            return new ArrayList<GrantedAuthority>(Arrays.asList(new SimpleGrantedAuthority("authenticated")));
+        }
+
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        for (RoleBasics role : roles) {
+            authorities.add(new SimpleGrantedAuthority(role.getName()));
+        }
+        return authorities;
+
+
+//        return new ArrayList<GrantedAuthority>(Arrays.asList(new SimpleGrantedAuthority("authenticated")));
     }
 
     @Override

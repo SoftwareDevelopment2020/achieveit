@@ -51,7 +51,7 @@ public class ProjectService {
      */
     public IPage<ProjectBasics> searchProjects(Page<ProjectBasics> page, ProjectBasics projectBasics) {
         QueryWrapper<ProjectBasics> qw = new QueryWrapper<>();
-        // 先在qw里假如like的name和项目经理姓名的条件
+        // 先在qw里加入like的name和项目经理姓名的条件
         // 然后删掉实体的条件
         if (projectBasics.getName() != null) {
             qw.like("name", projectBasics.getName());

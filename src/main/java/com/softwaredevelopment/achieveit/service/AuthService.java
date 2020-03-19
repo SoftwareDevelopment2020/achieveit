@@ -1,5 +1,8 @@
 package com.softwaredevelopment.achieveit.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.softwaredevelopment.achieveit.PO.entity.User;
+import com.softwaredevelopment.achieveit.PO.service.IUserService;
 import com.softwaredevelopment.achieveit.entity.UserDetail;
 import com.softwaredevelopment.achieveit.utils.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -34,6 +38,8 @@ public class AuthService {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
+    @Autowired
+    private IUserService poUserService;
 
     /**
      * 登录
@@ -63,10 +69,11 @@ public class AuthService {
      * @param userToAdd
      * @return
      */
+    @Transactional
     public UserDetail register(UserDetail userToAdd) {
 
         final String username = userToAdd.getUsername();
-        if (userDetailService.loadUserByUsername(username) != null) {
+        if (poUserService.getOne(new QueryWrapper<User>().eq("username", username)) != null) {
             return null;
         }
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();

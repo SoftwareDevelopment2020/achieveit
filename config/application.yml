@@ -36,7 +36,9 @@ spring:
           starttls:
             enable: true
             required: true
-
+  cache:
+    redis:
+      time-to-live: 600000
 
 
   http:
