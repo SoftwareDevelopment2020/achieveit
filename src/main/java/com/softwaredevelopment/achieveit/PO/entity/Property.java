@@ -30,6 +30,9 @@ public class Property implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @ApiModelProperty(value = "项目ID")
+    private Integer projectId;
+
     @ApiModelProperty(value = "资产类型")
     private String type;
 

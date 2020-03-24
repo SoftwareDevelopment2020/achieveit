@@ -5,11 +5,15 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.softwaredevelopment.achieveit.PO.entity.ProjectBasics;
+import com.softwaredevelopment.achieveit.PO.entity.*;
 import com.softwaredevelopment.achieveit.PO.mapper.ProjectBasicsMapper;
-import com.softwaredevelopment.achieveit.PO.service.IProjectBasicsService;
+import com.softwaredevelopment.achieveit.PO.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author RainkQ
@@ -22,7 +26,6 @@ public class ProjectService {
 
     @Autowired
     IProjectBasicsService iProjectBasicsService;
-
 
     /**
      * 插入新ProjectBasics
@@ -71,5 +74,60 @@ public class ProjectService {
         // 把实体剩下的条件全部加入qw 且是alleq条件
         qw.setEntity(projectBasics);
         return iProjectBasicsService.page(page, qw);
+    }
+
+
+    @Autowired
+    IProjectEmployeeService iProjectEmployeeService;
+    @Autowired
+    IPersonPermissionService iPersonPermissionService;
+    @Autowired
+    IPersonRoleService iPersonRoleService;
+    @Autowired
+    IRiskService iRiskService;
+    @Autowired
+    IBugService iBugService;
+    @Autowired
+    IFeatureService iFeatureService;
+    @Autowired
+    IManHourService iManHourService;
+    @Autowired
+    IPropertyService iPropertyService;
+
+    /**
+     * 删除一个项目相关的所有数据
+     *
+     * @return
+     */
+    @Transactional
+    public boolean deleteProjectAndItsData(Integer projectId) {
+        // 如果删除ProjectBasics成功
+        if (iProjectBasicsService.removeById(projectId)) {
+            // 删除ProjectEmployee
+            List<ProjectEmployee> projectEmployees = iProjectEmployeeService.list(new QueryWrapper<ProjectEmployee>().eq("project_id", projectId));
+            iProjectEmployeeService.remove(new QueryWrapper<ProjectEmployee>().eq("project_id", projectId));
+            List<Integer> projectEmployeeIds = new ArrayList<>();
+            for (ProjectEmployee p :
+                    projectEmployees) {
+                projectEmployeeIds.add(p.getId());
+            }
+            if (!projectEmployeeIds.isEmpty()) {
+                // 删除PersonPermission
+                iPersonPermissionService.remove(new QueryWrapper<PersonPermission>().in("project_employee_id", projectEmployeeIds));
+            }
+            // 删除Risk
+            iRiskService.remove(new QueryWrapper<Risk>().eq("project_id", projectId));
+            // 删除bug
+            iBugService.remove(new QueryWrapper<Bug>().eq("project_id", projectId));
+            // 删除Feature
+            iFeatureService.remove(new QueryWrapper<Feature>().eq("project_id", projectId));
+            // 删除ManHour
+            iManHourService.remove(new QueryWrapper<ManHour>().eq("project_id", projectId));
+            // 删除Property
+            iPropertyService.remove(new QueryWrapper<Property>().eq("project_id", projectId));
+            return true;
+        } else {
+            return false;
+        }
     }
 }

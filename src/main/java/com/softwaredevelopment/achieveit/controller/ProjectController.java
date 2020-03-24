@@ -92,4 +92,14 @@ public class ProjectController extends BaseController {
                 search.getSearchCondition()
         ));
     }
+
+    @ApiOperation("删除项目接口 测试用")
+    @PostMapping("delete_project")
+    public HttpResponse<String> deleteProjectAndItsData(Integer projectId) {
+        if (projectService.deleteProjectAndItsData(projectId)) {
+            return responseOK("删除成功");
+        } else {
+            return responseFail("删除失败 可能不存在此项目");
+        }
+    }
 }
