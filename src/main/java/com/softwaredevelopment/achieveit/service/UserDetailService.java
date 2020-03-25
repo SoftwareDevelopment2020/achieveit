@@ -4,9 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.softwaredevelopment.achieveit.PO.entity.RoleBasics;
 import com.softwaredevelopment.achieveit.PO.entity.User;
 import com.softwaredevelopment.achieveit.PO.entity.UserRole;
-import com.softwaredevelopment.achieveit.PO.service.IRoleBasicsService;
-import com.softwaredevelopment.achieveit.PO.service.IUserRoleService;
-import com.softwaredevelopment.achieveit.PO.service.IUserService;
 import com.softwaredevelopment.achieveit.entity.PermissionByProject;
 import com.softwaredevelopment.achieveit.entity.UserDetail;
 import com.softwaredevelopment.achieveit.mapper.UserDetailMapper;
@@ -33,18 +30,10 @@ import java.util.Map;
  */
 @CacheConfig(cacheNames = "userdetail")
 @Service
-public class UserDetailService implements UserDetailsService {
+public class UserDetailService extends BaseService implements UserDetailsService {
 
     @Autowired
     UserDetailMapper userDetailMapper;
-
-    // PO层
-    @Autowired
-    IUserService userService;
-    @Autowired
-    IUserRoleService userRoleService;
-    @Autowired
-    IRoleBasicsService roleBasicsService;
 
     /**
      * 从数据库拿取UserDetail 会缓存入Redis
@@ -66,7 +55,7 @@ public class UserDetailService implements UserDetailsService {
         // 获取角色
         int userId = userDetail.getId();
         // 先拿出所有的角色基本信息
-        List<RoleBasics> roleBasics = roleBasicsService.list();
+        List<RoleBasics> roleBasics = iRoleBasicsService.list();
         Map<Integer, RoleBasics> roleBasicsMap = new HashMap<>();
         // 放入map中好取
         for (RoleBasics rb :
@@ -74,7 +63,7 @@ public class UserDetailService implements UserDetailsService {
             roleBasicsMap.put(rb.getId(), rb);
         }
         // 根据userId拿到userRole的映射
-        List<UserRole> userRolesByUserId = userRoleService.list(new QueryWrapper<UserRole>().eq("user_id", userId));
+        List<UserRole> userRolesByUserId = iUserRoleService.list(new QueryWrapper<UserRole>().eq("user_id", userId));
         // 如果有角色
         if (userRolesByUserId.size() > 0) {
             List<RoleBasics> resultRoles = new ArrayList<>();
@@ -123,7 +112,7 @@ public class UserDetailService implements UserDetailsService {
 
         user.setUsername(userToAdd.getUsername());
         user.setPassword(userToAdd.getPassword());
-        userService.save(user);
+        iUserService.save(user);
 
         userToAdd.setId(user.getId());
         userToAdd.setAccountNonExpired(user.getIsAccountNonExpired());
@@ -141,13 +130,13 @@ public class UserDetailService implements UserDetailsService {
                 ur.setRoleId(rb.getId());
                 userRoles.add(ur);
             }
-            userRoleService.saveBatch(userRoles);
+            iUserRoleService.saveBatch(userRoles);
         } else {
             // 如果没有role
             UserRole ur = new UserRole();
             ur.setUserId(userToAdd.getId());
             ur.setRoleId(3);
-            userRoleService.save(ur);
+            iUserRoleService.save(ur);
         }
         return userToAdd;
     }

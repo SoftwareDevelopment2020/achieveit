@@ -28,7 +28,7 @@ import java.util.Map;
  * created on 2020-02-29 01:43
  */
 @Service
-public class AuthService {
+public class AuthService extends BaseService {
     @Autowired
     private AuthenticationManager authenticationManager;
 

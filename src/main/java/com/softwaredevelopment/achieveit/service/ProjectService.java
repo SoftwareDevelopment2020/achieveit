@@ -6,9 +6,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.softwaredevelopment.achieveit.PO.entity.*;
-import com.softwaredevelopment.achieveit.PO.mapper.ProjectBasicsMapper;
-import com.softwaredevelopment.achieveit.PO.service.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,20 +17,14 @@ import java.util.List;
  * @date 2020/3/11 15:57
  */
 @Service
-public class ProjectService {
-    @Autowired
-    ProjectBasicsMapper projectBasicsMapper;
-
-    @Autowired
-    IProjectBasicsService iProjectBasicsService;
-
+public class ProjectService extends BaseService {
     /**
      * 插入新ProjectBasics
      *
      * @param newProjectBasics
      * @return 插入不成功返回false
      */
-    public Boolean saveProjectBasics(ProjectBasics newProjectBasics) {
+    public Boolean newProjectBasics(ProjectBasics newProjectBasics) {
         // 先看有没有这个projectId对应的项目
         QueryWrapper<ProjectBasics> qw = new QueryWrapper<>();
         qw.lambda()
@@ -77,22 +68,7 @@ public class ProjectService {
     }
 
 
-    @Autowired
-    IProjectEmployeeService iProjectEmployeeService;
-    @Autowired
-    IPersonPermissionService iPersonPermissionService;
-    @Autowired
-    IPersonRoleService iPersonRoleService;
-    @Autowired
-    IRiskService iRiskService;
-    @Autowired
-    IBugService iBugService;
-    @Autowired
-    IFeatureService iFeatureService;
-    @Autowired
-    IManHourService iManHourService;
-    @Autowired
-    IPropertyService iPropertyService;
+
 
     /**
      * 删除一个项目相关的所有数据
@@ -134,5 +110,33 @@ public class ProjectService {
         } else {
             return false;
         }
+    }
+
+    /**
+     * 更新项目
+     *
+     * @param projectBasics
+     * @return
+     */
+    public Boolean updateProject(ProjectBasics projectBasics) {
+        String projectId = projectBasics.getProjectId();
+        // 查有没有这个项目
+        ProjectBasics byProjectId = iProjectBasicsService.getOne(
+                new QueryWrapper<ProjectBasics>().lambda().eq(ProjectBasics::getProjectId, projectId));
+        if (byProjectId != null) {
+            projectBasics.setId(byProjectId.getId());
+            return iProjectBasicsService.updateById(projectBasics);
+        } else {
+            return false;
+        }
+    }
+
+
+    //    @Cacheable(key = "#projectId")
+    public ProjectBasics getProjectBasicsByProjectId(Integer projectId) {
+        // 通过projectId获取projectBasics
+        return iProjectBasicsService.getOne(
+                new QueryWrapper<ProjectBasics>().lambda()
+                        .eq(ProjectBasics::getProjectId, projectId));
     }
 }
