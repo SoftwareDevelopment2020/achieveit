@@ -101,11 +101,16 @@ public class ProjectService {
      */
     @Transactional
     public boolean deleteProjectAndItsData(Integer projectId) {
+        // 通过projectId获取project_id(11位)
+        ProjectBasics byProjectId = iProjectBasicsService.getOne(new QueryWrapper<ProjectBasics>().eq("projectId", projectId));
+        // 获取表的id
+        Integer id = byProjectId.getId();
+
         // 如果删除ProjectBasics成功
-        if (iProjectBasicsService.removeById(projectId)) {
+        if (iProjectBasicsService.removeById(id)) {
             // 删除ProjectEmployee
-            List<ProjectEmployee> projectEmployees = iProjectEmployeeService.list(new QueryWrapper<ProjectEmployee>().eq("project_id", projectId));
-            iProjectEmployeeService.remove(new QueryWrapper<ProjectEmployee>().eq("project_id", projectId));
+            List<ProjectEmployee> projectEmployees = iProjectEmployeeService.list(new QueryWrapper<ProjectEmployee>().eq("project_id", id));
+            iProjectEmployeeService.remove(new QueryWrapper<ProjectEmployee>().eq("project_id", id));
             List<Integer> projectEmployeeIds = new ArrayList<>();
             for (ProjectEmployee p :
                     projectEmployees) {
@@ -116,15 +121,15 @@ public class ProjectService {
                 iPersonPermissionService.remove(new QueryWrapper<PersonPermission>().in("project_employee_id", projectEmployeeIds));
             }
             // 删除Risk
-            iRiskService.remove(new QueryWrapper<Risk>().eq("project_id", projectId));
+            iRiskService.remove(new QueryWrapper<Risk>().eq("project_id", id));
             // 删除bug
-            iBugService.remove(new QueryWrapper<Bug>().eq("project_id", projectId));
+            iBugService.remove(new QueryWrapper<Bug>().eq("project_id", id));
             // 删除Feature
-            iFeatureService.remove(new QueryWrapper<Feature>().eq("project_id", projectId));
+            iFeatureService.remove(new QueryWrapper<Feature>().eq("project_id", id));
             // 删除ManHour
-            iManHourService.remove(new QueryWrapper<ManHour>().eq("project_id", projectId));
+            iManHourService.remove(new QueryWrapper<ManHour>().eq("project_id", id));
             // 删除Property
-            iPropertyService.remove(new QueryWrapper<Property>().eq("project_id", projectId));
+            iPropertyService.remove(new QueryWrapper<Property>().eq("project_id", id));
             return true;
         } else {
             return false;
