@@ -1,7 +1,5 @@
 package com.softwaredevelopment.achieveit.PO.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -16,7 +14,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author RainkQ
- * @since 2020-02-28
+ * @since 2020-03-26
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -24,10 +22,10 @@ import java.io.Serializable;
 @ApiModel(value = "Feature对象", description = "")
 public class Feature implements Serializable {
 
-    @TableId(type = IdType.AUTO)
-    private Integer id;
-
     private static final long serialVersionUID = 1L;
+
+    @ApiModelProperty("id (弃用）")
+    private Integer id = 1;
 
     @ApiModelProperty(value = "项目ID")
     private Integer projectId;
