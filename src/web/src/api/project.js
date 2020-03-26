@@ -6,7 +6,7 @@ import request from '@/utils/request'
 /**
  * 发送get请求
  */
-export function get (url) {
+export function get(url) {
   return request({
     url: '/project' + url,
     method: 'get'
@@ -16,7 +16,7 @@ export function get (url) {
 /**
  * 发送post请求
  */
-export function post (url, data) {
+export function post(url, data) {
   return request({
     url: '/project' + url,
     method: 'post',
@@ -27,6 +27,20 @@ export function post (url, data) {
 /**
  * 获取项目
  */
-export function getProjects (data) {
+export function getProjects(data) {
   return post('/search_projects', data)
+}
+
+/**
+ * 更新项目基本信息
+ * @param projectBasics
+ * @returns {AxiosPromise}
+ */
+export function updateProject(projectBasics) {
+  // return request({
+  //   url: '/project/update_project',
+  //   method: post,
+  //   data: projectBasics
+  // })
+  return post('/update_project', projectBasics)
 }
