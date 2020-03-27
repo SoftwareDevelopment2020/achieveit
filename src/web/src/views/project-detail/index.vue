@@ -22,7 +22,12 @@
 
       </el-menu>
     </el-aside>
-    <el-main>
+    <el-main v-if="project !== null">
+      <el-card v-if="activeMenu!=='base-info'">
+        <span>当前项目：{{project.name}} ({{project.projectId}})</span>
+        <el-divider direction="vertical"></el-divider>
+        <span>{{getDate(project.scheduledDate)}} - {{getDate(project.deliveryDate)}}</span>
+      </el-card>
       <div style="margin: 10px">
         <base-info v-if="activeMenu==='base-info'"></base-info>
         <participant v-if="activeMenu==='participant'"></participant>
@@ -36,9 +41,9 @@
   import BaseInfo from './menu-item/base-info'
   import Participant from './menu-item/participant'
   import FunctionList from './menu-item/function-list'
+  import {stringToChinese} from "../../utils/date";
 
   export default {
-
     components: {
       BaseInfo,
       Participant,
@@ -80,19 +85,25 @@
           class: 'file',
           title: '归档管理'
         }],
-        activeMenu: null
+        activeMenu: null,
+        project: this.$store.getters.project
       }
     },
     mounted() {
+      if (this.project === null) {
+        this.$message.warning('请选择具体项目')
+        this.$router.replace({
+          path: '/'
+        })
+      }
       this.activeMenu = this.menu[0].index
     },
     methods: {
       handleSelect(index) {
         this.activeMenu = index
       },
-      selectProject(project) {
-        this.$store.dispatch('project/setProject', project)
-        this.activeMenu = this.menu[1].index
+      getDate(date) {
+        return stringToChinese(date)
       }
     }
   }
