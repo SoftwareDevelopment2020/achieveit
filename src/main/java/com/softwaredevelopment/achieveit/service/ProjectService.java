@@ -10,6 +10,7 @@ import com.softwaredevelopment.achieveit.controller.BussinessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -42,13 +43,13 @@ public class ProjectService extends BaseService {
                 .last("limit 0,1");                                            // 获取第一条
         ProjectBasics lastProject = iProjectBasicsService.getOne(qw);
         String projectId = String.format("%s%s",
-                projectIdPrefix, lastProject == null ? "01" : Integer.parseInt(lastProject.getProjectId().substring(9, 11)) + 1);
+                projectIdPrefix, lastProject == null ? "01" : new DecimalFormat("00").format(Integer.parseInt(lastProject.getProjectId().substring(9, 11)) + 1));
 
         // 加锁
         String key = String.format("new-project:project-id:%s", projectId);
         // 当前projectId无锁时，加锁并跳出循环
         while ("1".equals(redisUtils.getAndSetValue(key, "1"))) {
-            projectId = String.format("%s%s", projectIdPrefix, Integer.parseInt(projectId.substring(9, 11)) + 1);
+            projectId = String.format("%s%s", projectIdPrefix, new DecimalFormat("00").format(Integer.parseInt(projectId.substring(9, 11)) + 1));
         }
         try {
             // region

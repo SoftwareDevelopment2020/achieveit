@@ -39,12 +39,22 @@
         empty-text="未参与项目"
       >
         <el-table-column
+          fixed="left"
           type="index"
           :index="indexMethod"
           align="center"
         >
         </el-table-column>
         <el-table-column
+          fixed="left"
+          prop="projectId"
+          label="项目ID"
+          align="center"
+          min-width="120"
+        >
+        </el-table-column>
+        <el-table-column
+          fixed="left"
           prop="name"
           label="项目名称"
           align="center"

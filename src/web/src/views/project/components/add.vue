@@ -38,6 +38,7 @@
         <el-form-item label="预定时间" prop="scheduledDate" label-width="90px">
           <el-date-picker
             v-model="project.scheduledDate"
+            value-format="yyyy-MM-dd"
             type="date"
             :clearable="false"
             :picker-options="{
@@ -51,6 +52,7 @@
         <el-form-item label="交付日" prop="scheduledDate" style="margin-left: 20px;">
           <el-date-picker
             v-model="project.deliveryDate"
+            value-format="yyyy-MM-dd"
             type="date"
             :clearable="false"
             :picker-options="{
@@ -119,6 +121,7 @@
 
 <script>
   import {addProject} from "../../../api/project";
+  import {dateToString} from "../../../utils/date";
 
   export default {
     data () {
@@ -144,6 +147,8 @@
       let today = new Date()
       today.setHours(0,0,0,0)
       this.today = today.getTime()
+      this.project.scheduledDate = dateToString(today)
+      this.project.deliveryDate = dateToString(today)
     },
     methods: {
       goBack () {
