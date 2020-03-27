@@ -33,6 +33,7 @@
 
     <div>
       <el-table
+        v-loading="loading"
         :data="table.data"
         style="width: 100%; margin-top: 30px"
         empty-text="未参与项目"
@@ -102,6 +103,8 @@
     },
     data() {
       return {
+        loading: false,
+
         searchValue: {
           name: '',
           statusId: '',
@@ -131,6 +134,7 @@
         return parseInt(statusId.toString().charAt(0))
       },
       getProjects () {
+        this.loading = true
         getProjects({
           current: this.table.page,
           size: this.table.limit,
@@ -139,8 +143,10 @@
           setTable(response.data, this.table)
           this.searchValue.name = this.table.searchCondition.name
           this.searchValue.statusId = this.table.searchCondition.statusId
+          this.loading = false
         }).catch(error => {
           console.error(error)
+          this.loading = false
         })
       },
       search() {
