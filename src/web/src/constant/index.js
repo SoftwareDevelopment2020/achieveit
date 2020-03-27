@@ -19,6 +19,24 @@ const projectStatus = [{
   svg: 'status-process'
 }]
 
+/**
+ * 研发类型
+ */
+const projectType = [{
+  label: '开发',
+  value: 'D'
+}, {
+  label: '维护',
+  value: 'M'
+}, {
+  label: '服务',
+  value: 'S'
+}, {
+  label: '其他',
+  value: 'O'
+}]
+
 export default {
-  projectStatus
+  projectStatus,
+  projectType
 }
