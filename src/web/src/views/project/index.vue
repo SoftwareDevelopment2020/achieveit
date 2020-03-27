@@ -24,7 +24,9 @@
       },
       selectProject (project) {
         this.$store.dispatch('project/setProject', project)
-        console.info(this.$store.getters.projectId)
+        this.$router.replace({
+          path: '/project-detail'
+        })
       }
     }
   }
