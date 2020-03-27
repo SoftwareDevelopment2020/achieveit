@@ -19,6 +19,7 @@ export function setTable(data, table) {
  */
 export function setBaseInfoTable(form, data) {
   console.log(data)
+  form = data
   form.projectId = data.projectId
   form.name = data.name
   form.scheduledDate = data.scheduledDate

@@ -134,30 +134,7 @@
           businessField: '',
           mainFunction: ''
         },
-        addProjectRules: {
-          clientId: [
-            { required: true, message: '请输入客户ID', trigger: 'blur' },
-            { min: 4, max: 4, message: '客户ID为4位', trigger: 'blur' }
-          ],
-          name: [
-            { required: true, message: '请输入项目名称', trigger: 'blur' }
-          ],
-          superior: [
-            { required: true, message: '请输入项目上级', trigger: 'blur' }
-          ],
-          majorMilestone: [
-            { required: true, message: '请输入采用技术', trigger: 'blur' }
-          ],
-          mainTechnique: [
-            { required: true, message: '请输入主要里程碑', trigger: 'blur' }
-          ],
-          businessField: [
-            { required: true, message: '请输入业务领域', trigger: 'blur' }
-          ],
-          mainFunction: [
-            { required: true, message: '请输入主要功能', trigger: 'blur' }
-          ]
-        },
+        addProjectRules: this.Constant.projectRules,
         projectTypeOptions: this.Constant.projectType,
         today: null,
       }

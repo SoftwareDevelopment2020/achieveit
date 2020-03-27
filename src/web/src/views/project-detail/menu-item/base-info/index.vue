@@ -2,15 +2,22 @@
   <div>
     <h2>项目信息</h2>
     <div>
-      <el-form ref="form" :model="form" :rules="submitRules" label-width="100px" style="width: 80%">
+      <el-form
+        ref="form"
+        :model="form"
+        :rules="submitRules"
+        :hide-required-asterisk="true"
+        label-width="100px"
+        style="width: 80%"
+      >
         <el-form-item label="项目ID" prop="projectId">
           <el-input v-model="form.projectId" name="projectId" style="width: 50%;"></el-input>
         </el-form-item>
         <el-form-item label="项目名称" prop="name">
           <el-input v-model="form.name" name="projectName"></el-input>
         </el-form-item>
-        <el-form-item label="客户信息">
-          <el-input v-model="form.customInfo" name="customInfo"></el-input>
+        <el-form-item label="客户信息" prop="clientId">
+          <el-input v-model="form.clientId"></el-input>
         </el-form-item>
         <el-form-item label="预定时间">
           <el-date-picker type="date" v-model="form.scheduledDate" name="scheduledDate" format="yyyy 年 MM 月 dd 日"
@@ -21,17 +28,17 @@
                           value-format="yyyy-MM-dd" style="width: 50%;"
                           :picker-options="deliveryDatePicker"></el-date-picker>
         </el-form-item>
-        <el-form-item label="项目上级">
+        <el-form-item label="项目上级" prop="superior">
           <el-input v-model="form.superior" value="form.projectSuperior" name="projectSuperior"
                     style="width: 50%;"></el-input>
         </el-form-item>
-        <el-form-item label="主要里程碑">
+        <el-form-item label="主要里程碑" prop="majorMilestone">
           <el-input v-model="form.majorMilestone" name="majorMilestone"></el-input>
         </el-form-item>
-        <el-form-item label="业务领域">
+        <el-form-item label="业务领域" prop="businessField">
           <el-input v-model="form.businessField" name="businessField"></el-input>
         </el-form-item>
-        <el-form-item label="主要功能">
+        <el-form-item label="主要功能" prop="mainFunction">
           <el-input v-model="form.mainFunction" name="mainFunction"></el-input>
         </el-form-item>
         <el-form-item label="项目状态">
@@ -47,7 +54,6 @@
 </template>
 
 <script>
-  import {setBaseInfoTable} from "../../../../utils/common";
   import {Message} from 'element-ui'
 
   export default {
@@ -58,7 +64,7 @@
         form: {
           projectId: '12345678901',
           name: '教务系统开发',
-          customInfo: '华东师范大学软件工程学院',
+          clientId: '1234',
           scheduledDate: '2020-03-06',
           deliveryDate: '2020-06-06',
           superior: 'Severus Snape',
@@ -82,9 +88,7 @@
       }
     },
     mounted() {
-      this.$store.dispatch('project/getCurrentProject', this.$store.getters.projectId).then(res => {
-        setBaseInfoTable(this.form, res)
-      })
+      this.form = this.$store.getters.project
     },
     methods: {
       getStatusId (statusId) {
