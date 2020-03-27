@@ -41,26 +41,26 @@ const projectType = [{
  */
 const projectRules = {
   clientId: [
-    { required: true, message: '客户ID不能为空', trigger: 'blur' },
-    { min: 4, max: 4, message: '客户ID为4位', trigger: 'blur' }
+    {required: true, message: '客户ID不能为空', trigger: 'blur'},
+    {min: 4, max: 4, message: '客户ID为4位', trigger: 'blur'}
   ],
-    name: [
-    { required: true, message: '项目名称不能为空', trigger: 'blur' }
+  name: [
+    {required: true, message: '项目名称不能为空', trigger: 'blur'}
   ],
-    superior: [
-    { required: true, message: '项目上级不能为空', trigger: 'blur' }
+  superior: [
+    {required: true, message: '项目上级不能为空', trigger: 'blur'}
   ],
-    majorMilestone: [
-    { required: true, message: '采用技术不能为空', trigger: 'blur' }
+  majorMilestone: [
+    {required: true, message: '采用技术不能为空', trigger: 'blur'}
   ],
-    mainTechnique: [
-    { required: true, message: '主要里程碑不能为空', trigger: 'blur' }
+  mainTechnique: [
+    {required: true, message: '主要里程碑不能为空', trigger: 'blur'}
   ],
-    businessField: [
-    { required: true, message: '业务领域不能为空', trigger: 'blur' }
+  businessField: [
+    {required: true, message: '业务领域不能为空', trigger: 'blur'}
   ],
-    mainFunction: [
-    { required: true, message: '主要功能不能为空', trigger: 'blur' }
+  mainFunction: [
+    {required: true, message: '主要功能不能为空', trigger: 'blur'}
   ]
 }
 

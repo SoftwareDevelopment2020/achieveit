@@ -59,7 +59,7 @@
         </el-table-column>
         <el-table-column
           prop="scheduledDate"
-          label="创建时间"
+          label="开始时间"
           width="150"
           align="center"
         >

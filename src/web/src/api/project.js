@@ -44,3 +44,10 @@ export function updateProject(projectBasics) {
   // })
   return post('/update_project', projectBasics)
 }
+
+/**
+ * 添加项目
+ */
+export function addProject(data) {
+  return post('/new_project', data)
+}

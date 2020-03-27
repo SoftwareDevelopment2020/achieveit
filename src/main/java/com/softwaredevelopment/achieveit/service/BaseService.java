@@ -1,6 +1,7 @@
 package com.softwaredevelopment.achieveit.service;
 
 import com.softwaredevelopment.achieveit.PO.service.*;
+import com.softwaredevelopment.achieveit.utils.RedisUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -33,5 +34,8 @@ public class BaseService {
     IUserService iUserService;
     @Autowired
     IRoleBasicsService iRoleBasicsService;
+
+    @Autowired
+    RedisUtils redisUtils;
 
 }

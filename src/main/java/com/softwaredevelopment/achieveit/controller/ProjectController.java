@@ -27,19 +27,17 @@ import org.springframework.web.bind.annotation.RestController;
 //@CrossOrigin(allowCredentials = "true", allowedHeaders = "*")
 public class ProjectController extends BaseController {
 
-
     @Autowired
     ProjectService projectService;
 
-
     @ApiOperation("新建项目 要求project_id 不重复 否则返回Fail")
     @PostMapping("new_project")
-    public HttpResponse<Object> makeNewProjectBasics(@RequestBody ProjectBasics newProjectBasics) {
-        if (projectService.newProjectBasics(newProjectBasics)) {
-            return responseOK(newProjectBasics);
-        }
-        return responseFail("project_id duplicated");
-
+    public HttpResponse<Object> makeNewProjectBasics(@RequestBody ProjectBasics newProjectBasics) throws Exception {
+//        if (projectService.newProjectBasics(newProjectBasics)) {
+//            return responseOK(newProjectBasics);
+//        }
+//        return responseFail("project_id duplicated");
+        return responseOK(projectService.newProjectBasics(newProjectBasics));
     }
 
 

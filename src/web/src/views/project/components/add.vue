@@ -20,8 +20,8 @@
         <el-form-item label="客户ID" prop="clientId" label-width="90px">
           <el-input v-model="project.clientId"></el-input>
         </el-form-item>
-        <el-form-item label="研发类型" prop="projectType" style="margin-left: 20px;">
-          <el-select v-model="project.projectType">
+        <el-form-item label="研发类型" prop="projectId" style="margin-left: 20px;">
+          <el-select v-model="project.projectId">
             <el-option
               v-for="item in projectTypeOptions"
               :key="item.value"
@@ -50,7 +50,7 @@
         </el-form-item>
         <el-form-item label="交付日" prop="scheduledDate" style="margin-left: 20px;">
           <el-date-picker
-            v-model="project.scheduledDate"
+            v-model="project.deliveryDate"
             type="date"
             :clearable="false"
             :picker-options="{
@@ -118,13 +118,14 @@
 </template>
 
 <script>
+  import {addProject} from "../../../api/project";
+
   export default {
     data () {
       return {
         project: {
           clientId: '',
-          projectType: 'D',
-          projectId: '',
+          projectId: 'D',
           name: '',
           scheduledDate: new Date(),
           deliveryDate: new Date(),
@@ -158,7 +159,12 @@
               return false
             }
 
-            // TODO addproject
+            addProject(this.project).then(response => {
+              this.$message.success('立项成功')
+              this.goBack()
+            }).catch(error => {
+              console.info(error)
+            })
           })
         })
       }
