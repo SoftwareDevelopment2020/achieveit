@@ -6,8 +6,8 @@
 </template>
 
 <script>
-  import Search from './search'
-  import Add from './add'
+  import Search from './components/search'
+  import Add from './components/add'
   export default {
     components: {
       Search,
@@ -23,7 +23,8 @@
         this.searchPage = !this.searchPage
       },
       selectProject (project) {
-        // this.$emit('selectProject', project)
+        this.$store.dispatch('project/setProject', project)
+        console.info(this.$store.getters.projectId)
       }
     }
   }
