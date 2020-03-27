@@ -11,7 +11,7 @@
         style="width: 80%"
       >
         <el-form-item label="项目ID" prop="projectId">
-          <el-input v-model="form.projectId" name="projectId" style="width: 50%;"></el-input>
+          <el-input v-model="form.projectId" name="projectId" style="width: 50%;" disabled></el-input>
         </el-form-item>
         <el-form-item label="项目名称" prop="name">
           <el-input v-model="form.name" name="projectName"></el-input>
@@ -49,8 +49,30 @@
           <el-input :disabled="true" v-bind:value="status[getStatusId(form.statusId)].label" name="statusId"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">保存修改</el-button>
-          <el-button type="success">通过审核</el-button>
+          <div align="center">
+            <!-- 审核中 -->
+            <div v-permission="['项目上级']" v-if="form.statusId === 1">
+              <el-button type="primary">通过审核</el-button>
+              <el-button type="primary">拒绝立项</el-button>
+            </div>
+            <!-- 进行中 -->
+            <div v-if="getStatusId(form.statusId) === 3">
+              <div v-permission="['ROLE_PM']" v-if="form.statusId === 3111">
+                <el-button type="primary" @click="onSubmit">修改信息</el-button>
+              </div>
+              <div v-else>
+                <span v-permission="['组织级配置管理员']" v-if="getStatusId(form.statusId) === 3 && form.statusId.toString().charAt(1) === '0'">
+                  <el-button type="primary">建立配置库</el-button>
+                </span>
+                <span v-permission="['EPG Leader']" v-if="getStatusId(form.statusId) === 3 && form.statusId.toString().charAt(2) === '0'">
+                  <el-button type="primary">分配EPG</el-button>
+                </span>
+                <span v-permission="['QA经理']" v-if="getStatusId(form.statusId) === 3 && form.statusId.toString().charAt(3) === '0'">
+                  <el-button type="primary">分配QA</el-button>
+                </span>
+              </div>
+            </div>
+          </div>
         </el-form-item>
       </el-form>
     </div>

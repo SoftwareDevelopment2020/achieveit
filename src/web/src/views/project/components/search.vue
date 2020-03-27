@@ -95,7 +95,7 @@
         </el-table-column>
       </el-table>
 
-      <pagination :total="table.total" :page="table.page" :limit="table.limit" @pagination="getProjects"></pagination>
+      <pagination :total="table.total" :page.sync="table.page" :limit.sync="table.limit" @pagination="getProjects"></pagination>
     </div>
 
   </div>
@@ -144,6 +144,7 @@
         return parseInt(statusId.toString().charAt(0))
       },
       getProjects () {
+        console.info(this.table.page)
         this.loading = true
         getProjects({
           current: this.table.page,
