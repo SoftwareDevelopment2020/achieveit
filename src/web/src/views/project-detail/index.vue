@@ -32,6 +32,11 @@
         <base-info v-if="activeMenu==='base-info'"></base-info>
         <participant v-if="activeMenu==='participant'"></participant>
         <function-list v-if="activeMenu==='function-list'"></function-list>
+        <risk v-if="activeMenu==='risk'"></risk>
+        <defect v-if="activeMenu==='defect'"></defect>
+        <device v-if="activeMenu==='device'"></device>
+        <work-hour v-if="activeMenu==='work-hour'"></work-hour>
+        <file v-if="activeMenu==='file'"></file>
       </div>
     </el-main>
   </el-container>
@@ -41,13 +46,23 @@
   import BaseInfo from './menu-item/base-info'
   import Participant from './menu-item/participant'
   import FunctionList from './menu-item/function-list'
+  import Risk from './menu-item/risk'
+  import Defect from './menu-item/defect'
+  import Device from './menu-item/device'
+  import WorkHour from './menu-item/work-hour'
+  import File from './menu-item/file'
   import {stringToChinese} from "../../utils/date";
 
   export default {
     components: {
       BaseInfo,
       Participant,
-      FunctionList
+      FunctionList,
+      Risk,
+      Defect,
+      Device,
+      WorkHour,
+      File
     },
     data() {
       return {
