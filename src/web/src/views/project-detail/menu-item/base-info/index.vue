@@ -35,7 +35,7 @@
           <el-input v-model="form.mainFunction" name="mainFunction"></el-input>
         </el-form-item>
         <el-form-item label="项目状态">
-          <el-input :disabled="true" v-bind:value="status[form.statusId]" name="statusId"></el-input>
+          <el-input :disabled="true" v-bind:value="status[getStatusId(form.statusId)].label" name="statusId"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">保存修改</el-button>
@@ -71,7 +71,7 @@
           projectId: [{required: true, message: '项目ID不能为空', trigger: 'blur'}],
           name: [{required: true, message: '项目名称不能为空', trigger: 'blur'}]
         },
-        status: ['已归档', '审核中', '已驳回', '进行中'],
+        status: this.Constant.projectStatus,
         deliveryDatePicker: {
           disabledDate(time){
             // 交付时间应当晚于预定时间，但暂时不会实现，this指向问题
@@ -81,7 +81,15 @@
         }
       }
     },
+    mounted() {
+      this.$store.dispatch('project/getCurrentProject', this.$store.getters.projectId).then(res => {
+        setBaseInfoTable(this.form, res)
+      })
+    },
     methods: {
+      getStatusId (statusId) {
+        return parseInt(statusId.toString().charAt(0))
+      },
       onSubmit() {
         this.$refs['form'].validate((valid) => {
           if (valid) {
@@ -99,17 +107,7 @@
           }
 
         })
-      },
-
-    },
-    mounted() {
-      this.$store.dispatch('project/getCurrentProject', this.$store.getters.projectId).then(res => {
-        setBaseInfoTable(this.form, res)
-      })
-
-    },
-    computed: {
-
+      }
     }
   }
 </script>

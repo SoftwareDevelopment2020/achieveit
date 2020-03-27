@@ -78,7 +78,9 @@
         </el-table-column>
         <el-table-column
           min-width="200">
-          <el-button type="text" size="mini">进入项目</el-button>
+          <template slot-scope="{ row }">
+            <el-button type="text" size="mini" @click="selectProject(row)">进入项目</el-button>
+          </template>
         </el-table-column>
       </el-table>
 
@@ -91,8 +93,8 @@
 <script>
 
   import Pagination from '@/components/Pagination/index'
-  import {getProjects} from "../../../../api/project";
-  import {setTable} from "../../../../utils/common";
+  import {getProjects} from "@/api/project";
+  import {setTable} from "@/utils/common";
 
   export default {
     components: {
@@ -149,6 +151,9 @@
       },
       addProject() {
         this.$emit('changePage')
+      },
+      selectProject (project) {
+        this.$emit('selectProject', project)
       }
     }
   }

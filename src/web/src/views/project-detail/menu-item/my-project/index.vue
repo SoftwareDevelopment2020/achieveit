@@ -1,5 +1,5 @@
 <template>
-  <Search v-if="searchPage" @changePage="changePage"></Search>
+  <Search v-if="searchPage" @changePage="changePage" @selectProject="selectProject"></Search>
   <Add v-else @changePage="changePage"></Add>
 </template>
 
@@ -19,6 +19,9 @@
     methods: {
       changePage() {
         this.searchPage = !this.searchPage
+      },
+      selectProject (project) {
+        this.$emit('selectProject', project)
       }
     }
   }

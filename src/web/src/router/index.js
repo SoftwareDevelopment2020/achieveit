@@ -74,8 +74,24 @@ export const constantRoutes = [
       {
         path: 'project',
         component: () => import('@/views/project/index'),
-        name: 'Dashboard',
-        meta: { title: '项目', icon: 'dashboard', affix: true }
+        name: '所有项目',
+        meta: { title: '所有项目', icon: 'my-project', affix: true }
+      }
+    ]
+  },
+  {
+    path: '/project-detail',
+    component: Layout,
+    children: [
+      {
+        path: 'project-detail',
+        component: () => import('@/views/project-detail/index'),
+        name: '项目详情',
+        meta: {
+          title: '项目详情',
+          icon: 'project-detail',
+          affix: true
+        }
       }
     ]
   }
