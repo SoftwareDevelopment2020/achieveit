@@ -103,10 +103,10 @@ export default {
         password: '123456'
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur'
+        username: [{ required: true, trigger: 'blur',message:'用户名不能为空'
           // validator: validateUsername
         }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        password: [{ required: true, trigger: 'blur', message:'密码不能为空' }]
       },
       passwordType: 'password',
       capsTooltip: false,

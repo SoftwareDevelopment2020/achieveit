@@ -26,7 +26,11 @@
         <el-form-item label="交付时间">
           <el-date-picker type="date" v-model="form.deliveryDate" name="deliveryDate" format="yyyy 年 MM 月 dd 日"
                           value-format="yyyy-MM-dd" style="width: 50%;"
-                          :picker-options="deliveryDatePicker"></el-date-picker>
+                          :picker-options="{
+            disabledDate (time) {
+              return time.getTime() < new Date(form.scheduledDate)
+             }
+          }"></el-date-picker>
         </el-form-item>
         <el-form-item label="项目上级" prop="superior">
           <el-input v-model="form.superior" value="form.projectSuperior" name="projectSuperior"
@@ -54,8 +58,6 @@
 </template>
 
 <script>
-  import {Message} from 'element-ui'
-
   export default {
     inject: ['reload'],
     name: 'BaseInfo',
@@ -78,20 +80,13 @@
           name: [{required: true, message: '项目名称不能为空', trigger: 'blur'}]
         },
         status: this.Constant.projectStatus,
-        deliveryDatePicker: {
-          disabledDate(time){
-            // 交付时间应当晚于预定时间，但暂时不会实现，this指向问题
-            //TODO
-            return time.getTime() < Date.now();
-          }
-        }
       }
     },
     mounted() {
-      this.form = this.$store.getters.project
+      this.form = {...this.$store.getters.project}
     },
     methods: {
-      getStatusId (statusId) {
+      getStatusId(statusId) {
         return parseInt(statusId.toString().charAt(0))
       },
       onSubmit() {
@@ -99,10 +94,9 @@
           if (valid) {
             this.$store.dispatch('project/updateProject', this.form).then(() => {
               this.reload()
-              console.log('submit!');
             })
           } else {
-            Message({
+            this.$message({
               message: '请完整填写所需字段',
               type: 'error',
               duration: 2 * 1000
