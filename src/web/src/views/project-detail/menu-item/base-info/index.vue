@@ -93,7 +93,7 @@
         status: this.Constant.projectStatus,
       }
     },
-    mounted() {
+    created() {
       this.form = {...this.$store.getters.project}
     },
     methods: {
