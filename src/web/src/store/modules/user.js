@@ -60,8 +60,7 @@ const actions = {
     // }
     return new Promise((resolve, reject) => {
 
-      getInfo().then(res => {
-        const response = res
+      getInfo().then(response => {
         const {data} = response
         var roles = []
         data.roles.forEach((item) => {
@@ -88,7 +87,7 @@ const actions = {
     removeToken()
     resetRouter()
     dispatch('tagsView/delAllViews', null, {root: true})
-    dispatch('project/removeCurrentProject', null, {root: true})
+    // dispatch('project/removeCurrentProject', null, {root: true})
   },
 
   // remove token

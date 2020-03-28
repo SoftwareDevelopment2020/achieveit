@@ -1,6 +1,5 @@
 import {updateProject, getProjects} from "@/api/project";
 import {Message} from 'element-ui'
-import store from "@/store";
 
 const state = {
   projectId: null,
@@ -16,18 +15,20 @@ const mutations = {
 }
 
 const actions = {
-  setProject({commit}, project) {
+  setProject({commit, dispatch}, project) {
     return new Promise((resolve, reject) => {
       commit('SET_PROJECT_ID', project.projectId)
       commit('SET_PROJECT', project)
+      //重新选择项目后，清空项目features功能列表
+      dispatch('feature/setFeatures', null, {root: true})
       resolve()
     })
   },
-  updateProject({dispatch,commit}, projectBasics) {
+  updateProject({dispatch, commit}, projectBasics) {
     return new Promise((resolve, reject) => {
       updateProject(projectBasics).then(response => {
         //更新成功则保存项目信息
-        dispatch('setProject',projectBasics).then(() => {
+        dispatch('setProject', projectBasics).then(() => {
           console.log('更新项目信息成功')
           Message({
             message: response.data,
