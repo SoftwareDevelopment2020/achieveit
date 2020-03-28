@@ -60,8 +60,8 @@ public class ProjectService extends BaseService {
             newProjectBasics.setProjectId(projectId);
             // 获取用户对应的EmployeeId和姓名
             UserDetail userDetail = getUserDetail();
-            newProjectBasics.setProjectManagerId(userDetail.getEmployeeBasics().getId());
-            newProjectBasics.setProjectManagerName(userDetail.getEmployeeBasics().getName());
+            newProjectBasics.setProjectManagerId(userDetail.getEmployeeId());
+            newProjectBasics.setProjectManagerName(userDetail.getName());
             // 初始状态
             newProjectBasics.setStatusId(1);
             newProjectBasics.setIsArchived(false);

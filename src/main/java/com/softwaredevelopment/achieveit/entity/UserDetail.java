@@ -1,6 +1,5 @@
 package com.softwaredevelopment.achieveit.entity;
 
-import com.softwaredevelopment.achieveit.PO.entity.EmployeeBasics;
 import com.softwaredevelopment.achieveit.PO.entity.RoleBasics;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -29,8 +28,6 @@ public class UserDetail implements UserDetails {
     private String password;
     @ApiModelProperty(value = "可能包含了一个员工信息（在这个系统里的话）")
     private Integer employeeId;
-    @ApiModelProperty(value = "把employee信息也放入UserDetail")
-    private EmployeeBasics employeeBasics;
     private String name;
     private String emailAddress;
     private String department;

@@ -1,7 +1,6 @@
 package com.softwaredevelopment.achieveit.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.softwaredevelopment.achieveit.PO.entity.EmployeeBasics;
 import com.softwaredevelopment.achieveit.PO.entity.RoleBasics;
 import com.softwaredevelopment.achieveit.PO.entity.User;
 import com.softwaredevelopment.achieveit.PO.entity.UserRole;
@@ -81,12 +80,6 @@ public class UserDetailService extends BaseService implements UserDetailsService
 
         // 如果有这个employee信息 拿取employee信息和权限
         if (userDetail.getEmployeeId() != null) {
-            //拿employee信息
-            userDetail.setEmployeeBasics(
-                    iEmployeeBasicsService.getOne(
-                            new QueryWrapper<EmployeeBasics>().lambda().eq(EmployeeBasics::getId, userDetail.getEmployeeId())
-                    )
-            );
 
             Map<Integer, List<String>> map = new HashMap<>(10);
             List<PermissionByProject> permissionByProjects =
