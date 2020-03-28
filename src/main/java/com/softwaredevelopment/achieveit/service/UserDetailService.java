@@ -1,6 +1,7 @@
 package com.softwaredevelopment.achieveit.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.softwaredevelopment.achieveit.PO.entity.EmployeeBasics;
 import com.softwaredevelopment.achieveit.PO.entity.RoleBasics;
 import com.softwaredevelopment.achieveit.PO.entity.User;
 import com.softwaredevelopment.achieveit.PO.entity.UserRole;
@@ -10,7 +11,6 @@ import com.softwaredevelopment.achieveit.mapper.UserDetailMapper;
 import com.softwaredevelopment.achieveit.utils.StringHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -42,7 +42,7 @@ public class UserDetailService extends BaseService implements UserDetailsService
      * @return
      * @throws UsernameNotFoundException
      */
-    @Cacheable(key = "#username")
+//    @Cacheable(key = "#username")
     @Override
     public UserDetail loadUserByUsername(String username) throws UsernameNotFoundException {
         UserDetail userDetail = userDetailMapper.selectOneUserByUsername(username);
@@ -65,8 +65,8 @@ public class UserDetailService extends BaseService implements UserDetailsService
         // 根据userId拿到userRole的映射
         List<UserRole> userRolesByUserId = iUserRoleService.list(new QueryWrapper<UserRole>().eq("user_id", userId));
         // 如果有角色
+        List<RoleBasics> resultRoles = new ArrayList<>();
         if (userRolesByUserId.size() > 0) {
-            List<RoleBasics> resultRoles = new ArrayList<>();
             // 从map中拿出角色
             for (UserRole ur :
                     userRolesByUserId) {
@@ -74,13 +74,20 @@ public class UserDetailService extends BaseService implements UserDetailsService
                 resultRoles.add(basics);
             }
             // 放入userDetail
-            userDetail.setRoles(resultRoles);
         }
+        userDetail.setRoles(resultRoles);
         // 获取角色完成
 
 
-        // 如果有这个employee信息 拿取权限
+        // 如果有这个employee信息 拿取employee信息和权限
         if (userDetail.getEmployeeId() != null) {
+            //拿employee信息
+            userDetail.setEmployeeBasics(
+                    iEmployeeBasicsService.getOne(
+                            new QueryWrapper<EmployeeBasics>().lambda().eq(EmployeeBasics::getId, userDetail.getEmployeeId())
+                    )
+            );
+
             Map<Integer, List<String>> map = new HashMap<>(10);
             List<PermissionByProject> permissionByProjects =
                     userDetailMapper.selectPermissionsPerProjectByEmployeeId(userDetail.getEmployeeId());

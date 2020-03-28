@@ -30,6 +30,9 @@ public class ProjectController extends BaseController {
     @Autowired
     ProjectService projectService;
 
+    // TODO 新建项目需要权限
+    //      @RolesAllowed("")
+
     @ApiOperation("新建项目 要求project_id 不重复 否则返回Fail")
     @PostMapping("new_project")
     public HttpResponse<Object> makeNewProjectBasics(@RequestBody ProjectBasics newProjectBasics) throws Exception {

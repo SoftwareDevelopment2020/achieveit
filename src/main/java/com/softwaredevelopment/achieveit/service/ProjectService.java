@@ -7,6 +7,9 @@ import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.softwaredevelopment.achieveit.PO.entity.*;
 import com.softwaredevelopment.achieveit.controller.BussinessException;
+import com.softwaredevelopment.achieveit.entity.MailBean;
+import com.softwaredevelopment.achieveit.entity.UserDetail;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,15 +58,24 @@ public class ProjectService extends BaseService {
             // region
             // projectId
             newProjectBasics.setProjectId(projectId);
-            // TODO 如何获取用户ID？
-            newProjectBasics.setProjectManagerId(1);
-            newProjectBasics.setProjectManagerName("李四");
+            // 获取用户对应的EmployeeId和姓名
+            UserDetail userDetail = getUserDetail();
+            newProjectBasics.setProjectManagerId(userDetail.getEmployeeBasics().getId());
+            newProjectBasics.setProjectManagerName(userDetail.getEmployeeBasics().getName());
             // 初始状态
             newProjectBasics.setStatusId(1);
             newProjectBasics.setIsArchived(false);
             // endregion
 
+
             iProjectBasicsService.save(newProjectBasics);
+
+            // user有employee信息 把项目经理本人添加到项目中
+            ProjectEmployee projectEmployee = new ProjectEmployee();
+            projectEmployee.setEmployeeId(userDetail.getEmployeeId());
+            projectEmployee.setProjectId(newProjectBasics.getId());
+            iProjectEmployeeService.save(projectEmployee);
+
         } catch (Exception e) {
             throw new BussinessException(e.getMessage(), e.getCause(), "立项失败");
         } finally {
@@ -71,22 +83,33 @@ public class ProjectService extends BaseService {
             redisUtils.delete(key);
         }
 
-        // TODO 向项目上级异步发送邮件
+        // 向项目上级异步发送邮件
+        sendEmailForSettingUpProject(newProjectBasics);
 
-//         // 先看有没有这个projectId对应的项目
-//        qw.lambda()
-//                .eq(ProjectBasics::getProjectId, newProjectBasics.getProjectId());
-//        ProjectBasics hadOne = iProjectBasicsService.getOne(qw);
-//        if (hadOne != null) {
-//            return false;
-//        }
         return true;
     }
 
 
     /**
+     * 异步发送邮件
+     *
+     * @param newProjectBasics
+     */
+    @Async("taskExecutor")
+    public void sendEmailForSettingUpProject(ProjectBasics newProjectBasics) {
+        EmployeeBasics superior = iEmployeeBasicsService.getOne(
+                new QueryWrapper<EmployeeBasics>().lambda().eq(EmployeeBasics::getId, newProjectBasics.getSuperior()));
+        MailBean mailBean = new MailBean();
+        mailBean.setRecipient(superior.getEmailAddress());
+        mailBean.setSubject("新项目申请立项");
+        mailBean.setContent("新项目申请立项，请去系统内审批：\n" + newProjectBasics.toString());
+        mailUtil.sendSimpleMail(mailBean);
+    }
+
+
+    /**
      * 分页综合查询项目基本信息
-     * TODO 用户只能看到与自己参与的项目：项目经理、项目上级、其他参与人员、资产管理者； 组织级配置管理员、EPG Leader、QA经理全部可以看到
+     * 用户只能看到与自己参与的项目：项目经理、项目上级、其他参与人员、资产管理者； 组织级配置管理员、EPG Leader、QA经理全部可以看到
      *
      * @param projectBasics
      * @return
@@ -112,6 +135,34 @@ public class ProjectService extends BaseService {
         page.addOrder(OrderItem.desc("scheduled_date"));
         // 把实体剩下的条件全部加入qw 且是alleq条件
         qw.setEntity(projectBasics);
+
+        // 用户只能看到与自己参与的项目：项目经理、项目上级、其他参与人员、资产管理者； 组织级配置管理员、EPG Leader、QA经理全部可以看到
+        // 获取当前用户
+        UserDetail userDetail = getUserDetail();
+        List<RoleBasics> roles = userDetail.getRoles();
+
+        // 如果不是组织级配置管理员、EPG Leader、QA经理 就只能看到自己参与的
+        boolean global = false;
+        for (RoleBasics rb :
+                roles) {
+            if (rb.getName().startsWith("ROLE_GLOBAL")) {
+                global = true;
+                break;
+            }
+        }
+        // 如果没有Global的role 就找project_employee里面的 我参加的项目
+        if (!global) {
+            List<ProjectEmployee> projectForMe = iProjectEmployeeService.list(
+                    new QueryWrapper<ProjectEmployee>().lambda().eq(ProjectEmployee::getId, userDetail.getEmployeeId()));
+            List<Integer> projectForMeId = new ArrayList<>();
+            for (ProjectEmployee pe :
+                    projectForMe) {
+                projectForMeId.add(pe.getProjectId());
+            }
+            qw.lambda().in(ProjectBasics::getId, projectForMeId);
+        }
+
+
         return iProjectBasicsService.page(page, qw);
     }
 
@@ -180,7 +231,7 @@ public class ProjectService extends BaseService {
     }
 
 
-    //    @Cacheable(key = "#projectId")
+
     public ProjectBasics getProjectBasicsByProjectId(Integer projectId) {
         // 通过projectId获取projectBasics
         return iProjectBasicsService.getOne(

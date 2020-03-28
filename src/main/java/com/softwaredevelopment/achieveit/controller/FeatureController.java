@@ -30,14 +30,14 @@ public class FeatureController extends BaseController {
 
     @ApiOperation("通过projectId(11位) 取得项目的所有Feature")
     @GetMapping("features_by_project_id")
-    public HttpResponse<List<FeatureVO>> getFeaturesByProjectId(Integer projectId) {
+    public HttpResponse<List<FeatureVO>> getFeaturesByProjectId(String projectId) {
         return responseOK(featureService.getFeaturesByProjectId(projectId));
     }
 
 
     @ApiOperation("上传功能的excel文件并解析存入数据库")
     @PostMapping("upload_features")
-    public HttpResponse<Object> uploadFeatures(MultipartFile file, Integer projectId) {
+    public HttpResponse<Object> uploadFeatures(MultipartFile file, String projectId) {
         try {
             String newName = projectId + ".xlsx";
             // 组装路径

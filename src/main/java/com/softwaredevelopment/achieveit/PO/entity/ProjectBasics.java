@@ -52,7 +52,7 @@ public class ProjectBasics implements Serializable {
     private LocalDate deliveryDate;
 
     @ApiModelProperty(value = "项目上级 负责项目立项审批")
-    private String superior;
+    private Integer superior;
 
     @ApiModelProperty(value = "主要里程碑?????")
     private String majorMilestone;
@@ -130,5 +130,42 @@ public class ProjectBasics implements Serializable {
     @ApiModelProperty(value = "QA总结")
     private Boolean qaSummary;
 
-
+    @Override
+    public String toString() {
+        return "ProjectBasics{" + "\n" +
+                "id=" + id + "\n" +
+                ", projectId='" + projectId + '\'' + "\n" +
+                ", projectManagerId=" + projectManagerId + "\n" +
+                ", projectManagerName='" + projectManagerName + '\'' + "\n" +
+                ", name='" + name + '\'' + "\n" +
+                ", clientId=" + clientId + "\n" +
+                ", scheduledDate=" + scheduledDate + "\n" +
+                ", deliveryDate=" + deliveryDate + "\n" +
+                ", superior=" + superior + "\n" +
+                ", majorMilestone='" + majorMilestone + '\'' + "\n" +
+                ", mainTechnique='" + mainTechnique + '\'' + "\n" +
+                ", businessField='" + businessField + '\'' + "\n" +
+                ", mainFunction='" + mainFunction + '\'' + "\n" +
+                ", gitAddress='" + gitAddress + '\'' + "\n" +
+                ", statusId=" + statusId + "\n" +
+                ", isArchived=" + isArchived + "\n" +
+                ", projectBasicDatasheet=" + projectBasicDatasheet + "\n" +
+                ", projectProposal=" + projectProposal + "\n" +
+                ", projectQuotation=" + projectQuotation + "\n" +
+                ", projectEstimates=" + projectEstimates + "\n" +
+                ", projectPlan=" + projectPlan + "\n" +
+                ", projectProcessCropTable=" + projectProcessCropTable + "\n" +
+                ", projectCostManagementTable=" + projectCostManagementTable + "\n" +
+                ", projectRequirementsChangeManagementTable=" + projectRequirementsChangeManagementTable + "\n" +
+                ", projectRiskManagementTable=" + projectRiskManagementTable + "\n" +
+                ", clientCheckProblemsTable=" + clientCheckProblemsTable + "\n" +
+                ", clientCheckReport=" + clientCheckReport + "\n" +
+                ", projectSummary=" + projectSummary + "\n" +
+                ", experienceAndLessons=" + experienceAndLessons + "\n" +
+                ", developmentTools=" + developmentTools + "\n" +
+                ", developmentTemplates=" + developmentTemplates + "\n" +
+                ", checkSheets=" + checkSheets + "\n" +
+                ", qaSummary=" + qaSummary +
+                '}';
+    }
 }

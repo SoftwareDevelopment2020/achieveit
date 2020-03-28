@@ -65,7 +65,7 @@ public class DataSourceConfig {
         bean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:mapper/*.xml"));
         // 分页插件
         bean.setPlugins(new PaginationInterceptor().setCountSqlParser(new JsqlParserCountOptimize(true)));
-        //TODO 强转 目前没问题
+        // 强转 目前没问题
         bean.setConfiguration((MybatisConfiguration) getSqlSessionFactory().getConfiguration());
         return bean.getObject();
     }

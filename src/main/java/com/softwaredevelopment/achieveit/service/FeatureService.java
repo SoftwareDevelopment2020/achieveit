@@ -20,10 +20,12 @@ import java.util.Map;
 @Service
 public class FeatureService extends BaseService {
 
-    public List<FeatureVO> getFeaturesByProjectId(Integer projectId) {
+
+    public List<FeatureVO> getFeaturesByProjectId(String projectId) {
+        Integer id = projectIdToId(projectId);
         return featuresToTree(
                 iFeatureService.list(
-                        new QueryWrapper<Feature>().lambda().eq(Feature::getProjectId, projectId)));
+                        new QueryWrapper<Feature>().lambda().eq(Feature::getProjectId, id)));
     }
 
     public boolean saveFeature(Feature feature) {
@@ -42,18 +44,19 @@ public class FeatureService extends BaseService {
      * @param projectId
      * @throws Exception
      */
-    public void uploadFeature(MultipartFile file, Integer projectId) throws IOException {
+    public void uploadFeature(MultipartFile file, String projectId) throws IOException {
+        Integer id = projectIdToId(projectId);
         List<String[]> strings = POIUtil.readExcel(file);
         List<Feature> features = new ArrayList<>();
         Map<Integer, Integer> mapForFirstTier = new HashMap<>(strings.size());
         for (String[] ss : strings) {
             Feature nf = new Feature();
-            nf.setProjectId(projectId);
+            nf.setProjectId(id);
             nf.setFirstTierId(Integer.valueOf(ss[0]));
             // 如果是这个大功能的第一条 说明要建一个secondTierId为0的额外Feature
             if (mapForFirstTier.get(nf.getFirstTierId()) == null) {
                 Feature bnf = new Feature();
-                bnf.setProjectId(projectId);
+                bnf.setProjectId(id);
                 bnf.setFirstTierId(Integer.valueOf(ss[0]));
                 bnf.setSecondTierId(0);
                 bnf.setFeatureName(ss[1]);

@@ -31,7 +31,7 @@ class FeatureServiceTest {
 
     @Test
     void getFeaturesByProjectId() {
-        System.out.println(featureService.getFeaturesByProjectId(1));
+        System.out.println(featureService.getFeaturesByProjectId("12345678901"));
     }
 
     @Test

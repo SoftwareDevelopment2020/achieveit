@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import javax.mail.internet.MimeMessage;
@@ -21,6 +22,8 @@ import javax.mail.internet.MimeMessage;
  */
 @Component
 public class MailUtil {
+
+
     @Value("${spring.mail.username}")
     private String MAIL_SENDER; //邮件发送者
 
@@ -33,6 +36,7 @@ public class MailUtil {
      *
      * @param mailBean
      */
+    @Async("taskExecutor")
     public void sendSimpleMail(MailBean mailBean) {
         try {
             SimpleMailMessage mailMessage = new SimpleMailMessage();
@@ -48,6 +52,7 @@ public class MailUtil {
         }
     }
 
+    @Async("taskExecutor")
     public void sendHTMLMail(MailBean mailBean) {
         MimeMessage mimeMailMessage = null;
         try {

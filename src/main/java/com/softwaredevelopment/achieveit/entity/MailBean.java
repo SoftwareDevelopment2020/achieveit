@@ -1,6 +1,8 @@
 package com.softwaredevelopment.achieveit.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -12,6 +14,8 @@ import java.io.Serializable;
  * created on 2020-03-05 20:38
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class MailBean implements Serializable {
     private static final long serialVersionUID = -2116367492649751914L;
     /**
