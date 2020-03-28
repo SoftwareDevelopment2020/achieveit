@@ -24,10 +24,14 @@ redis:
 #mail
 spring:
   mail:
-    host: smtp.126.com
-    username: achieveit@126.com
+#    host: smtp.exmail.qq.com
+    #    username: achieveit@rainkq.tk
     # 授权码
-    password: achieve1t1t
+    #    password: D62ie83pa62uHp9Y
+    host: smtp.qq.com
+    username: 1071754083@qq.com
+    password: jmyncyfnxumfbfac
+
     properties:
       mail:
         default-encoding: UTF-8

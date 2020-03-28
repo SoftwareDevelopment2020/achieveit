@@ -9,10 +9,7 @@ import com.softwaredevelopment.achieveit.service.ProjectService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * ProjectController
@@ -73,11 +70,24 @@ public class ProjectController extends BaseController {
 
     @ApiOperation("更新项目信息")
     @PostMapping("update_project")
-    public HttpResponse<Object> updateProject(@RequestBody ProjectBasics projectBasics) {
+    public HttpResponse<String> updateProject(@RequestBody ProjectBasics projectBasics) {
         if (projectService.updateProject(projectBasics)) {
             return responseOK("更新成功");
         } else {
             return responseFail("更新失败 可能不存在此项目");
         }
+    }
+
+    @ApiOperation("审批或否决项目")
+    @PostMapping("examine_project")
+    public HttpResponse<String> examineProject(@RequestParam(name = "project_id") String projectId,
+                                               @RequestParam(name = "approved") Boolean approved) throws BussinessException {
+        return responseOK(projectService.examineProject(projectId, approved));
+    }
+
+    @ApiOperation("三个Global级的配置之后各自通过")
+    @PostMapping("init_project")
+    public HttpResponse<String> initProject(@RequestParam(name = "project_id") String projectId) throws BussinessException {
+        return responseOK(projectService.initProject(projectId));
     }
 }

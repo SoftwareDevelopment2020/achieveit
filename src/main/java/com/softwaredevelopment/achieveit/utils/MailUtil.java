@@ -8,9 +8,11 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
 
 import javax.mail.internet.MimeMessage;
+import java.util.concurrent.Future;
 
 
 /**
@@ -37,7 +39,7 @@ public class MailUtil {
      * @param mailBean
      */
     @Async("taskExecutor")
-    public void sendSimpleMail(MailBean mailBean) {
+    public Future<String> sendSimpleMail(MailBean mailBean) {
         try {
             SimpleMailMessage mailMessage = new SimpleMailMessage();
             mailMessage.setFrom(MAIL_SENDER);
@@ -50,10 +52,11 @@ public class MailUtil {
         } catch (Exception e) {
             Logger.logError("邮件发送失败", e.getMessage());
         }
+        return new AsyncResult<>("简单邮件发送完成");
     }
 
     @Async("taskExecutor")
-    public void sendHTMLMail(MailBean mailBean) {
+    public Future<String> sendHTMLMail(MailBean mailBean) {
         MimeMessage mimeMailMessage = null;
         try {
             mimeMailMessage = javaMailSender.createMimeMessage();
@@ -69,5 +72,6 @@ public class MailUtil {
         } catch (Exception e) {
             Logger.logError("邮件发送失败", e.getMessage());
         }
+        return new AsyncResult<>("HTML邮件发送完成");
     }
 }
