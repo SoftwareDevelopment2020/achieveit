@@ -72,7 +72,7 @@
 
     <div>
       <el-table
-        :data="tableData"
+        :data="table.data"
         style="width: 100%">
         <el-table-column type="expand">
           <template slot-scope="props">
@@ -125,6 +125,8 @@
           </template>
         </el-table-column>
       </el-table>
+
+      <pagination :total="table.total" :page.sync="table.page" :limit.sync="table.limit" @pagination="getRisk"></pagination>
     </div>
   </div>
 </template>
@@ -145,7 +147,11 @@
 </style>
 
 <script>
+  import Pagination from '@/components/Pagination/index'
   export default {
+    components: {
+      Pagination
+    },
     data() {
       return {
         select: '',
@@ -161,15 +167,20 @@
           riskId:''
         },
         formLabelWidth: '120px',
-        tableData: [{
-          riskID: '12987122',
-          type: '技术风险',
-          creator:'wulei',
-          time:'',
-          prob:'较低',
-          desc: 'XXXXXXXXXXX'
+        table: {
+          data: [{
+            riskID: '12987122',
+            type: '技术风险',
+            creator: 'wulei',
+            time: '',
+            prob: '较低',
+            desc: 'XXXXXXXXXXX'
 
-        }]
+          }],
+          total: 0,
+          page: 1,
+          limit: 10
+        }
       }
     },
     methods: {
