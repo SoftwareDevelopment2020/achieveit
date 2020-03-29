@@ -126,16 +126,16 @@
           page: 1,
           limit: 10,
           searchCondition: {
-
+            employeeId: '',
+            name: '',
+            roles: [],
           }
         },
         roleOptions: this.Constant.roles,
         searchValue: {
           employeeId: '',
           name: '',
-          role: '',
-          permission: '',
-
+          roles: [],
         }
       }
     },
@@ -164,7 +164,7 @@
 
       },
       search() {
-
+        console.info(this.searchValue)
       },
 
       /**
