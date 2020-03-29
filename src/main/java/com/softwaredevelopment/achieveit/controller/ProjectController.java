@@ -33,29 +33,14 @@ public class ProjectController extends BaseController {
     @ApiOperation("新建项目 要求project_id 不重复 否则返回Fail")
     @PostMapping("new_project")
     public HttpResponse<Object> makeNewProjectBasics(@RequestBody ProjectBasics newProjectBasics) throws Exception {
-//        if (projectService.newProjectBasics(newProjectBasics)) {
-//            return responseOK(newProjectBasics);
-//        }
-//        return responseFail("project_id duplicated");
         return responseOK(projectService.newProjectBasics(newProjectBasics));
     }
 
 
     @ApiOperation("综合查询接口")
     @PostMapping("search_projects")
-    public HttpResponse<IPage<ProjectBasics>> searchProjects(
-//            @RequestParam(name = "current", required = false, defaultValue = "1") Integer current,
-//            @RequestParam(name = "size", required = false, defaultValue = "10") Integer size,
-//            @RequestBody ProjectBasics projectBasics
-            @RequestBody PageSearchRequest<ProjectBasics> search
-    ) {
-        if (search.getSearchCondition() == null) {
-            search.setSearchCondition(new ProjectBasics());
-        }
-        return responseOK(projectService.searchProjects(
-                new Page<>(search.getCurrent(), search.getSize()),
-                search.getSearchCondition()
-        ));
+    public HttpResponse<IPage<ProjectBasics>> searchProjects(@RequestBody PageSearchRequest<ProjectBasics> search) throws Exception {
+        return responseOK(projectService.searchProjects(new Page<>(search.getCurrent(), search.getSize()), search.getSearchCondition()));
     }
 
     @ApiOperation("删除项目接口 测试用")
@@ -81,13 +66,13 @@ public class ProjectController extends BaseController {
     @ApiOperation("审批或否决项目")
     @PostMapping("examine_project")
     public HttpResponse<String> examineProject(@RequestParam(name = "project_id") String projectId,
-                                               @RequestParam(name = "approved") Boolean approved) throws BussinessException {
+                                               @RequestParam(name = "approved") Boolean approved) throws Exception {
         return responseOK(projectService.examineProject(projectId, approved));
     }
 
     @ApiOperation("三个Global级的配置之后各自通过")
     @PostMapping("init_project")
-    public HttpResponse<String> initProject(@RequestParam(name = "project_id") String projectId) throws BussinessException {
+    public HttpResponse<String> initProject(@RequestParam(name = "project_id") String projectId) throws Exception {
         return responseOK(projectService.initProject(projectId));
     }
 }

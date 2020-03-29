@@ -1,6 +1,5 @@
 package com.softwaredevelopment.achieveit.service;
 
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
@@ -9,6 +8,7 @@ import com.softwaredevelopment.achieveit.PO.entity.*;
 import com.softwaredevelopment.achieveit.controller.BussinessException;
 import com.softwaredevelopment.achieveit.entity.MailBean;
 import com.softwaredevelopment.achieveit.entity.UserDetail;
+import com.softwaredevelopment.achieveit.utils.ObjectHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,17 +43,24 @@ public class ProjectService extends BaseService {
      * @param projectBasics
      * @return
      */
-    public IPage<ProjectBasics> searchProjects(Page<ProjectBasics> page, ProjectBasics projectBasics) {
+    public IPage<ProjectBasics> searchProjects(Page<ProjectBasics> page, ProjectBasics projectBasics) throws Exception {
+        if (projectBasics == null) {
+            projectBasics = new ProjectBasics();
+        } else {
+            // 将实体中的空字符串设置为NULL
+            ObjectHelper.setObjectEmptyToNul(projectBasics);
+        }
+
         QueryWrapper<ProjectBasics> qw = new QueryWrapper<>();
         // 先在qw里加入like的name和项目经理姓名的条件
         // 然后删掉实体的条件
+        if (projectBasics.getProjectId() != null) {
+            qw.like("project_id", projectBasics.getProjectId());
+            projectBasics.setProjectId(null);
+        }
         if (projectBasics.getName() != null) {
             qw.like("name", projectBasics.getName());
             projectBasics.setName(null);
-        }
-        if (projectBasics.getProjectManagerName() != null) {
-            qw.like("project_manager_name", projectBasics.getProjectManagerName());
-            projectBasics.setProjectManagerName(null);
         }
         // 如果状态值为3 需要查询3xxx
         if (projectBasics.getStatusId() != null && projectBasics.getStatusId() == 3) {
@@ -72,8 +79,7 @@ public class ProjectService extends BaseService {
 
         // 如果不是组织级配置管理员、EPG Leader、QA经理 就只能看到自己参与的
         boolean global = false;
-        for (RoleBasics rb :
-                roles) {
+        for (RoleBasics rb : roles) {
             if (rb.getName().startsWith("ROLE_GLOBAL")) {
                 global = true;
                 break;
@@ -84,18 +90,14 @@ public class ProjectService extends BaseService {
             List<ProjectEmployee> projectForMe = iProjectEmployeeService.list(
                     new QueryWrapper<ProjectEmployee>().lambda().eq(ProjectEmployee::getId, userDetail.getEmployeeId()));
             List<Integer> projectForMeId = new ArrayList<>();
-            for (ProjectEmployee pe :
-                    projectForMe) {
+            for (ProjectEmployee pe : projectForMe) {
                 projectForMeId.add(pe.getProjectId());
             }
             qw.lambda().in(ProjectBasics::getId, projectForMeId);
         }
 
-
         return iProjectBasicsService.page(page, qw);
     }
-
-
 
 
     /**
@@ -246,7 +248,7 @@ public class ProjectService extends BaseService {
      * @return
      * @throws BussinessException
      */
-    public String examineProject(String projectId, Boolean approved) throws BussinessException {
+    public String examineProject(String projectId, Boolean approved) throws Exception {
         ProjectBasics pb = getProjectBasicsByProjectId(projectId);
         // 如果pb为空
         if (pb == null) {
@@ -306,7 +308,7 @@ public class ProjectService extends BaseService {
      * @param role
      * @return
      */
-    public String initProject(String projectId) throws BussinessException {
+    public String initProject(String projectId) throws Exception {
         int role;
         List<RoleBasics> roles = getUserDetail().getRoles();
         RoleBasics roleBasics = roles.get(0);

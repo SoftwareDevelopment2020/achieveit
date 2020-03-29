@@ -2,9 +2,16 @@
   <div>
     <div>
       <el-input
+        v-model="searchValue.projectId"
+        placeholder="项目ID"
+        style="width: 15%;min-width: 200px"
+        clearable
+      >
+      </el-input>
+      <el-input
         v-model="searchValue.name"
         placeholder="项目名称"
-        style="width: 50%;min-width: 260px"
+        style="width: 20%;min-width: 200px"
         clearable
       >
       </el-input>
@@ -106,6 +113,7 @@
   import Pagination from '@/components/Pagination/index'
   import {getProjects} from "@/api/project";
   import {setTable} from "@/utils/common";
+  import {isNull} from "@/utils/validate";
 
   export default {
     components: {
@@ -116,6 +124,7 @@
         loading: false,
 
         searchValue: {
+          projectId: '',
           name: '',
           statusId: '',
         },
@@ -124,6 +133,7 @@
         table: {
           data: [],
           searchCondition: {
+            projectId: null,
             name: null,
             statusId: null,
           },
@@ -143,26 +153,32 @@
       getStatusId (statusId) {
         return parseInt(statusId.toString().charAt(0))
       },
+      getNullOrValue(value) {
+        return isNull(value) ? null : value
+      },
       getProjects () {
-        console.info(this.table.page)
         this.loading = true
         getProjects({
           current: this.table.page,
           size: this.table.limit,
           searchCondition: this.table.searchCondition
         }).then(response => {
-          setTable(response.data, this.table)
-          this.searchValue.name = this.table.searchCondition.name
-          this.searchValue.statusId = this.table.searchCondition.statusId
-          this.loading = false
+          setTable(response.data, this.table, this.setSearchValue())
         }).catch(error => {
           console.error(error)
+        }).finally(() => {
           this.loading = false
         })
       },
+      setSearchValue() {
+        this.searchValue.projectId = this.table.searchCondition.projectId
+        this.searchValue.name = this.table.searchCondition.name
+        this.searchValue.statusId = this.table.searchCondition.statusId
+      },
       search() {
-        this.table.searchCondition.name = this.searchValue.name === '' ? null : this.searchValue.name
-        this.table.searchCondition.statusId = this.searchValue.statusId === '' ? null : this.searchValue.statusId
+        this.table.searchCondition.projectId = this.getNullOrValue(this.searchValue.projectId)
+        this.table.searchCondition.name = this.getNullOrValue(this.searchValue.name)
+        this.table.searchCondition.statusId = this.getNullOrValue(this.searchValue.statusId)
         this.table.page = 1
         this.getProjects()
       },

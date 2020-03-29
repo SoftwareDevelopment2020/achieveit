@@ -16,4 +16,11 @@ public class StringHelper {
         return new ArrayList<String>(Arrays.asList(string.split(",")));
     }
 
+    /**
+     * 判断字符串 1. 为NULL 2. 为空串 3. 只有空格
+     */
+    public static boolean isEmpty(String s) {
+        return s == null || s.trim().equals("");
+    }
+
 }
