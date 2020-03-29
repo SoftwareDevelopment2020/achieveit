@@ -61,13 +61,13 @@
                 <el-button type="primary" @click="onSubmit">修改信息</el-button>
               </div>
               <div v-else>
-                <span v-permission="['组织级配置管理员']" v-if="getStatusId(form.statusId) === 3 && form.statusId.toString().charAt(1) === '0'">
+                <span v-permission="['ROLE_GLOBAL_CONFIG']" v-if="getStatusId(form.statusId) === 3 && form.statusId.toString().charAt(1) === '0'">
                   <el-button type="primary">建立配置库</el-button>
                 </span>
-                <span v-permission="['EPG Leader']" v-if="getStatusId(form.statusId) === 3 && form.statusId.toString().charAt(2) === '0'">
+                <span v-permission="['ROLE_GLOBAL_EPGLEADER']" v-if="getStatusId(form.statusId) === 3 && form.statusId.toString().charAt(2) === '0'">
                   <el-button type="primary">分配EPG</el-button>
                 </span>
-                <span v-permission="['QA经理']" v-if="getStatusId(form.statusId) === 3 && form.statusId.toString().charAt(3) === '0'">
+                <span v-permission="['ROLE_GLOBAL_QAM']" v-if="getStatusId(form.statusId) === 3 && form.statusId.toString().charAt(3) === '0'">
                   <el-button type="primary">分配QA</el-button>
                 </span>
               </div>
@@ -85,18 +85,7 @@
     name: 'BaseInfo',
     data() {
       return {
-        form: {
-          projectId: '12345678901',
-          name: '教务系统开发',
-          clientId: '1234',
-          scheduledDate: '2020-03-06',
-          deliveryDate: '2020-06-06',
-          superior: 'Severus Snape',
-          majorMilestone: 'XXXXXX',
-          businessField: 'XXXXXX',
-          mainFunction: 'XXXXXXX',
-          statusId: '1'
-        },
+        form: null,
         submitRules: {
           projectId: [{required: true, message: '项目ID不能为空', trigger: 'blur'}],
           name: [{required: true, message: '项目名称不能为空', trigger: 'blur'}]
@@ -104,7 +93,7 @@
         status: this.Constant.projectStatus,
       }
     },
-    mounted() {
+    created() {
       this.form = {...this.$store.getters.project}
     },
     methods: {

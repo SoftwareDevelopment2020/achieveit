@@ -26,7 +26,7 @@ public class ExceptionAdvice extends BaseController {
     @ExceptionHandler(value = Exception.class)
     public HttpResponse<String> errorHandler(Exception e) {
         Logger.logError(e, e.getMessage());
-        return responseFail(e.getMessage());
+        return responseFail("服务器异常");
     }
 
 }

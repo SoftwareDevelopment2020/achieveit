@@ -3,6 +3,21 @@
  */
 
 /**
+ * 是否为空
+ */
+export function isNull(item) {
+  if (item === null) {
+    return true
+  }
+
+  if (isString(item)) {
+    return item.trim() === ''
+  }
+
+  return false
+}
+
+/**
  * @param {string} path
  * @returns {Boolean}
  */

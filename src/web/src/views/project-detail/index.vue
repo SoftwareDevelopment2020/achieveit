@@ -104,6 +104,16 @@
         project: this.$store.getters.project
       }
     },
+    created() {
+      // 页面加载时读取sessionStorage里的项目信息
+      this.activeMenu = sessionStorage.getItem('project-detail-menu-index') ?
+        sessionStorage.getItem('project-detail-menu-index') : this.menu[0].index
+
+      // 页面刷新时将将项目信息存储在sessionStorage中
+      window.addEventListener('beforeunload', () => {
+        sessionStorage.setItem('project-detail-menu-index', this.activeMenu)
+      })
+    },
     mounted() {
       if (this.project === null) {
         this.$message.warning('请选择具体项目')
@@ -111,7 +121,6 @@
           path: '/'
         })
       }
-      this.activeMenu = this.menu[0].index
     },
     methods: {
       handleSelect(index) {

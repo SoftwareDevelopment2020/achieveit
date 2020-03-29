@@ -48,8 +48,12 @@ public class BaseService {
     @Autowired
     MailUtil mailUtil;
 
-    public UserDetail getUserDetail() {
-        return (UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public UserDetail getUserDetail() throws Exception {
+        try {
+            return (UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        } catch (Exception e) {
+            throw new Exception("用户未登录");
+        }
     }
 
     public Integer projectIdToId(String projectId) {

@@ -17,8 +17,10 @@ const mutations = {
 const actions = {
   setProject({commit, dispatch}, project) {
     return new Promise((resolve, reject) => {
-      commit('SET_PROJECT_ID', project.projectId)
-      commit('SET_PROJECT', project)
+      if (project !== null) {
+        commit('SET_PROJECT_ID', project.projectId)
+        commit('SET_PROJECT', project)
+      }
       //重新选择项目后，清空项目features功能列表
       dispatch('feature/setFeatures', null, {root: true})
       resolve()
@@ -56,9 +58,9 @@ const actions = {
   },
   removeCurrentProject({commit}) {
     //清除当前项目
-    commit('SET_PROJECT_ID', '')
+    commit('SET_PROJECT_ID', null)
+    commit('SET_PROJECT', null)
     console.log('clear')
-    console.log(store.getters.projectId)
   },
 
 }

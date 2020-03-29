@@ -34,13 +34,18 @@ const mutations = {
 
 const actions = {
   // user login
-  login({commit}, userInfo) {
+  login({commit,dispatch}, userInfo) {
     const {username, password} = userInfo
+
     return new Promise((resolve, reject) => {
       login({username: username.trim(), password: password}).then(response => {
         console.log('登录成功返回token：' + response.data)
         commit('SET_TOKEN', 'Bearer' + response.data)
         setToken('Bearer' + response.data)
+
+        // 重置
+        dispatch('resetSystem')
+
         resolve()
       }).catch(error => {
         reject(error)
@@ -87,7 +92,9 @@ const actions = {
     removeToken()
     resetRouter()
     dispatch('tagsView/delAllViews', null, {root: true})
-    // dispatch('project/removeCurrentProject', null, {root: true})
+
+    // 重置
+    dispatch('resetSystem')
   },
 
   // remove token
@@ -124,6 +131,13 @@ const actions = {
 
       resolve()
     })
+  },
+
+  resetSystem({dispatch}) {
+    // 清空缓存
+    sessionStorage.clear()
+    // 登录后重置store中存储的project
+    dispatch('project/removeCurrentProject', null, {root: true})
   }
 }
 
