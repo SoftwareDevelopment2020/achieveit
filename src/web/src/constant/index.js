@@ -104,10 +104,28 @@ const permissions = [{
   detail: '邮件系统'
 }]
 
+const deviceConditions = [{
+  value: true,
+  label: '完好'
+}, {
+  value: false,
+  label: '损坏'
+}]
+
+const isReturned = [{
+  value: true,
+  label: '已归还'
+}, {
+  value: false,
+  label: '未归还'
+}]
+
 export default {
   projectStatus,
   projectType,
   projectRules,
   roles,
-  permissions
+  permissions,
+  deviceConditions,
+  isReturned
 }

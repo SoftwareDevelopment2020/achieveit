@@ -119,7 +119,7 @@
     data() {
       return {
         loading: false,
-        project: null,
+        project: this.$store.getters.project,
         table: {
           data: [],
           total: 0,
@@ -128,19 +128,19 @@
           searchCondition: {
             employeeId: '',
             name: '',
-            roles: [],
+            roles: []
           }
         },
         roleOptions: this.Constant.roles,
         searchValue: {
           employeeId: '',
           name: '',
-          roles: [],
+          roles: []
         }
       }
     },
     mounted() {
-      this.project =  this.$store.getters.project
+      this.getParticipants()
     },
     methods: {
       /**
