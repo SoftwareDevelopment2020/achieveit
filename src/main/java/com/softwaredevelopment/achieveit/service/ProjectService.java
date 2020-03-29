@@ -35,6 +35,19 @@ public class ProjectService extends BaseService {
         return b;
     }
 
+    private static Integer booleanToStatusId(boolean[] booleans) {
+        int r = 3000;
+        if (booleans[1]) {
+            r += 100;
+        }
+        if (booleans[2]) {
+            r += 10;
+        }
+        if (booleans[3]) {
+            r += 1;
+        }
+        return r;
+    }
 
     /**
      * 分页综合查询项目基本信息
@@ -98,7 +111,6 @@ public class ProjectService extends BaseService {
 
         return iProjectBasicsService.page(page, qw);
     }
-
 
     /**
      * 删除一个项目相关的所有数据
@@ -393,20 +405,6 @@ public class ProjectService extends BaseService {
         return "确认完毕";
 
 
-    }
-
-    private Integer booleanToStatusId(boolean[] booleans) {
-        int r = 3000;
-        if (booleans[1]) {
-            r += 100;
-        }
-        if (booleans[2]) {
-            r += 10;
-        }
-        if (booleans[3]) {
-            r += 1;
-        }
-        return r;
     }
 
 }
