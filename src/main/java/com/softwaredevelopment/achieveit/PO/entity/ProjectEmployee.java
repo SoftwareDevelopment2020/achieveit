@@ -10,6 +10,7 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * <p>
@@ -22,7 +23,7 @@ import java.time.LocalDate;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@ApiModel(value = "ProjectEmployee对象", description = "")
+@ApiModel(value = "ProjectEmployee对象")
 public class ProjectEmployee implements Serializable {
 
     @TableId(type = IdType.AUTO)
@@ -30,16 +31,31 @@ public class ProjectEmployee implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Integer projectId;
+    @ApiModelProperty(value = "项目ID")
+    private String projectId;
 
-    private Integer employeeId;
+    @ApiModelProperty(value = "员工ID")
+    private String employeeId;
 
+    @ApiModelProperty(value = "加入时间")
     private LocalDate joinTime;
 
+    @ApiModelProperty(value = "退出时间")
     private LocalDate exitTime;
 
     @ApiModelProperty(value = "上级id")
     private Integer superiorId;
 
+    @ApiModelProperty(value = "角色")
+    private List<RoleBasics> roles;
+
+    @ApiModelProperty(value = "权限")
+    private List<PermissionBasics> permissions;
+
+    @ApiModelProperty(value = "基本信息")
+    private EmployeeBasics employeeBasics;
+
+    @ApiModelProperty(value = "上级基本信息")
+    private EmployeeBasics superiorBasics;
 
 }

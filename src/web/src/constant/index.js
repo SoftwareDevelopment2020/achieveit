@@ -64,8 +64,50 @@ const projectRules = {
   ]
 }
 
+/**
+ * 角色
+ */
+const roles = [{
+  name: 'ROLE_PM',
+  detail: '项目经理'
+}, {
+  name: 'ROLE_DEVLEADER',
+  detail: '开发Leader'
+}, {
+  name: 'ROLE_DEV',
+  detail: '开发'
+}, {
+  name: 'ROLE_TESTLEADER',
+  detail: '测试Leader'
+}, {
+  name: 'ROLE_TEST',
+  detail: '测试'
+}, {
+  name: 'ROLE_CONFIG',
+  detail: '配置管理员'
+}, {
+  name: 'ROLE_EPG',
+  detail: 'EPG'
+}, {
+  name: 'ROLE_QA',
+  detail: 'QA'
+}]
+
+const permissions = [{
+  name: 'git',
+  detail: 'git'
+}, {
+  name: 'filesys',
+  detail: '文件系统'
+}, {
+  name: 'mail',
+  detail: '邮件系统'
+}]
+
 export default {
   projectStatus,
   projectType,
-  projectRules
+  projectRules,
+  roles,
+  permissions
 }

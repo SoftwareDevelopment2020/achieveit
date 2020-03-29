@@ -51,7 +51,7 @@
         <el-form-item>
           <div align="center">
             <!-- 审核中 -->
-            <div v-permission="['项目上级']" v-if="form.statusId === 1">
+            <div v-permission="['ROLE_SUPERIOR']" v-if="form.statusId === 1">
               <el-button type="primary">通过审核</el-button>
               <el-button type="primary">拒绝立项</el-button>
             </div>

@@ -20,7 +20,7 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@ApiModel(value = "PersonRole对象", description = "")
+@ApiModel(value = "PersonRole对象")
 public class PersonRole implements Serializable {
 
     @TableId(type = IdType.AUTO)

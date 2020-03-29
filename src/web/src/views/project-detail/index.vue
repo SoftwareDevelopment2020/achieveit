@@ -28,7 +28,7 @@
         <el-divider direction="vertical"></el-divider>
         <span>{{getDate(project.scheduledDate)}} - {{getDate(project.deliveryDate)}}</span>
       </el-card>
-      <div style="margin: 10px">
+      <div style="margin-top: 30px">
         <base-info v-if="activeMenu==='base-info'"></base-info>
         <participant v-if="activeMenu==='participant'"></participant>
         <function-list v-if="activeMenu==='function-list'"></function-list>
