@@ -23,7 +23,7 @@ public class EmployeeService extends BaseService {
         // 先从project_employee中查找这个项目的employee_id
         List<ProjectEmployee> projectEmployees = iProjectEmployeeService.list(
                 new QueryWrapper<ProjectEmployee>().lambda().eq(ProjectEmployee::getProjectId, id));
-        List<String> employeeIds = new ArrayList<>();
+        List<Integer> employeeIds = new ArrayList<>();
         for (ProjectEmployee pe :
                 projectEmployees) {
             employeeIds.add(pe.getEmployeeId());

@@ -32,10 +32,10 @@ public class ProjectEmployee implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "项目ID")
-    private String projectId;
+    private Integer projectId;
 
     @ApiModelProperty(value = "员工ID")
-    private String employeeId;
+    private Integer employeeId;
 
     @ApiModelProperty(value = "加入时间")
     private LocalDate joinTime;

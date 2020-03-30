@@ -8,11 +8,13 @@ import com.softwaredevelopment.achieveit.utils.MailUtil;
 import com.softwaredevelopment.achieveit.utils.RedisUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author RainkQ
  * @date 2020/3/25 15:42
  */
+@Transactional
 public class BaseService {
 
     @Autowired
