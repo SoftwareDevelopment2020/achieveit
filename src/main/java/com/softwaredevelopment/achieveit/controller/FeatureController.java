@@ -53,7 +53,7 @@ public class FeatureController extends BaseController {
             if (!upload.exists()) {
                 upload.mkdirs();
             }
-            String uploadPath = upload + "\\";
+            String uploadPath = upload + "/";
 
 
             file.transferTo(new File(uploadPath + newName));
