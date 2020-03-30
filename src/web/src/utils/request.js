@@ -45,7 +45,10 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
+    console.log(response)
     if (!res.success) {
+      console.log(res)
+      console.log(res.data)
       Message({
         message: res.data || 'Unknown Error',
         type: 'error',

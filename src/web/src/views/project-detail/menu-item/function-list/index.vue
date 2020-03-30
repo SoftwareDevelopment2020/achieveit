@@ -58,6 +58,17 @@
       beforeUpload(file) {
         const isLt1M = file.size / 1024 / 1024 < 1
         if (isLt1M) {
+          this.$store.dispatch('feature/uploadFeatures',file).then(response => {
+            this.$message({
+              type: 'success',
+              message: '成功上传',
+              duration: 2 * 1000
+            })
+
+          }).catch(error=>{
+
+          })
+
           return true
         }
 
@@ -74,6 +85,16 @@
       },
       handleDownload() {
         this.downloadLoading = true
+        this.$store.dispatch('feature/downloadExcel').then(res => {
+          this.downloadLoading = false
+          this.$message({
+            type: 'success',
+            message: '下载成功',
+            duration: 2 * 1000
+          })
+        }).catch(error => {
+          this.downloadLoading = false
+        })
       },
     }
   }

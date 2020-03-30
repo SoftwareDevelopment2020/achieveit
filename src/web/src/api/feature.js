@@ -11,9 +11,19 @@ export function getFeatures(projectId) {
 
 export function uploadFeatures(formData) {
   return request({
-    headers: {"Content-Type": "multipart/form-data"},
+    headers: {'Content-Type': 'multipart/form-data'},
     url: '/feature/upload_features',
     method: 'post',
-    formData
+    data: formData
+  })
+  // return request.post('/feature/upload_features',formData,{headers:{'Content-Type': 'multipart/form-data'}})
+}
+
+export function downloadExcel(projectId) {
+  return request({
+    url: 'feature/download_features',
+    method: 'get',
+    params: {"projectId": projectId},
+    // responseType:'blob'
   })
 }
