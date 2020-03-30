@@ -76,7 +76,7 @@ public class FeatureController extends BaseController {
             responseFail("项目执行有问题");
         }
         File upload = new File(path.getAbsolutePath(), "static/excels/");
-        String uploadPath = upload + "\\";
+        String uploadPath = upload + "/";
         String fileName = uploadPath + newName;
 
 
@@ -97,7 +97,8 @@ public class FeatureController extends BaseController {
                     .body(new ByteArrayResource(IOUtils.readAllBytes(file.getInputStream())));
 
         } catch (IOException e) {
-            return responseFail("文件不存在");
+            return ResponseEntity
+                    .status(404).body(responseFail("文件不存在"));
         }
     }
 }
