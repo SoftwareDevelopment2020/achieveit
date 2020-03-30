@@ -43,7 +43,7 @@ public class Property implements Serializable {
     private LocalDate usageTimeLimit;
 
     @ApiModelProperty(value = "设备状态 是否完好")
-    private String deviceCondition;
+    private Boolean deviceCondition;
 
     @ApiModelProperty(value = "设备是否归还")
     private Boolean isReturned;

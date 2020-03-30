@@ -1,4 +1,4 @@
-package com.softwaredevelopment.achieveit;
+package com.softwaredevelopment.achieveit.Utils;
 
 import com.softwaredevelopment.achieveit.entity.MailBean;
 import com.softwaredevelopment.achieveit.utils.MailUtil;

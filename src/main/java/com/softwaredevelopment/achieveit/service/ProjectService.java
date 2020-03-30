@@ -118,9 +118,8 @@ public class ProjectService extends BaseService {
      * @return
      */
     @Transactional
-    public boolean deleteProjectAndItsData(Integer projectId) {
-        // 通过projectId获取project_id(11位)
-        ProjectBasics byProjectId = iProjectBasicsService.getOne(new QueryWrapper<ProjectBasics>().eq("projectId", projectId));
+    public boolean deleteProjectAndItsData(String projectId) {
+        ProjectBasics byProjectId = iProjectBasicsService.getOne(new QueryWrapper<ProjectBasics>().lambda().eq(ProjectBasics::getProjectId, projectId));
         // 获取表的id
         Integer id = byProjectId.getId();
 

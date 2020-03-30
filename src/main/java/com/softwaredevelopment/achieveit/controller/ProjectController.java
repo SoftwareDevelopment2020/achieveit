@@ -45,7 +45,7 @@ public class ProjectController extends BaseController {
 
     @ApiOperation("删除项目接口 测试用")
     @PostMapping("delete_project")
-    public HttpResponse<String> deleteProjectAndItsData(Integer projectId) {
+    public HttpResponse<String> deleteProjectAndItsData(String projectId) {
         if (projectService.deleteProjectAndItsData(projectId)) {
             return responseOK("删除成功");
         } else {

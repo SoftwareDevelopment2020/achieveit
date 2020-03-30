@@ -15,6 +15,23 @@ import java.util.List;
  */
 @Service
 public class EmployeeService extends BaseService {
+//    public List<EmployeeBasics> getEmployeesByProjectId(String projectId) throws BussinessException {
+//        Integer id = projectIdToId(projectId);
+//        if (id == null) {
+//            throw new BussinessException("查找失败", new Exception(), "没有这个项目");
+//        }
+//        // 先从project_employee中查找这个项目的employee_id
+//        List<ProjectEmployee> projectEmployees = iProjectEmployeeService.list(
+//                new QueryWrapper<ProjectEmployee>().lambda().eq(ProjectEmployee::getProjectId, id));
+//        List<Integer> employeeIds = new ArrayList<>();
+//        for (ProjectEmployee pe :
+//                projectEmployees) {
+//            employeeIds.add(pe.getEmployeeId());
+//        }
+//        // 再从EmployeeBasics中查找这些员工
+//        return iEmployeeBasicsService.list(new QueryWrapper<EmployeeBasics>().lambda().in(EmployeeBasics::getId, employeeIds));
+//    }
+
     public List<EmployeeBasics> getEmployeesByProjectId(String projectId) throws BussinessException {
         Integer id = projectIdToId(projectId);
         if (id == null) {

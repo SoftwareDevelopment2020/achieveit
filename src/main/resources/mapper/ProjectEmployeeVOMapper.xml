@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.softwaredevelopment.achieveit.mapper.ProjectEmployeeVOMapper">
+
+    <resultMap id="project_employee_vo" type="com.softwaredevelopment.achieveit.entity.ProjectEmployeeVO">
+        <id column="id" property="id"/>
+        <result column="project_id" property="projectId"/>
+        <result column="employee_id" property="employeeId"/>
+        <result column="join_time" property="joinTime"/>
+        <result column="exit_time" property="exitTime"/>
+        <result column="superior_id" property="superiorId"/>
+        <association property="employeeBasics" resultMap="employee"/>
+        <association property="superiorBasics" resultMap="superior"/>
+        <collection property="roles" resultMap="role"/>
+        <collection property="permissions" resultMap="permission"/>
+    </resultMap>
+
+
+    <resultMap id="employee" type="com.softwaredevelopment.achieveit.PO.entity.EmployeeBasics">
+        <id column="employee_id" property="id"/>
+        <result column="employee_name" property="name"/>
+        <result column="employee_email_address" property="emailAddress"/>
+        <result column="employee_department" property="department"/>
+        <result column="employee_tel" property="tel"/>
+    </resultMap>
+
+    <resultMap id="superior" type="com.softwaredevelopment.achieveit.PO.entity.EmployeeBasics">
+        <id column="superior_id" property="id"/>
+        <result column="superior_name" property="name"/>
+        <result column="superior_email_address" property="emailAddress"/>
+        <result column="superior_department" property="department"/>
+        <result column="superior_tel" property="tel"/>
+    </resultMap>
+
+    <resultMap id="role" type="com.softwaredevelopment.achieveit.PO.entity.RoleBasics">
+        <id column="role_id" property="id"/>
+        <result column="role_name" property="name"/>
+        <result column="role_detail" property="detail"/>
+    </resultMap>
+
+    <resultMap id="permission" type="com.softwaredevelopment.achieveit.PO.entity.PermissionBasics">
+        <id column="permission_id" property="id"/>
+        <result column="permission_name" property="name"/>
+        <result column="permission_detail" property="detail"/>
+    </resultMap>
+
+    <select id="selectProjectEmployeesByProjectId" resultMap="project_employee_vo">
+        SELECT project_employee.id,
+               project_employee.project_id,
+               project_employee.employee_id,
+               project_employee.join_time,
+               project_employee.exit_time,
+               project_employee.superior_id,
+               role_basics.id                AS role_id,
+               role_basics.`name`            AS role_name,
+               role_basics.detail            AS role_detail,
+               employee_basics.id            AS employee_id,
+               employee_basics.`name`        AS employee_name,
+               employee_basics.email_address AS employee_email_address,
+               employee_basics.department    AS employee_department,
+               employee_basics.tel           AS employee_tel,
+               employee_basics.id            AS superior_id,
+               employee_basics.`name`        AS superior_name,
+               employee_basics.email_address AS superior_email_address,
+               employee_basics.department    AS superior_department,
+               employee_basics.tel           AS superior_tel,
+               permission_basics.id          AS permission_id,
+               permission_basics.`name`      AS permission_name,
+               permission_basics.detail      AS permission_detail
+        FROM project_employee
+                 LEFT JOIN
+             person_role
+             ON
+                 project_employee.id = person_role.project_employee_id
+                 INNER JOIN
+             role_basics
+             ON
+                 person_role.role_id = role_basics.id
+                 LEFT JOIN
+             employee_basics
+             ON
+                 project_employee.employee_id = employee_basics.id
+                 LEFT JOIN
+             employee_basics AS superior_basics
+             ON
+                 project_employee.superior_id = employee_basics.id
+                 LEFT JOIN
+             person_permission
+             ON
+                 project_employee.id = person_permission.project_employee_id
+                 INNER JOIN
+             permission_basics
+             ON
+                 person_permission.permission_id = permission_basics.id
+                 INNER JOIN
+             project_basics
+             ON
+                 project_employee.project_id = project_basics.id
+        WHERE project_basics.project_id = #{projectId}
+    </select>
+</mapper>
