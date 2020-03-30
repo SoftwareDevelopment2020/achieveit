@@ -45,7 +45,7 @@ const actions = {
   downloadExcel() {
     return new Promise((resolve, reject) => {
       downloadExcel(store.getters.projectId).then(response => {
-        const blob = new Blob([response.data]);
+        const blob = new Blob([response]);
         const fileName = store.getters.projectId + '.xlsx';
         const linkNode = document.createElement('a');
 

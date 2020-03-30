@@ -97,9 +97,10 @@ public class POIUtil {
         String fileName = file.getOriginalFilename();
         //创建Workbook工作薄对象，表示整个excel
         Workbook workbook = null;
+        InputStream is = null;
         try {
             //获取excel文件的io流
-            InputStream is = file.getInputStream();
+            is = file.getInputStream();
             //根据文件后缀名不同(xls和xlsx)获得不同的Workbook实现类对象
             if (fileName.endsWith(xls)) {
                 //2003

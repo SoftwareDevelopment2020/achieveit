@@ -2,7 +2,7 @@
 
   <div class="app-container">
     <h3>功能列表</h3>
-    <el-tree :data="functionList" :props="defaultProps">
+    <el-tree :data="functionList" :props="defaultProps" v-if="uploading">
       <span class="custom-tree-node" slot-scope="{ node, data }">
         <span>{{ node.label }}</span>
         <span>
@@ -15,9 +15,14 @@
       <el-table-column v-for="item of tableHeader" :key="item" :prop="item" :label="item"/>
     </el-table>
     <div class="components-container">
+
       <el-button :loading="downloadLoading" style="margin:0 0 20px 20px; float: right;" type="primary"
                  icon="el-icon-document" @click="handleDownload">
         导出Excel
+      </el-button>
+      <el-button :loading="downloadLoading" style="margin:0 0 20px 20px; float: right;" type="primary"
+                 icon="el-icon-document" @click="handleUpload">
+        上传Excel
       </el-button>
     </div>
   </div>
@@ -30,6 +35,7 @@
 
   export default {
     name: 'UploadExcel',
+    inject: ['reload'],
     components: {UploadExcelComponent},
     data() {
       return {
@@ -40,7 +46,9 @@
         defaultProps: {
           children: 'children',
           label: 'label'
-        }
+        },
+        uploading: true,
+        file: null
       }
     },
     mounted() {
@@ -58,16 +66,7 @@
       beforeUpload(file) {
         const isLt1M = file.size / 1024 / 1024 < 1
         if (isLt1M) {
-          this.$store.dispatch('feature/uploadFeatures',file).then(response => {
-            this.$message({
-              type: 'success',
-              message: '成功上传',
-              duration: 2 * 1000
-            })
-
-          }).catch(error=>{
-
-          })
+          this.file = file
 
           return true
         }
@@ -77,6 +76,21 @@
           type: 'warning'
         })
         return false
+      },
+      handleUpload(){
+        this.$store.dispatch('feature/uploadFeatures', this.file).then(response => {
+          //成功上传后，清空store中的features，重新加载组件
+          this.$store.dispatch('feature/setFeatures', null).then(() => {
+            this.reload()
+            this.$message({
+              type: 'success',
+              message: '成功上传',
+              duration: 3 * 1000
+            })
+          })
+        }).catch(error => {
+
+        })
       },
 
       handleSuccess({results, header}) {

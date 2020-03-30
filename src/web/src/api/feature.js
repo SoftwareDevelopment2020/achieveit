@@ -14,7 +14,7 @@ export function uploadFeatures(formData) {
     headers: {'Content-Type': 'multipart/form-data'},
     url: '/feature/upload_features',
     method: 'post',
-    data: formData
+    data: formData,
   })
   // return request.post('/feature/upload_features',formData,{headers:{'Content-Type': 'multipart/form-data'}})
 }
@@ -24,6 +24,6 @@ export function downloadExcel(projectId) {
     url: 'feature/download_features',
     method: 'get',
     params: {"projectId": projectId},
-    // responseType:'blob'
+    responseType:'blob'
   })
 }

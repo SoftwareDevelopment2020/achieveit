@@ -46,17 +46,21 @@ service.interceptors.response.use(
   response => {
     const res = response.data
     console.log(response)
+    console.log(res)
+    //特殊处理下载excel文件
+    if (response.config.responseType === 'blob') {
+      return Promise.resolve(res)
+    }
+
     if (!res.success) {
-      console.log(res)
-      console.log(res.data)
       Message({
-        message: res.data || 'Unknown Error',
+        message: res.data || '未知错误',
         type: 'error',
         duration: 5 * 1000
       })
-      return Promise.reject(new Error(res.data || 'Error'))
+      return Promise.reject(new Error(res.data || '未知错误'))
     } else {
-      return res
+      return Promise.resolve(res)
     }
   },
   error => {
@@ -73,11 +77,20 @@ service.interceptors.response.use(
     //其他错误，弹窗提示
     else {
       console.log('err' + error) // for debug
-      Message({
-        message: error.message,
-        type: 'error',
-        duration: 5 * 1000
-      })
+      // 下载excel文件失败时，需要单独处理特殊情况
+      if (error.response.config.responseType == 'blob') {
+        Message({
+          message: '下载文件不存在，可能还未上传文件',
+          type: 'error',
+          duration: 5 * 1000
+        })
+      } else {
+        Message({
+          message: error.message,
+          type: 'error',
+          duration: 5 * 1000
+        })
+      }
     }
     return Promise.reject(error)
   }
