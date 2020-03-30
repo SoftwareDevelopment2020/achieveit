@@ -71,6 +71,8 @@ public class FeatureService extends BaseService {
             features.add(nf);
         }
         // 存入数据库
+        iFeatureService.remove(new QueryWrapper<Feature>().lambda()
+                .eq(Feature::getProjectId, id));
         iFeatureService.saveBatch(features);
 
     }
