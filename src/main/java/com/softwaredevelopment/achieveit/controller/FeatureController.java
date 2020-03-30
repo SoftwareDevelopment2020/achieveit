@@ -3,6 +3,7 @@ package com.softwaredevelopment.achieveit.controller;
 import com.softwaredevelopment.achieveit.entity.FeatureVO;
 import com.softwaredevelopment.achieveit.http.response.HttpResponse;
 import com.softwaredevelopment.achieveit.service.FeatureService;
+import com.softwaredevelopment.achieveit.utils.IOUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import sun.misc.IOUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
