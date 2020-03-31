@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
  * @date 2020/3/31 19:59
  */
 @SpringBootTest
-//@Transactional
+@Transactional
 public class MockData {
 
     @Autowired
