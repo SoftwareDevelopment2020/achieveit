@@ -6,6 +6,7 @@ import com.softwaredevelopment.achieveit.PO.service.*;
 import com.softwaredevelopment.achieveit.entity.UserDetail;
 import com.softwaredevelopment.achieveit.utils.MailUtil;
 import com.softwaredevelopment.achieveit.utils.RedisUtils;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author RainkQ
  * @date 2020/3/25 15:42
  */
+@Getter
 @Transactional
 public class BaseService {
 
@@ -50,7 +52,7 @@ public class BaseService {
     @Autowired
     MailUtil mailUtil;
 
-    public UserDetail getUserDetail() throws Exception {
+    public UserDetail currentUserDetail() throws Exception {
         try {
             return (UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         } catch (Exception e) {

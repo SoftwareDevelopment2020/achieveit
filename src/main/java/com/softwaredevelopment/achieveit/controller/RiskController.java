@@ -6,6 +6,7 @@ import com.softwaredevelopment.achieveit.service.RiskService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,5 +36,10 @@ public class RiskController extends BaseController {
             return responseOK("添加成功");
         }
         return responseFail("添加失败");
+    }
+
+    @Scheduled(cron = "0 0 8 ? * 2")
+    public void sendRiskMail() {
+        riskService.sendRiskMail();
     }
 }

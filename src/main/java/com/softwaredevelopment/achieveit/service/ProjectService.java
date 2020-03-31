@@ -87,7 +87,7 @@ public class ProjectService extends BaseService {
 
         // 用户只能看到与自己参与的项目：项目经理、项目上级、其他参与人员、资产管理者； 组织级配置管理员、EPG Leader、QA经理全部可以看到
         // 获取当前用户
-        UserDetail userDetail = getUserDetail();
+        UserDetail userDetail = currentUserDetail();
         List<RoleBasics> roles = userDetail.getRoles();
 
         // 如果不是组织级配置管理员、EPG Leader、QA经理 就只能看到自己参与的
@@ -208,7 +208,7 @@ public class ProjectService extends BaseService {
             // projectId
             newProjectBasics.setProjectId(projectId);
             // 设置用户的EmployeeId和姓名
-            UserDetail userDetail = getUserDetail();
+            UserDetail userDetail = currentUserDetail();
             newProjectBasics.setProjectManagerId(userDetail.getEmployeeId());
             newProjectBasics.setProjectManagerName(userDetail.getName());
             // 初始状态
@@ -272,7 +272,7 @@ public class ProjectService extends BaseService {
         }
 
         // 如果项目上级不是该用户
-        if (!getUserDetail().getEmployeeId().equals(pb.getSuperior())) {
+        if (!currentUserDetail().getEmployeeId().equals(pb.getSuperior())) {
             throw new BussinessException("审批失败", new Exception(), "非该项目上级，无法审批");
         }
 
@@ -321,7 +321,7 @@ public class ProjectService extends BaseService {
      */
     public String initProject(String projectId) throws Exception {
         int role;
-        List<RoleBasics> roles = getUserDetail().getRoles();
+        List<RoleBasics> roles = currentUserDetail().getRoles();
         RoleBasics roleBasics = roles.get(0);
         switch (roleBasics.getName()) {
             case "ROLE_GLOBAL_CONFIG":
