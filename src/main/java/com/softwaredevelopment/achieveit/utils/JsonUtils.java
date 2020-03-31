@@ -2,6 +2,7 @@ package com.softwaredevelopment.achieveit.utils;
 
 import com.alibaba.druid.util.StringUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.softwaredevelopment.achieveit.utils.log.Logger;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,7 +19,7 @@ public class JsonUtils {
         /**
          * ObjectMapper单例
          */
-        private static ObjectMapper instance = new ObjectMapper();
+        private static ObjectMapper instance = new ObjectMapper().configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
     }
 
     /**

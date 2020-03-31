@@ -59,7 +59,7 @@ public class FeatureController extends BaseController {
             featureService.uploadFeature(file, projectId);
             file.transferTo(new File(uploadPath + newName));
             return responseOK("上传成功!");
-        } catch (IOException e) {
+        } catch (Exception e) {
             return responseFail("上传失败 :" + e);
         }
     }

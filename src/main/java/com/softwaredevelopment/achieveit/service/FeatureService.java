@@ -2,6 +2,7 @@ package com.softwaredevelopment.achieveit.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.softwaredevelopment.achieveit.PO.entity.Feature;
+import com.softwaredevelopment.achieveit.controller.BussinessException;
 import com.softwaredevelopment.achieveit.entity.FeatureVO;
 import com.softwaredevelopment.achieveit.utils.POIUtil;
 import org.springframework.stereotype.Service;
@@ -44,31 +45,39 @@ public class FeatureService extends BaseService {
      * @param projectId
      * @throws Exception
      */
-    public void uploadFeature(MultipartFile file, String projectId) throws IOException {
+    public void uploadFeature(MultipartFile file, String projectId) throws IOException, BussinessException {
         Integer id = projectIdToId(projectId);
         List<String[]> strings = POIUtil.readExcel(file);
         List<Feature> features = new ArrayList<>();
         Map<Integer, Integer> mapForFirstTier = new HashMap<>(strings.size());
-        for (String[] ss : strings) {
-            Feature nf = new Feature();
-            nf.setProjectId(id);
-            nf.setFirstTierId(Integer.valueOf(ss[0]));
-            // 如果是这个大功能的第一条 说明要建一个secondTierId为0的额外Feature
-            if (mapForFirstTier.get(nf.getFirstTierId()) == null) {
-                Feature bnf = new Feature();
-                bnf.setProjectId(id);
-                bnf.setFirstTierId(Integer.valueOf(ss[0]));
-                bnf.setSecondTierId(0);
-                bnf.setFeatureName(ss[1]);
-                bnf.setFeatureDetail(ss[2]);
-                mapForFirstTier.put(bnf.getFirstTierId(), 1);
-                features.add(bnf);
+        try {
+            if (strings.size() == 0) {
+                throw new Exception("文件读取有问题");
             }
-            // 否则就是小功能
-            nf.setSecondTierId(Integer.valueOf(ss[3]));
-            nf.setFeatureName(ss[4]);
-            nf.setFeatureDetail(ss[5]);
-            features.add(nf);
+            for (String[] ss : strings) {
+
+                Feature nf = new Feature();
+                nf.setProjectId(id);
+                nf.setFirstTierId(Integer.valueOf(ss[0]));
+                // 如果是这个大功能的第一条 说明要建一个secondTierId为0的额外Feature
+                if (mapForFirstTier.get(nf.getFirstTierId()) == null) {
+                    Feature bnf = new Feature();
+                    bnf.setProjectId(id);
+                    bnf.setFirstTierId(Integer.valueOf(ss[0]));
+                    bnf.setSecondTierId(0);
+                    bnf.setFeatureName(ss[1]);
+                    bnf.setFeatureDetail(ss[2]);
+                    mapForFirstTier.put(bnf.getFirstTierId(), 1);
+                    features.add(bnf);
+                }
+                // 否则就是小功能
+                nf.setSecondTierId(Integer.valueOf(ss[3]));
+                nf.setFeatureName(ss[4]);
+                nf.setFeatureDetail(ss[5]);
+                features.add(nf);
+            }
+        } catch (Exception e) {
+            throw new BussinessException(e.getMessage(), e.getCause(), "上传文件有问题");
         }
         // 存入数据库
         iFeatureService.remove(new QueryWrapper<Feature>().lambda()
