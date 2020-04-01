@@ -14,7 +14,7 @@ import java.util.List;
 public interface ProjectEmployeeVOMapper {
     List<ProjectEmployeeVO> selectProjectEmployeesByProjectId(String projectId);
 
-    List<Integer> selectProjectEmployeeIds(@Param("projectId") String projectId,
+    List<Integer> selectProjectEmployeeIds(@Param("projectId") Integer projectId,
                                            @Param("employeeName") String employeeName,
                                            @Param("roles") List<String> roles);
 

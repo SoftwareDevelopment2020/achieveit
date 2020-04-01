@@ -287,7 +287,7 @@
           size: this.table.limit,
           searchCondition: this.table.searchCondition
         }).then(response => {
-          setTable(response.data, this.table)
+          setTable(response.data, this.table, null)
           this.searchValue.name = this.table.searchCondition.name
           this.searchValue.statusId = this.table.searchCondition.statusId
           this.loading = false

@@ -2,13 +2,6 @@
   <div>
     <div>
       <el-input
-        v-model="searchValue.employeeId"
-        placeholder="员工ID"
-        style="width: 15%;min-width: 200px"
-        clearable
-      >
-      </el-input>
-      <el-input
         v-model="searchValue.name"
         placeholder="员工姓名"
         style="width: 20%;min-width: 200px"
@@ -53,14 +46,7 @@
         </el-table-column>
         <el-table-column
           fixed="left"
-          prop="employeeId"
-          label="ID"
-          align="center"
-        >
-        </el-table-column>
-        <el-table-column
-          fixed="left"
-          prop="name"
+          prop="employeeBasics.name"
           label="姓名"
           align="center"
         >
@@ -71,6 +57,9 @@
           width="150"
           align="center"
         >
+          <template slot-scope="{row}">
+            <p v-for="role in row.roles" :key="role.id">{{role.detail}}</p>
+          </template>
         </el-table-column>
         <el-table-column
           prop="permissions"
@@ -78,6 +67,9 @@
           width="150"
           align="center"
         >
+          <template slot-scope="{row}">
+            <p v-for="permission in row.permissions" :key="permission.id">{{permission.detail}}</p>
+          </template>
         </el-table-column>
         <el-table-column
           prop="employeeBasics"
@@ -112,6 +104,8 @@
 
 <script>
   import Pagination from '@/components/Pagination/index'
+  import {getProjectEmployees} from "../../../../api/employee";
+  import {setTable} from "../../../../utils/common";
   export default {
     components: {
       Pagination
@@ -126,14 +120,12 @@
           page: 1,
           limit: 10,
           searchCondition: {
-            employeeId: '',
-            name: '',
-            roles: []
+            name: null,
+            roles: null
           }
         },
         roleOptions: this.Constant.roles,
         searchValue: {
-          employeeId: '',
           name: '',
           roles: []
         }
@@ -161,10 +153,28 @@
        * 获取项目人员
        */
       getParticipants() {
-
+        this.loading = true
+        getProjectEmployees({
+          current: this.table.page,
+          size: this.table.limit,
+          searchCondition: {
+            projectId: this.project.id,
+            employeeName: this.table.name,
+            roles: this.table.roles
+          }
+        }).then(response => {
+          setTable(response.data, this.table, this.setSearchValue())
+        }).catch(error => {
+          console.error(error)
+        }).finally(() => {
+          this.loading = false
+        })
       },
       search() {
         console.info(this.searchValue)
+      },
+      setSearchValue() {
+
       },
 
       /**

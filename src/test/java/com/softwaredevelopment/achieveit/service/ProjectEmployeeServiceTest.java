@@ -33,7 +33,7 @@ class ProjectEmployeeServiceTest {
         request.setCurrent(1);
         request.setSize(1);
         ProjectEmployeeRequest condition = new ProjectEmployeeRequest();
-        condition.setProjectId("12345678901");
+        condition.setProjectId(1);
         request.setSearchCondition(condition);
         System.out.println(projectEmployeeService.getProjectEmployeeVO(request));
     }

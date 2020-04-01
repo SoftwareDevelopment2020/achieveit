@@ -1,9 +1,9 @@
 package com.softwaredevelopment.achieveit.controller;
 
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.softwaredevelopment.achieveit.PO.entity.EmployeeBasics;
-import com.softwaredevelopment.achieveit.entity.request.PageSearchRequest;
 import com.softwaredevelopment.achieveit.entity.ProjectEmployeeVO;
+import com.softwaredevelopment.achieveit.entity.request.PageSearchRequest;
 import com.softwaredevelopment.achieveit.entity.request.ProjectEmployeeRequest;
 import com.softwaredevelopment.achieveit.http.response.HttpResponse;
 import com.softwaredevelopment.achieveit.service.EmployeeService;
@@ -43,7 +43,7 @@ public class EmployeeController extends BaseController {
 
     @ApiOperation("获取projectEmployee的详细信息")
     @PostMapping("project_employee_vo")
-    public HttpResponse<PageInfo<ProjectEmployeeVO>> getProjectEmployeeVO(@RequestBody PageSearchRequest<ProjectEmployeeRequest> request) {
+    public HttpResponse<IPage<ProjectEmployeeVO>> getProjectEmployeeVO(@RequestBody PageSearchRequest<ProjectEmployeeRequest> request) {
         return responseOK(projectEmployeeService.getProjectEmployeeVO(request));
     }
 }

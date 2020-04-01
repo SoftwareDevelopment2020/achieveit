@@ -99,23 +99,20 @@
     </select>
 
     <select id="selectProjectEmployeeIds" resultType="java.lang.Integer">
-        SELECT B.id
-
+        SELECT A.id
         FROM (
-                 SELECT id
-                 FROM project_basics
+                 SELECT id, employee_id
+                 FROM project_employee
                  WHERE project_id = #{projectId}
         ) A
-        JOIN project_employee B
-        ON A.id = B.project_id
-        JOIN employee_basics G
-        ON B.employee_id = G.id
+        JOIN employee_basics B
+        ON A.employee_id = B.id
             <if test="employeeName != null and employeeName.trim() != ''">
-                AND G.name LIKE '%${employeeName}%'
+                AND B.name LIKE '%${employeeName}%'
             </if>
         <if test="roles != null and roles.size() > 0">
             JOIN person_role C
-            ON B.id = C.project_employee_id
+            ON A.id = C.project_employee_id
             JOIN role_basics D
             ON C.role_id = D.id
                 AND D.name in
@@ -123,7 +120,7 @@
                         #{role.name}
                     </foreach>
         </if>
-        ORDER BY G.name
+        ORDER BY B.name
     </select>
 
     <select id="selectProjectEmployeeVO" resultMap="project_employee_vo">

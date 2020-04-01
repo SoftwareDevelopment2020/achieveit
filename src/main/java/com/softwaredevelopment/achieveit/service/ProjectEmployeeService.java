@@ -1,6 +1,6 @@
 package com.softwaredevelopment.achieveit.service;
 
-import com.github.pagehelper.PageHelper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.pagehelper.PageInfo;
 import com.softwaredevelopment.achieveit.entity.ProjectEmployeeVO;
 import com.softwaredevelopment.achieveit.entity.request.PageSearchRequest;
@@ -27,13 +27,13 @@ public class ProjectEmployeeService extends BaseService {
     /**
      * 根据条件分页获取人员信息
      */
-    public PageInfo<ProjectEmployeeVO> getProjectEmployeeVO(PageSearchRequest<ProjectEmployeeRequest> request) {
-        ProjectEmployeeRequest condition = request.getSearchCondition();
-        PageHelper.startPage(request.getCurrent(), request.getSize());
-        List<Integer> projectEmployeeIds = projectEmployeeVOMapper.selectProjectEmployeeIds(
-                condition.getProjectId(),
-                condition.getEmployeeName(),
-                condition.getRoles());
-        return projectEmployeeIds.isEmpty() ? new PageInfo<>() : new PageInfo<>(projectEmployeeVOMapper.selectProjectEmployeeVO(projectEmployeeIds));
+    public IPage<ProjectEmployeeVO> getProjectEmployeeVO(PageSearchRequest<ProjectEmployeeRequest> request) {
+        PageInfo<Integer> pageInfo = getPageInfo(request, () -> projectEmployeeVOMapper.selectProjectEmployeeIds(
+                request.getSearchCondition().getProjectId(),
+                request.getSearchCondition().getEmployeeName(),
+                request.getSearchCondition().getRoles())
+        );
+
+        return getIPage(pageInfo, () -> projectEmployeeVOMapper.selectProjectEmployeeVO(pageInfo.getList()));
     }
 }
