@@ -1,4 +1,4 @@
-package com.softwaredevelopment.achieveit.entity;
+package com.softwaredevelopment.achieveit.entity.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

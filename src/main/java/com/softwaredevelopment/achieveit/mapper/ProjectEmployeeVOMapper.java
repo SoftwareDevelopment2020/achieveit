@@ -1,6 +1,7 @@
 package com.softwaredevelopment.achieveit.mapper;
 
 import com.softwaredevelopment.achieveit.entity.ProjectEmployeeVO;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,4 +13,10 @@ import java.util.List;
 @Repository
 public interface ProjectEmployeeVOMapper {
     List<ProjectEmployeeVO> selectProjectEmployeesByProjectId(String projectId);
+
+    List<Integer> selectProjectEmployeeIds(@Param("projectId") String projectId,
+                                           @Param("employeeName") String employeeName,
+                                           @Param("roles") List<String> roles);
+
+    List<ProjectEmployeeVO> selectProjectEmployeeVO(@Param("projectEmployeeIds") List<Integer> projectEmployeeIds);
 }

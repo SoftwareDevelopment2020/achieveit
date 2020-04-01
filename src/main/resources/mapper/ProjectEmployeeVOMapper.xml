@@ -15,7 +15,6 @@
         <collection property="permissions" resultMap="permission"/>
     </resultMap>
 
-
     <resultMap id="employee" type="com.softwaredevelopment.achieveit.PO.entity.EmployeeBasics">
         <id column="employee_id" property="id"/>
         <result column="employee_name" property="name"/>
@@ -98,4 +97,76 @@
                  project_employee.project_id = project_basics.id
         WHERE project_basics.project_id = #{projectId}
     </select>
+
+    <select id="selectProjectEmployeeIds" resultType="java.lang.Integer">
+        SELECT B.id
+
+        FROM (
+                 SELECT id
+                 FROM project_basics
+                 WHERE project_id = #{projectId}
+        ) A
+        JOIN project_employee B
+        ON A.id = B.project_id
+        JOIN employee_basics G
+        ON B.employee_id = G.id
+            <if test="employeeName != null and employeeName.trim() != ''">
+                AND G.name LIKE '%${employeeName}%'
+            </if>
+        <if test="roles != null and roles.size() > 0">
+            JOIN person_role C
+            ON B.id = C.project_employee_id
+            JOIN role_basics D
+            ON C.role_id = D.id
+                AND D.name in
+                    <foreach collection="roles" item="role" open="(" close=")" separator=",">
+                        #{role.name}
+                    </foreach>
+        </if>
+        ORDER BY G.name
+    </select>
+
+    <select id="selectProjectEmployeeVO" resultMap="project_employee_vo">
+        SELECT A.*,
+
+            B.name employee_name,
+            B.email_address employee_email_address,
+            B.department employee_department,
+            B.tel employee_tel,
+
+            D.id role_id,
+            D.name role_name,
+            D.detail role_detail,
+
+            F.id permission_id,
+            F.name permission_name,
+            F.detail permission_detail,
+
+            H.name superior_name,
+            H.email_address superior_email_address,
+            H.department superior_department,
+            H.tel superior_tel
+
+        FROM (
+            SELECT id, project_id, employee_id, join_time, exit_time, superior_id
+            FROM project_employee
+            WHERE id IN
+                <foreach collection="projectEmployeeIds" item="projectEmployeeId" open="(" close=")" separator=",">
+                    #{projectEmployeeId}
+                </foreach>
+        ) A
+        JOIN employee_basics B
+        ON A.employee_id = B.id
+        LEFT JOIN person_role C
+        ON A.id = C.project_employee_id
+        LEFT JOIN role_basics D
+        ON C.role_id = D.id
+        LEFT JOIN person_permission E
+        ON A.id = E.project_employee_id
+        LEFT JOIN permission_basics F
+        ON E.permission_id = F.id
+        LEFT JOIN employee_basics H
+        ON A.superior_id = H.id
+    </select>
+
 </mapper>

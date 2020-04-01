@@ -1,6 +1,8 @@
 package com.softwaredevelopment.achieveit.service;
 
 import com.softwaredevelopment.achieveit.AchieveitApplication;
+import com.softwaredevelopment.achieveit.entity.request.PageSearchRequest;
+import com.softwaredevelopment.achieveit.entity.request.ProjectEmployeeRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,5 +25,16 @@ class ProjectEmployeeServiceTest {
     @Test
     void getProjectEmployeeVOByProjectId() {
         projectEmployeeService.getProjectEmployeeVOByProjectId("12345678901");
+    }
+
+    @Test
+    void getProjectEmployeeVOTest() {
+        PageSearchRequest<ProjectEmployeeRequest> request = new PageSearchRequest<>();
+        request.setCurrent(1);
+        request.setSize(1);
+        ProjectEmployeeRequest condition = new ProjectEmployeeRequest();
+        condition.setProjectId("12345678901");
+        request.setSearchCondition(condition);
+        System.out.println(projectEmployeeService.getProjectEmployeeVO(request));
     }
 }

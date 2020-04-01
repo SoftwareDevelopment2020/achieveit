@@ -10,6 +10,12 @@
     <typeAliases>
         <typeAlias type="com.softwaredevelopment.achieveit.config.datasource.DruidDataSourceFactory" alias="DRUID"/>
     </typeAliases>
+    <plugins>
+        <!-- 分页插件 -->
+        <plugin interceptor="com.github.pagehelper.PageInterceptor">
+            <property name="helperDialect" value="mysql"/>
+        </plugin>
+    </plugins>
     <environments default="MySqlDataSource">
         <environment id="achieveit">
             <transactionManager type="JDBC"/>

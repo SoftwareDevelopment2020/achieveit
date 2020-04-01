@@ -3,7 +3,7 @@ package com.softwaredevelopment.achieveit.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.softwaredevelopment.achieveit.PO.entity.ProjectBasics;
-import com.softwaredevelopment.achieveit.entity.PageSearchRequest;
+import com.softwaredevelopment.achieveit.entity.request.PageSearchRequest;
 import com.softwaredevelopment.achieveit.http.response.HttpResponse;
 import com.softwaredevelopment.achieveit.service.ProjectService;
 import io.swagger.annotations.Api;
