@@ -1,6 +1,7 @@
 package com.softwaredevelopment.achieveit.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.softwaredevelopment.achieveit.PO.entity.Activity;
 import com.softwaredevelopment.achieveit.PO.entity.ManHour;
 import com.softwaredevelopment.achieveit.entity.request.PageSearchRequest;
 import com.softwaredevelopment.achieveit.http.response.HttpResponse;
@@ -9,6 +10,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author RainkQ
@@ -46,5 +49,11 @@ public class ManHourController extends BaseController {
         } else {
             return responseFail("审批失败");
         }
+    }
+
+    @ApiOperation("获取所有Activities")
+    @GetMapping("activities")
+    public List<Activity> getAllActivities() {
+        return manHourService.getAllActivities();
     }
 }
