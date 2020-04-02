@@ -53,6 +53,8 @@ public class BaseService {
     IUserService iUserService;
     @Autowired
     IRoleBasicsService iRoleBasicsService;
+    @Autowired
+    IActivityService iActivityService;
 
     @Autowired
     RedisUtils redisUtils;
