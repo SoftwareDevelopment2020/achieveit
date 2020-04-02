@@ -60,7 +60,7 @@ public class FeatureController extends BaseController {
             file.transferTo(new File(uploadPath + newName));
             return responseOK("上传成功!");
         } catch (Exception e) {
-            return responseFail("上传失败 :" + e);
+            return responseFail("上传失败 :" + e.getMessage());
         }
     }
 

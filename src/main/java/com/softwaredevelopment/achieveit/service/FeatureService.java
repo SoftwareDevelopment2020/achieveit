@@ -77,7 +77,7 @@ public class FeatureService extends BaseService {
                 features.add(nf);
             }
         } catch (Exception e) {
-            throw new BussinessException(e.getMessage(), e.getCause(), "上传文件有问题");
+            throw new BussinessException("上传文件有问题", e.getCause());
         }
         // 存入数据库
         iFeatureService.remove(new QueryWrapper<Feature>().lambda()
