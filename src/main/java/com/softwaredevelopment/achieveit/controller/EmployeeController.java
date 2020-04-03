@@ -46,4 +46,10 @@ public class EmployeeController extends BaseController {
     public HttpResponse<IPage<ProjectEmployeeVO>> getProjectEmployeeVO(@RequestBody PageSearchRequest<ProjectEmployeeRequest> request) {
         return responseOK(projectEmployeeService.getProjectEmployeeVO(request));
     }
+
+    @ApiOperation("分页查询EmployeeBasics")
+    @PostMapping("employee_basics_page")
+    public HttpResponse<IPage<EmployeeBasics>> getEmployeeBasics(@RequestBody PageSearchRequest<EmployeeBasics> request) {
+        return responseOK(projectEmployeeService.getEmployeeBasics(request));
+    }
 }

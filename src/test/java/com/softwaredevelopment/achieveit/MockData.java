@@ -183,7 +183,7 @@ public class MockData {
                 }
 
                 risk.setRelated(related.toString());
-                risk.setTrackFreq("" + num);
+                risk.setTrackFreq(num);
                 riskList.add(risk);
             }
         }

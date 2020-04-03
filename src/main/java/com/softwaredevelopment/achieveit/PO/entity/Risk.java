@@ -57,7 +57,7 @@ public class Risk implements Serializable {
     private String responsible;
 
     @ApiModelProperty(value = "风险跟踪频度")
-    private String trackFreq;
+    private Integer trackFreq;
 
     @ApiModelProperty(value = "风险相关者")
     private String related;

@@ -1,7 +1,10 @@
 package com.softwaredevelopment.achieveit.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageInfo;
+import com.softwaredevelopment.achieveit.PO.entity.EmployeeBasics;
 import com.softwaredevelopment.achieveit.entity.ProjectEmployeeVO;
 import com.softwaredevelopment.achieveit.entity.request.PageSearchRequest;
 import com.softwaredevelopment.achieveit.entity.request.ProjectEmployeeRequest;
@@ -35,5 +38,11 @@ public class ProjectEmployeeService extends BaseService {
         );
 
         return getIPage(pageInfo, () -> projectEmployeeVOMapper.selectProjectEmployeeVO(pageInfo.getList()));
+    }
+
+    public IPage<EmployeeBasics> getEmployeeBasics(PageSearchRequest<EmployeeBasics> request) {
+        return iEmployeeBasicsService.page(
+                new Page<>(request.getCurrent(), request.getSize()),
+                new QueryWrapper<>(request.getSearchCondition()));
     }
 }
