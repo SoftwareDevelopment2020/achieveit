@@ -116,7 +116,7 @@
   import Pagination from '@/components/Pagination/index'
   import {getProjects} from "@/api/project";
   import {setTable} from "@/utils/common";
-  import {isNull} from "@/utils/validate";
+  import {getNullOrValue} from "../../../utils/common";
 
   export default {
     components: {
@@ -156,9 +156,6 @@
       getStatusId (statusId) {
         return parseInt(statusId.toString().charAt(0))
       },
-      getNullOrValue(value) {
-        return isNull(value) ? null : value
-      },
       getProjects () {
         this.loading = true
         getProjects({
@@ -179,9 +176,9 @@
         this.searchValue.statusId = this.table.searchCondition.statusId
       },
       search() {
-        this.table.searchCondition.projectId = this.getNullOrValue(this.searchValue.projectId)
-        this.table.searchCondition.name = this.getNullOrValue(this.searchValue.name)
-        this.table.searchCondition.statusId = this.getNullOrValue(this.searchValue.statusId)
+        this.table.searchCondition.projectId = getNullOrValue(this.searchValue.projectId)
+        this.table.searchCondition.name = getNullOrValue(this.searchValue.name)
+        this.table.searchCondition.statusId = getNullOrValue(this.searchValue.statusId)
         this.table.page = 1
         this.getProjects()
       },

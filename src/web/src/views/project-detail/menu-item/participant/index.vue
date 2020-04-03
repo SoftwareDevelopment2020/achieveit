@@ -105,7 +105,7 @@
 <script>
   import Pagination from '@/components/Pagination/index'
   import {getProjectEmployees} from "../../../../api/employee";
-  import {setTable} from "../../../../utils/common";
+  import {getNullOrValue, setTable} from "../../../../utils/common";
   export default {
     components: {
       Pagination
@@ -159,8 +159,8 @@
           size: this.table.limit,
           searchCondition: {
             projectId: this.project.id,
-            employeeName: this.table.name,
-            roles: this.table.roles
+            employeeName: this.table.searchCondition.name,
+            roles: this.table.searchCondition.roles
           }
         }).then(response => {
           setTable(response.data, this.table, this.setSearchValue())
@@ -171,10 +171,14 @@
         })
       },
       search() {
-        console.info(this.searchValue)
+        this.table.page = 1
+        this.table.searchCondition.name = getNullOrValue(this.searchValue.name)
+        this.table.searchCondition.roles = getNullOrValue(this.searchValue.roles)
+        this.getParticipants()
       },
       setSearchValue() {
-
+        this.searchValue.name = this.table.searchCondition.name
+        this.searchValue.roles = this.table.searchCondition.roles
       },
 
       /**

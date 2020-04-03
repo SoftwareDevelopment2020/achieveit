@@ -117,7 +117,7 @@
             ON C.role_id = D.id
                 AND D.name in
                     <foreach collection="roles" item="role" open="(" close=")" separator=",">
-                        #{role.name}
+                        #{role}
                     </foreach>
         </if>
         ORDER BY B.name

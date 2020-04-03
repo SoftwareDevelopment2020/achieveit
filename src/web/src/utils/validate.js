@@ -14,6 +14,10 @@ export function isNull(item) {
     return item.trim() === ''
   }
 
+  if (isArray(item)) {
+    return item.length === 0
+  }
+
   return false
 }
 
