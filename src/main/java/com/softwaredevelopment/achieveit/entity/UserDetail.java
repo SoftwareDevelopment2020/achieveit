@@ -47,6 +47,8 @@ public class UserDetail implements UserDetails {
     @ApiModelProperty(value = "角色")
     private List<RoleBasics> roles;
 
+    private List<GrantedAuthority> authorities;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (roles == null || roles.size() == 0) {

@@ -10,6 +10,7 @@ import com.softwaredevelopment.achieveit.mapper.UserDetailMapper;
 import com.softwaredevelopment.achieveit.utils.StringHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,7 @@ import java.util.Map;
  * @version 1.0.0
  * created on 2020-02-28 11:34
  */
-@CacheConfig(cacheNames = "userdetail")
+@CacheConfig(cacheNames = "userDetail")
 @Service
 public class UserDetailService extends BaseService implements UserDetailsService {
 
@@ -41,7 +42,7 @@ public class UserDetailService extends BaseService implements UserDetailsService
      * @return
      * @throws UsernameNotFoundException
      */
-//    @Cacheable(key = "#username")
+    @Cacheable(key = "#username")
     @Override
     public UserDetail loadUserByUsername(String username) throws UsernameNotFoundException {
         UserDetail userDetail = userDetailMapper.selectOneUserByUsername(username);
