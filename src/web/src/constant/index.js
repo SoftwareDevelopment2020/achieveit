@@ -120,6 +120,33 @@ const isReturned = [{
   label: '未归还'
 }]
 
+const riskType=[{
+  id:'1',
+  value:'需求风险'
+},{
+  id:'2',
+  value:'计划和控制风险'
+},{
+  id:'3',
+  value:'技术风险'
+},{
+  id:'4',
+  value:'用户风险'
+},{
+  id:'5',
+  value:'团队风险'
+},{
+  id:'6',
+  value:'外部风险'
+},{
+  id:'7',
+  value:'组织风险'
+},{
+  id:'8',
+  value:'合同风险'
+}]
+
+
 export default {
   projectStatus,
   projectType,
@@ -127,5 +154,6 @@ export default {
   roles,
   permissions,
   deviceConditions,
-  isReturned
+  isReturned,
+  riskType
 }

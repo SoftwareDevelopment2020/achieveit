@@ -5,6 +5,7 @@
         v-model="searchValue.projectId"
         placeholder="项目ID"
         style="width: 15%;min-width: 200px"
+        name="projectIdInput"
         clearable
       >
       </el-input>
@@ -12,6 +13,7 @@
         v-model="searchValue.name"
         placeholder="项目名称"
         style="width: 20%;min-width: 200px"
+        name="projectNameInput"
         clearable
       >
       </el-input>
@@ -19,6 +21,7 @@
         v-model="searchValue.statusId"
         placeholder="项目状态"
         style="width: 15%;min-width: 120px"
+        name="projectStatusInput"
         clearable
       >
         <el-option
@@ -28,11 +31,11 @@
           :value="index">
         </el-option>
       </el-select>
-      <el-button type="primary" style="margin-left: 10px" @click="search" @keyup.enter="search">
+      <el-button type="primary" style="margin-left: 10px" @click="search" @keyup.enter="search" name="searchButton">
         <i class="el-icon-search"></i>
         <span>搜索</span>
       </el-button>
-      <el-button  v-permission="['ROLE_PM']" type="primary" @click="addProject">
+      <el-button  v-permission="['ROLE_PM']" type="primary" @click="addProject" name="newProjectButton">
         <i class="el-icon-plus"></i>
         <span>新建项目</span>
       </el-button>

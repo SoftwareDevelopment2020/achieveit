@@ -2,7 +2,7 @@
 
   <div class="app-container">
     <h3>功能列表</h3>
-    <el-tree :data="functionList" :props="defaultProps" v-if="uploading">
+    <el-tree :data="functionList" :props="defaultProps">
       <span class="custom-tree-node" slot-scope="{ node, data }">
         <span>{{ node.label }}</span>
         <span>
@@ -17,11 +17,11 @@
     <div class="components-container">
 
       <el-button :loading="downloadLoading" style="margin:0 0 20px 20px; float: right;" type="primary"
-                 icon="el-icon-document" @click="handleDownload">
+                 icon="el-icon-document" @click="handleDownload" name="downloadFunctionList">
         导出Excel
       </el-button>
-      <el-button :loading="downloadLoading" style="margin:0 0 20px 20px; float: right;" type="primary"
-                 icon="el-icon-document" @click="handleUpload">
+      <el-button :loading="uploadLoading" style="margin:0 0 20px 20px; float: right;" type="primary"
+                 icon="el-icon-document" @click="handleUpload" name="uploadFunctionList">
         上传Excel
       </el-button>
     </div>
@@ -47,7 +47,7 @@
           children: 'children',
           label: 'label'
         },
-        uploading: true,
+        uploadLoading: false,
         file: null
       }
     },
@@ -77,7 +77,8 @@
         })
         return false
       },
-      handleUpload(){
+      handleUpload() {
+        this.uploadLoading = true
         this.$store.dispatch('feature/uploadFeatures', this.file).then(response => {
           //成功上传后，清空store中的features，重新加载组件
           this.$store.dispatch('feature/setFeatures', null).then(() => {
@@ -85,11 +86,11 @@
             this.$message({
               type: 'success',
               message: '成功上传',
-              duration: 3 * 1000
+              duration: 2 * 1000
             })
           })
         }).catch(error => {
-
+          this.uploadLoading = false
         })
       },
 

@@ -1,18 +1,29 @@
 <template>
   <div>
     <div>
-      <el-select
+<!--      <el-select-->
+<!--        v-model="select"-->
+<!--        placeholder="风险类型"-->
+<!--        style="width: 15%;min-width: 120px"-->
+<!--        clearable-->
+<!--        filterable-->
+<!--        multiple-->
+<!--        allow-create-->
+<!--      >-->
+<!--        <el-option-group label="参考风险类型">-->
+<!--          <el-option-->
+<!--            v-for="(item,index) in riskTypeOptions"-->
+<!--            :key="index"-->
+<!--            :value="item.name">-->
+<!--          </el-option>-->
+<!--        </el-option-group>-->
+<!--      </el-select>-->
+      <el-autocomplete
+        class="inline-input"
         v-model="select"
+        :fetch-suggestions="querySearch"
         placeholder="风险类型"
-        style="width: 15%;min-width: 120px"
-        clearable
-      >
-        <el-option
-          v-for="(item,index) in riskTypeOptions"
-          :key="index"
-          :value="index">
-        </el-option>
-      </el-select>
+      ></el-autocomplete>
       <el-button icon="el-icon-search" circle @click="search" @keyup.enter="search">
       </el-button>
       <el-button type="primary" @click="dialogFormVisible_1 = true">
@@ -45,7 +56,8 @@
               :rows="4"
               placeholder="请输入内容"
               v-model="form_1.describe">
-            </el-input></el-form-item>
+            </el-input>
+          </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible_1 = false">取 消</el-button>
@@ -72,28 +84,43 @@
 
     <div>
       <el-table
-        :data="table.data"
+        :data="risks"
         style="width: 100%">
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-form label-position="left" inline class="demo-table-expand">
               <el-form-item label="风险 ID">
-                <span>{{ props.row.riskID }}</span>
+                <span>{{ props.row.id }}</span>
               </el-form-item>
               <el-form-item label="风险类型">
                 <span>{{ props.row.type }}</span>
               </el-form-item>
-              <el-form-item label="创建者">
-                <span>{{ props.row.creator }}</span>
+              <el-form-item label="风险相关者">
+                <span>{{ props.row.related }}</span>
               </el-form-item>
-              <el-form-item label="创建时间">
-                <span>{{ props.row.time }}</span>
+              <el-form-item label="风险责任人">
+                <span>{{ props.row.responsible }}</span>
               </el-form-item>
-              <el-form-item label="风险等级评估">
-                <span>{{ props.row.prob }}</span>
+              <el-form-item label="风险影响度">
+                <span>{{ props.row.affect }}</span>
+              </el-form-item>
+              <el-form-item label="风险应对">
+                <span>{{ props.row.react }}</span>
+              </el-form-item>
+              <el-form-item label="风险状态">
+                <span>{{ props.row.status }}</span>
+              </el-form-item>
+              <el-form-item label="应对策略">
+                <span>{{ props.row.strategy }}</span>
+              </el-form-item>
+              <el-form-item label="跟踪频度">
+                <span>{{ props.row.trackFreq }}</span>
+              </el-form-item>
+              <el-form-item label="风险级别">
+                <span>{{ props.row.level }}</span>
               </el-form-item>
               <el-form-item label="风险描述">
-                <span>{{ props.row.desc }}</span>
+                <span>{{ props.row.description }}</span>
               </el-form-item>
             </el-form>
           </template>
@@ -107,12 +134,12 @@
           prop="type">
         </el-table-column>
         <el-table-column
-          label="创建者"
-          prop="creator">
+          label="风险责任人"
+          prop="responsible">
         </el-table-column>
         <el-table-column
-          label="创建时间"
-          prop="time">
+          label="风险状态"
+          prop="status">
         </el-table-column>
         <el-table-column
           align="right">
@@ -126,19 +153,20 @@
         </el-table-column>
       </el-table>
 
-      <pagination :total="table.total" :page.sync="table.page" :limit.sync="table.limit" @pagination="getRisk"></pagination>
     </div>
   </div>
 </template>
 
-<style>
+<style scoped>
   .demo-table-expand {
     font-size: 0;
   }
+
   .demo-table-expand label {
     width: 90px;
     color: #99a9bf;
   }
+
   .demo-table-expand .el-form-item {
     margin-right: 0;
     margin-bottom: 0;
@@ -148,6 +176,7 @@
 
 <script>
   import Pagination from '@/components/Pagination/index'
+
   export default {
     components: {
       Pagination
@@ -155,38 +184,65 @@
     data() {
       return {
         select: '',
-        riskTypeOptions:this.Constant.riskType, //此处未设置
+        riskTypeOptions: this.Constant.riskType,
         dialogFormVisible_1: false,
-        form_1:{
-          type:'',
-          prob:'',
-          describe:''
+        form_1: {
+          type: '',
+          prob: '',
+          describe: ''
         },
         dialogFormVisible_2: false,
-        form_2:{
-          riskId:''
+        form_2: {
+          riskId: ''
         },
         formLabelWidth: '120px',
-        table: {
-          data: [{
-            riskID: '12987122',
-            type: '技术风险',
-            creator: 'wulei',
-            time: '',
-            prob: '较低',
-            desc: 'XXXXXXXXXXX'
-
-          }],
-          total: 0,
-          page: 1,
-          limit: 10
-        }
+        risks: [],
+        newRisk: {
+          "affect": 0,
+          "description": "",
+          "id": 0,
+          "level": 0,
+          "react": "",
+          "related": "",
+          "responsible": "",
+          "status": 0,
+          "strategy": "",
+          "trackFreq": "",
+          "type": ""
+        }//风险 ID，风险类型，风险描述，风险级别，风险影响度，风险应对策略，风险状态，风险责任人，风险跟踪频度，风险相关者
       }
     },
     methods: {
       handleDelete(index, row) {
         console.log(index, row);
+      },
+      getRisk() {
+
+      },
+      search() {
+
+      },
+      querySearch(queryString, cb) {
+        const riskTypes = this.riskTypeOptions;
+        const results = queryString ? riskTypes.filter(this.createFilter(queryString)) : riskTypes;
+        cb(results);
+      },
+      createFilter(queryString) {
+        return (riskType) => {
+          return (riskType.value.toLowerCase().indexOf(queryString.toLowerCase()) !== -1);
+        };
+      },
+    },
+    mounted() {
+      const risks = this.$store.getters.risks
+      if (risks == null) {
+        this.$store.dispatch('risk/getRisks').then(response => {
+          this.risks = response
+        })
+      } else {
+        this.risks = risks
       }
+
     }
   }
 </script>

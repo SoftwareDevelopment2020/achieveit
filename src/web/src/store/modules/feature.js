@@ -34,7 +34,7 @@ const actions = {
   getFeatures({commit}) {
     return new Promise((resolve, reject) => {
       getFeatures(store.getters.projectId).then(response => {
-        console.log("后端获取")
+        console.log("后端获取功能列表")
         commit('SET_FEATURES', response.data)
         resolve(response.data)
       }).catch(error => {

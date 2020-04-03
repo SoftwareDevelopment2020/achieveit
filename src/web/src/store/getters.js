@@ -13,6 +13,7 @@ const getters = {
   errorLogs: state => state.errorLog.logs,
   projectId: state => state.project.projectId,
   project: state => state.project.project,
-  features: state => state.feature.features
+  features: state => state.feature.features,
+  risks: state => state.risk.risks
 }
 export default getters
