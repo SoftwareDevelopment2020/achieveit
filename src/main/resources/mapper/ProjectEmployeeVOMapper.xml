@@ -16,7 +16,8 @@
     </resultMap>
 
     <resultMap id="employee" type="com.softwaredevelopment.achieveit.PO.entity.EmployeeBasics">
-        <id column="employee_id" property="id"/>
+        <id column="employee_key" property="id"/>
+        <result column="employee_id" property="employeeId" />
         <result column="employee_name" property="name"/>
         <result column="employee_email_address" property="emailAddress"/>
         <result column="employee_department" property="department"/>
@@ -24,7 +25,8 @@
     </resultMap>
 
     <resultMap id="superior" type="com.softwaredevelopment.achieveit.PO.entity.EmployeeBasics">
-        <id column="superior_id" property="id"/>
+        <id column="superior_key" property="id"/>
+        <result column="superior_id" property="employeeId" />
         <result column="superior_name" property="name"/>
         <result column="superior_email_address" property="emailAddress"/>
         <result column="superior_department" property="department"/>
@@ -124,12 +126,19 @@
         ) TA
         JOIN employee_basics TB
         ON TA.employee_id = TB.id
+        <if test="employeeId != null and employeeId != ''">
+            AND TB.employee_id LIKE '%${employeeId}%'
+        </if>
+        <if test="employeeName != null and employeeName != ''">
+            AND TB.name LIKE '%${empoyeeName}%'
+        </if>
         ORDER BY TA.exit_time, TA.join_time, TB.name
     </select>
 
     <select id="selectProjectEmployeeVO" resultMap="project_employee_vo">
         SELECT A.*,
 
+            B.employee_id employee_id,
             B.name employee_name,
             B.email_address employee_email_address,
             B.department employee_department,
@@ -143,13 +152,14 @@
             F.name permission_name,
             F.detail permission_detail,
 
+            H.employee_id superior_id,
             H.name superior_name,
             H.email_address superior_email_address,
             H.department superior_department,
             H.tel superior_tel
 
         FROM (
-            SELECT id, project_id, employee_id, join_time, exit_time, superior_id
+            SELECT id, project_id, employee_id employee_key, join_time, exit_time, superior_id superior_key
             FROM project_employee
             WHERE id IN
                 <foreach collection="projectEmployeeIds" item="projectEmployeeId" open="(" close=")" separator=",">
@@ -157,7 +167,7 @@
                 </foreach>
         ) A
         JOIN employee_basics B
-        ON A.employee_id = B.id
+        ON A.employee_key = B.id
         LEFT JOIN person_role C
         ON A.id = C.project_employee_id
         LEFT JOIN role_basics D
@@ -167,7 +177,8 @@
         LEFT JOIN permission_basics F
         ON E.permission_id = F.id
         LEFT JOIN employee_basics H
-        ON A.superior_id = H.id
+        ON A.superior_key = H.id
+        ORDER BY A.exit_time, A.join_time, B.name
     </select>
 
 </mapper>
