@@ -14,7 +14,9 @@ import java.util.List;
 public interface ProjectEmployeeVOMapper {
     List<ProjectEmployeeVO> selectProjectEmployeesByProjectId(String projectId);
 
+    // TODO 员工ID？表中没有这个字段
     List<Integer> selectProjectEmployeeIds(@Param("projectId") Integer projectId,
+                                           @Param("employeeId") String employeeId,
                                            @Param("employeeName") String employeeName,
                                            @Param("roles") List<String> roles);
 

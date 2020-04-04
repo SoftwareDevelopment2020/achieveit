@@ -2,7 +2,14 @@
   <div>
     <div>
       <el-input
-        v-model="searchValue.name"
+        v-model="searchValue.employeeId"
+        placeholder="员工ID"
+        style="width: 20%;min-width: 200px"
+        clearable
+      >
+      </el-input>
+      <el-input
+        v-model="searchValue.employeeName"
         placeholder="员工姓名"
         style="width: 20%;min-width: 200px"
         clearable
@@ -38,14 +45,18 @@
         style="width: 100%; margin-top: 30px"
       >
         <el-table-column
-          fixed="left"
           type="index"
           :index="indexMethod"
           align="center"
         >
         </el-table-column>
         <el-table-column
-          fixed="left"
+          prop="employeeBasics.employeeId"
+          label="员工ID"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
           prop="employeeBasics.name"
           label="姓名"
           align="center"
@@ -68,22 +79,39 @@
           align="center"
         >
           <template slot-scope="{row}">
-            <p v-for="permission in row.permissions" :key="permission.id">{{permission.detail}}</p>
+            <p v-for="permission in row.permissions" :key="permission.id">{{permission.name | permissionDefine}}</p>
           </template>
         </el-table-column>
         <el-table-column
           prop="employeeBasics"
           label="基本信息"
-          width="150"
-          align="center"
+          width="300"
+          header-align="center"
         >
+          <template slot-scope="{row}">
+            <el-card>
+              <p>部门：{{row.employeeBasics.department}}</p>
+              <p>电话：{{row.employeeBasics.tel}}</p>
+              <p>邮件地址：{{row.employeeBasics.emailAddress}}</p>
+            </el-card>
+          </template>
         </el-table-column>
         <el-table-column
           prop="superiorBasics"
           label="上级"
-          width="150"
-          align="center"
+          width="300"
+          header-align="center"
         >
+          <template slot-scope="{row}">
+            <el-card v-if="row.superiorBasics">
+              <p>{{row.superiorBasics.name}}（{{row.superiorBasics.employeeId}}） {{row.superiorBasics.department}}</p>
+              <p>电话：{{row.superiorBasics.tel}}</p>
+              <p>邮件地址：{{row.superiorBasics.emailAddress}}</p>
+            </el-card>
+            <span v-else>
+              <p align="center">无</p>
+            </span>
+          </template>
         </el-table-column>
         <el-table-column
           min-width="200">
@@ -120,13 +148,15 @@
           page: 1,
           limit: 10,
           searchCondition: {
-            name: null,
+            employeeId: null,
+            employeeName: null,
             roles: null
           }
         },
         roleOptions: this.Constant.roles,
         searchValue: {
-          name: '',
+          employeeId: '',
+          employeeName: '',
           roles: []
         }
       }
@@ -159,7 +189,8 @@
           size: this.table.limit,
           searchCondition: {
             projectId: this.project.id,
-            employeeName: this.table.searchCondition.name,
+            employeeId: this.table.searchCondition.employeeId,
+            employeeName: this.table.searchCondition.employeeName,
             roles: this.table.searchCondition.roles
           }
         }).then(response => {
@@ -172,12 +203,14 @@
       },
       search() {
         this.table.page = 1
-        this.table.searchCondition.name = getNullOrValue(this.searchValue.name)
+        this.table.searchCondition.employeeId = getNullOrValue(this.searchValue.employeeId)
+        this.table.searchCondition.employeeName = getNullOrValue(this.searchValue.employeeName)
         this.table.searchCondition.roles = getNullOrValue(this.searchValue.roles)
         this.getParticipants()
       },
       setSearchValue() {
-        this.searchValue.name = this.table.searchCondition.name
+        this.searchValue.employeeId = this.table.searchCondition.employeeId
+        this.searchValue.employeeName = this.table.searchCondition.employeeName
         this.searchValue.roles = this.table.searchCondition.roles
       },
 

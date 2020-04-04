@@ -99,28 +99,32 @@
     </select>
 
     <select id="selectProjectEmployeeIds" resultType="java.lang.Integer">
-        SELECT A.id
+        SELECT TA.id
         FROM (
-                 SELECT id, employee_id
-                 FROM project_employee
-                 WHERE project_id = #{projectId}
-        ) A
-        JOIN employee_basics B
-        ON A.employee_id = B.id
-            <if test="employeeName != null and employeeName.trim() != ''">
-                AND B.name LIKE '%${employeeName}%'
-            </if>
-        <if test="roles != null and roles.size() > 0">
-            JOIN person_role C
-            ON A.id = C.project_employee_id
-            JOIN role_basics D
-            ON C.role_id = D.id
-                AND D.name in
-                    <foreach collection="roles" item="role" open="(" close=")" separator=",">
-                        #{role}
-                    </foreach>
-        </if>
-        ORDER BY B.name
+            SELECT A.*
+            FROM project_employee A
+            WHERE A.project_id = #{projectId}
+            AND A.id IN (
+                SELECT E.project_employee_id id
+                FROM (
+                    SELECT C.id
+                        FROM role_basics C
+                        WHERE C.name &lt;&gt; 'ROLE_SUPERIOR'
+                            AND C.name NOT LIKE 'ROLE_GLOBAL_%'
+                            <if test="roles != null and roles.size() > 0">
+                                AND C.name in
+                                <foreach collection="roles" item="role" open="(" close=")" separator=",">
+                                    #{role}
+                                </foreach>
+                            </if>
+                ) D
+                JOIN person_role E
+                ON D.id = E.role_id
+            )
+        ) TA
+        JOIN employee_basics TB
+        ON TA.employee_id = TB.id
+        ORDER BY TA.exit_time, TA.join_time, TB.name
     </select>
 
     <select id="selectProjectEmployeeVO" resultMap="project_employee_vo">

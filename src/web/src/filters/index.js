@@ -66,3 +66,21 @@ export function toThousandFilter(num) {
 export function uppercaseFirst(string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
 }
+
+/**
+ * 权限
+ */
+export function permissionDefine(key) {
+  switch (key) {
+    case 'git':
+      return 'git'
+    case 'filesys':
+      return '文件系统'
+    case 'mail':
+      return '邮件系统'
+    case 'manhour':
+      return '登记工时'
+    case 'bug':
+      return '缺陷跟踪管理'
+  }
+}

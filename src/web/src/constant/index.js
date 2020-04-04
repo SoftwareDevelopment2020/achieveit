@@ -102,6 +102,12 @@ const permissions = [{
 }, {
   name: 'mail',
   detail: '邮件系统'
+}, {
+  name: 'manhour',
+  detail: '登记工时'
+}, {
+  name: 'bug',
+  detail: '缺陷跟踪管理'
 }]
 
 const deviceConditions = [{

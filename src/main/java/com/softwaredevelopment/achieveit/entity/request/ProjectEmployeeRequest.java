@@ -13,6 +13,9 @@ public class ProjectEmployeeRequest {
     @ApiModelProperty(value = "项目ID", required = true)
     public Integer projectId;
 
+    @ApiModelProperty(value = "员工ID")
+    public String employeeId;
+
     @ApiModelProperty(value = "员工姓名")
     public String employeeName;
 

@@ -33,6 +33,7 @@ public class ProjectEmployeeService extends BaseService {
     public IPage<ProjectEmployeeVO> getProjectEmployeeVO(PageSearchRequest<ProjectEmployeeRequest> request) {
         PageInfo<Integer> pageInfo = getPageInfo(request, () -> projectEmployeeVOMapper.selectProjectEmployeeIds(
                 request.getSearchCondition().getProjectId(),
+                request.getSearchCondition().getEmployeeId(),
                 request.getSearchCondition().getEmployeeName(),
                 request.getSearchCondition().getRoles())
         );

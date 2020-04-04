@@ -28,6 +28,8 @@ public class EmployeeBasics implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private String employeeId;
+
     private String name;
 
     private String emailAddress;
