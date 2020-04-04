@@ -32,16 +32,16 @@ export function getProjects(data) {
 }
 
 /**
+ * 获取当前项目信息
+ */
+export function getProjectById(data) {
+  return get('/select_project_by_id?id=' + (data.id ? data.id : ''))
+}
+
+/**
  * 更新项目基本信息
- * @param projectBasics
- * @returns {AxiosPromise}
  */
 export function updateProject(projectBasics) {
-  // return request({
-  //   url: '/project/update_project',
-  //   method: post,
-  //   data: projectBasics
-  // })
   return post('/update_project', projectBasics)
 }
 

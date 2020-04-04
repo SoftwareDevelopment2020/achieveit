@@ -50,33 +50,21 @@ public class UserDetailService extends BaseService implements UserDetailsService
             throw new UsernameNotFoundException("用户不存在");
         }
 
-
-        // 获取角色
-        int userId = userDetail.getId();
-        // 先拿出所有的角色基本信息
-        List<RoleBasics> roleBasics = iRoleBasicsService.list();
-        Map<Integer, RoleBasics> roleBasicsMap = new HashMap<>();
-        // 放入map中好取
-        for (RoleBasics rb :
-                roleBasics) {
-            roleBasicsMap.put(rb.getId(), rb);
-        }
+        // region 获取角色
         // 根据userId拿到userRole的映射
-        List<UserRole> userRolesByUserId = iUserRoleService.list(new QueryWrapper<UserRole>().eq("user_id", userId));
+        List<UserRole> userRolesByUserId = iUserRoleService.list(new QueryWrapper<UserRole>().eq("user_id", userDetail.getId()));
         // 如果有角色
         List<RoleBasics> resultRoles = new ArrayList<>();
         if (userRolesByUserId.size() > 0) {
             // 从map中拿出角色
-            for (UserRole ur :
-                    userRolesByUserId) {
-                RoleBasics basics = roleBasicsMap.get(ur.getRoleId());
+            for (UserRole ur : userRolesByUserId) {
+                RoleBasics basics = getRoleBasicsMap().get(ur.getRoleId());
                 resultRoles.add(basics);
             }
-            // 放入userDetail
         }
+        // 放入userDetail
         userDetail.setRoles(resultRoles);
-        // 获取角色完成
-
+        // endregion 获取角色完成
 
         // 如果有这个employee信息 拿取employee信息和权限
         if (userDetail.getEmployeeId() != null) {

@@ -43,6 +43,12 @@ public class ProjectController extends BaseController {
         return responseOK(projectService.searchProjects(new Page<>(search.getCurrent(), search.getSize()), search.getSearchCondition()));
     }
 
+    @ApiOperation("根据id获取project")
+    @GetMapping("select_project_by_id")
+    public HttpResponse<ProjectBasics> selectProjectById(Integer id) throws Exception {
+        return responseOK(projectService.selectProjectById(id));
+    }
+
     @ApiOperation("删除项目接口 测试用")
     @PostMapping("delete_project")
     public HttpResponse<String> deleteProjectAndItsData(String projectId) {

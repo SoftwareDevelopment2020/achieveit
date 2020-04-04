@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.softwaredevelopment.achieveit.PO.entity.ProjectBasics;
+import com.softwaredevelopment.achieveit.PO.entity.RoleBasics;
 import com.softwaredevelopment.achieveit.PO.service.*;
 import com.softwaredevelopment.achieveit.controller.BussinessException;
 import com.softwaredevelopment.achieveit.entity.UserDetail;
@@ -19,6 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author RainkQ
@@ -74,6 +78,21 @@ public class BaseService {
     public Integer projectIdToId(String projectId) {
         return iProjectBasicsService.getOne(
                 new QueryWrapper<ProjectBasics>().lambda().eq(ProjectBasics::getProjectId, projectId)).getId();
+    }
+
+    /**
+     * 获取角色定义
+     */
+    private Map<Integer, RoleBasics> roleBasicsMap = null;
+    public Map<Integer, RoleBasics> getRoleBasicsMap() {
+        if (roleBasicsMap == null) {
+            // 先拿出所有的角色基本信息
+            List<RoleBasics> roleBasics = iRoleBasicsService.list();
+            // 转为map
+            roleBasicsMap = roleBasics.stream().collect(Collectors.toMap(RoleBasics::getId, Function.identity()));
+        }
+
+        return roleBasicsMap;
     }
 
     public String idToProjectId(Integer id) {

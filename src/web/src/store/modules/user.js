@@ -1,4 +1,4 @@
-import {login, logout, getInfo} from '@/api/user'
+import {login, getInfo} from '@/api/user'
 import {getToken, setToken, removeToken} from '@/utils/auth'
 import router, {resetRouter} from '@/router'
 
@@ -6,8 +6,6 @@ const state = {
   token: getToken(),
   username: '',
   name: '',
-  avatar: '',
-  introduction: '',
   roles: []
 }
 
@@ -15,14 +13,8 @@ const mutations = {
   SET_TOKEN: (state, token) => {
     state.token = token
   },
-  SET_INTRODUCTION: (state, introduction) => {
-    state.introduction = introduction
-  },
   SET_NAME: (state, name) => {
     state.name = name
-  },
-  SET_AVATAR: (state, avatar) => {
-    state.avatar = avatar
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
@@ -54,17 +46,8 @@ const actions = {
   },
 
   // get user info
-  getInfo({commit, state}) {
-    // const response = {'code': 20000,
-    //   'data': {
-    //     'roles': ['admin'],
-    //     'introduction': 'I am a super administrator',
-    //     'avatar': 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
-    //     'name': 'Super Admin'
-    //   }
-    // }
+  getInfo({commit}) {
     return new Promise((resolve, reject) => {
-
       getInfo().then(response => {
         const {data} = response
         var roles = []
@@ -83,6 +66,19 @@ const actions = {
         reject(err)
       })
     })
+  },
+  // set user info
+  setInfo({commit}, {userDetail, roles}) {
+    const thisRoles = []
+    if (roles) {
+      roles.forEach(item => {
+        console.log(item)
+        thisRoles.push(item.name)
+      })
+    }
+    commit('SET_ROLES', thisRoles)
+    commit('SET_USERNAME', userDetail.username)
+    commit('SET_NAME', userDetail.name)
   },
 
   // user logout

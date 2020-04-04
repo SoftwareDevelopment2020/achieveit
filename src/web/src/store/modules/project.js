@@ -1,11 +1,17 @@
 import {updateProject, getProjects} from "@/api/project";
 import {Message} from 'element-ui'
+import {getProjectById} from "../../api/project";
+import store from "../index";
 
 const state = {
+  id: null,
   projectId: null,
   project: null
 }
 const mutations = {
+  SET_ID: (state, id) => {
+    state.id = id
+  },
   SET_PROJECT_ID: (state, projectId) => {
     state.projectId = projectId
   },
@@ -18,6 +24,7 @@ const actions = {
   setProject({commit, dispatch}, project) {
     return new Promise((resolve, reject) => {
       if (project !== null) {
+        commit('SET_ID', project.id)
         commit('SET_PROJECT_ID', project.projectId)
         commit('SET_PROJECT', project)
       }
@@ -45,12 +52,18 @@ const actions = {
       })
     })
   },
-  getCurrentProject({commit}, projectId) {
+  getCurrentProject({dispatch, state}, id) {
     return new Promise((resolve, reject) => {
-      getProjects({searchCondition: {projectId: projectId}}).then(response => {
-        console.log('成功获取当前选择项目信息')
-        console.log(response.data.records[0])
-        resolve(response.data.records[0])
+      getProjectById({id: id}).then(async response => {
+        const project = response.data
+        if (id) {
+          await dispatch('setProject', project)
+        }
+        // 设定角色信息
+        const { userDetail, roles } = project
+        await store.dispatch('user/setInfo',{userDetail, roles}, {root: true})
+
+        resolve(project)
       }).catch(error => {
         reject(error)
       })

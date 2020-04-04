@@ -1,7 +1,9 @@
 package com.softwaredevelopment.achieveit.PO.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.softwaredevelopment.achieveit.entity.UserDetail;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -12,6 +14,7 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * <p>
@@ -133,6 +136,14 @@ public class ProjectBasics implements Serializable {
 
     @ApiModelProperty(value = "QA总结")
     private Boolean qaSummary;
+
+    @ApiModelProperty(value = "角色")
+    @TableField(exist = false)
+    private List<RoleBasics> roles;
+
+    @ApiModelProperty(value = "用户信息")
+    @TableField(exist = false)
+    private UserDetail userDetail;
 
     @Override
     public String toString() {

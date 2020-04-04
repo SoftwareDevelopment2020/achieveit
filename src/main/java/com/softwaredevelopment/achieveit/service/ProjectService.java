@@ -16,6 +16,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author RainkQ
@@ -110,6 +111,53 @@ public class ProjectService extends BaseService {
         }
 
         return iProjectBasicsService.page(page, qw);
+    }
+
+    /**
+     * 根据id获取project
+     */
+    public ProjectBasics selectProjectById(Integer id) throws Exception {
+        // 当前用户信息
+        UserDetail userDetail = currentUserDetail();
+
+        ProjectBasics projectBasics = new ProjectBasics();
+
+        if (id == null) {
+            // 项目id为空，只拿global角色
+            projectBasics.setRoles(userDetail.getRoles());
+            // 设置用户信息
+            projectBasics.setUserDetail(userDetail);
+            return projectBasics;
+        }
+
+        // 根据id获取project
+        projectBasics = iProjectBasicsService.getById(id);
+        // region 获取权限
+        List<RoleBasics> roles = new ArrayList<>();
+        // 获取project权限
+        ProjectEmployee projectEmployee = iProjectEmployeeService
+                .getOne(new QueryWrapper<ProjectEmployee>()
+                        .eq("project_id", id)
+                        .eq("employee_id", userDetail.getEmployeeId()));
+        if (projectEmployee != null) {
+            List<PersonRole> personRoles = iPersonRoleService
+                    .list(new QueryWrapper<PersonRole>()
+                            .eq("project_employee_id", projectEmployee.getId()));
+            Map<Integer, RoleBasics> roleBasicsMap = getRoleBasicsMap();
+            for (PersonRole personRole : personRoles) {
+                roles.add(roleBasicsMap.get(personRole.getRoleId()));
+            }
+        }
+        // 获取global权限
+        roles.addAll(userDetail.getRoles());
+        // 设置权限
+        projectBasics.setRoles(roles);
+        // endregion
+
+        // 设置用户信息
+        projectBasics.setUserDetail(userDetail);
+
+        return projectBasics;
     }
 
     /**

@@ -23,7 +23,7 @@
         this.searchPage = !this.searchPage
       },
       selectProject (project) {
-        this.$store.dispatch('project/setProject', project)
+        this.$store.dispatch('project/getCurrentProject', project.id)
         this.$router.replace({
           path: '/project-detail'
         })
