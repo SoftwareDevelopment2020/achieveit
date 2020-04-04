@@ -36,8 +36,8 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="风险责任人" :label-width="formLabelWidth">
-            <el-select v-model="newRisk.responsible" placeholder="风险责任人" multiple>
+          <el-form-item label="风险责任人" :label-width="formLabelWidth" prop="responsible">
+            <el-select v-model="newRisk.responsible" placeholder="风险责任人">
               <el-option v-for="employee in employees" :key="employee.id" :label="employee.name" :value="employee.id">
                 <span style="float: left">{{ employee.name }}</span>
                 <span style="float: right; color: #8492a6; font-size: 13px">{{ employee.id }}</span>
@@ -122,7 +122,7 @@
                 <span>{{ props.row.type }}</span>
               </el-form-item>
               <el-form-item label="风险相关者">
-                <span>{{ props.row.related.name }}</span>
+                <span v-for="item in props.row.related">{{ item.name+" " }}</span>
               </el-form-item>
               <el-form-item label="风险责任人">
                 <span>{{ props.row.responsible.name }}</span>
@@ -161,7 +161,7 @@
         </el-table-column>
         <el-table-column
           label="风险责任人"
-          prop="responsible">
+          prop="responsible.name">
         </el-table-column>
         <el-table-column
           label="风险状态"
@@ -236,7 +236,7 @@
           "status": "",
           "strategy": "",
           "trackFreq": "",
-          "type": ""
+          "type": "",
         }//风险 ID，风险类型，风险描述，风险级别，风险影响度，风险应对策略，风险状态，风险责任人，风险跟踪频度，风险相关者
       }
     },
@@ -275,17 +275,22 @@
         }
       },
       submitRisk() {
-        this.$refs['newRisk'].validate((valid)=>{
-          if(valid){
+        this.$refs['newRisk'].validate((valid) => {
+          if (valid) {
             this.$store.dispatch('risk/addRisk', this.newRisk).then(() => {
-              this.reload();
-              this.$message({
-                type: 'success',
-                message: '风险新增成功',
-                duration: '2*1000'
+              this.$store.dispatch('risk/setRisks', null).then(() => {
+                this.reload();
+                this.$message({
+                  type: 'success',
+                  message: '风险新增成功',
+                  duration: 2*1000
+                })
               })
+
+            }).catch(err => {
+
             })
-          }else {
+          } else {
             this.$message({
               message: '请完整填写所需字段',
               type: 'error',

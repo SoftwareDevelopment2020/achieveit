@@ -22,13 +22,26 @@ const actions = {
       })
     })
   },
-  addRisk(risk) {
+  addRisk({}, newRisk) {
+    const data = {
+      'risk': newRisk,
+      'projectId': store.getters.projectId
+    }
+    newRisk.related = newRisk.related.join(',')
+    console.log(newRisk)
     return new Promise((resolve, reject) => {
-      addRisk(store.getters.projectId, risk).then(response => {
+      addRisk(store.getters.projectId, newRisk).then(response => {
         resolve(response)
       }).catch(error => {
         reject(error)
       })
+    })
+
+  },
+  setRisks({commit}, data) {
+    return new Promise(resolve => {
+      commit('SET_RISKS', data)
+      resolve()
     })
 
   }

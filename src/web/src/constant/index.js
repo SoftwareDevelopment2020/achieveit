@@ -127,65 +127,65 @@ const isReturned = [{
 }]
 
 const riskType = [{
-  id: '1',
+  id: '0',
   value: '需求风险'
 }, {
-  id: '2',
+  id: '1',
   value: '计划和控制风险'
 }, {
-  id: '3',
+  id: '2',
   value: '技术风险'
 }, {
-  id: '4',
+  id: '3',
   value: '用户风险'
 }, {
-  id: '5',
+  id: '4',
   value: '团队风险'
 }, {
-  id: '6',
+  id: '5',
   value: '外部风险'
 }, {
-  id: '7',
+  id: '6',
   value: '组织风险'
 }, {
-  id: '8',
+  id: '7',
   value: '合同风险'
 }]
 
 const riskAffect = [
   {
-    id: '1',
+    id: '0',
     value: '严重影响'
   },
   {
-    id: '2',
+    id: '1',
     value: '较大影响'
   },
   {
-    id: '3',
+    id: '2',
     value: '中等影响'
   },
   {
-    id: '4',
+    id: '3',
     value: '较小影响'
   },
   {
-    id: '5',
+    id: '4',
     value: '可忽略影响'
   }
 ]
 
 const riskLevel = [
   {
-    id: '1',
+    id: '0',
     value: '高'
   },
   {
-    id: '2',
+    id: '1',
     value: '中'
   },
   {
-    id: '3',
+    id: '2',
     value: '低'
   }
 ]
@@ -221,9 +221,9 @@ const riskRules = {
   level: [
     { required: true, message: '请选择风险级别'}
   ],
-  // responsible: [
-  //   { required: true, message: '请选择风险负责人'}
-  // ],
+  responsible: [
+    { required: true, message: '请选择风险负责人',trigger:'change'}
+  ],
   // related: [
   //   { required: true, message: '请选择风险相关者', }
   // ],
