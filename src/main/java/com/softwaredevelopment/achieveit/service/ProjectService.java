@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.DecimalFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -222,7 +223,7 @@ public class ProjectService extends BaseService {
 
     /**
      * 插入新ProjectBasics
-     *
+     * TODO 添加新项目中 项目上级的ID 不应该填物理ID，而是员工ID或者姓名，从外部系统导入或者直接读表获取物理ID  后续这一块需要进行优化
      * @param newProjectBasics
      * @return 插入不成功返回false
      */
@@ -271,7 +272,16 @@ public class ProjectService extends BaseService {
             ProjectEmployee projectEmployee = new ProjectEmployee();
             projectEmployee.setEmployeeId(userDetail.getEmployeeId());
             projectEmployee.setProjectId(newProjectBasics.getId());
+            projectEmployee.setSuperiorId(newProjectBasics.getSuperior());
+            projectEmployee.setJoinTime(LocalDate.now());
             iProjectEmployeeService.save(projectEmployee);
+
+            // 上级添加到项目中
+            ProjectEmployee superior = new ProjectEmployee();
+            superior.setEmployeeId(newProjectBasics.getSuperior());
+            superior.setProjectId(newProjectBasics.getId());
+            superior.setJoinTime(LocalDate.now());
+            iProjectEmployeeService.save(superior);
 
         } catch (Exception e) {
             throw new BussinessException(e.getMessage(), e.getCause(), "立项失败");
