@@ -33,7 +33,7 @@
         <i class="el-icon-search"></i>
         <span>搜索</span>
       </el-button>
-      <el-button v-if="canEdit" v-permission="['ROLE_PM']" type="primary" @click="addEmployee">
+      <el-button v-if="canEdit()" v-permission="['ROLE_PM']" type="primary" @click="addEmployee">
         <i class="el-icon-plus"></i>
         <span>添加人员</span>
       </el-button>
@@ -116,7 +116,7 @@
         <el-table-column
           min-width="200">
           <template slot-scope="{ row }">
-            <span v-if="canEdit" v-permission="['ROLE_PM']">
+            <span v-if="canEdit()" v-permission="['ROLE_PM']">
               <el-button type="text" size="mini" @click="setRoleDialog(row)">设置角色</el-button>
               <el-button type="text" size="mini" @click="setPermissionDialog(row)">设置权限</el-button>
               <el-button type="text" size="mini" @click="deleteEmployee(row)">删除</el-button>
