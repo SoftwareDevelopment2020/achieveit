@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageInfo;
 import com.softwaredevelopment.achieveit.PO.entity.EmployeeBasics;
+import com.softwaredevelopment.achieveit.PO.entity.PersonRole;
+import com.softwaredevelopment.achieveit.PO.entity.ProjectEmployee;
+import com.softwaredevelopment.achieveit.PO.entity.RoleBasics;
 import com.softwaredevelopment.achieveit.entity.ProjectEmployeeVO;
 import com.softwaredevelopment.achieveit.entity.request.PageSearchRequest;
 import com.softwaredevelopment.achieveit.entity.request.ProjectEmployeeRequest;
@@ -13,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author RainkQ
@@ -45,5 +49,29 @@ public class ProjectEmployeeService extends BaseService {
         return iEmployeeBasicsService.page(
                 new Page<>(request.getCurrent(), request.getSize()),
                 new QueryWrapper<>(request.getSearchCondition()));
+    }
+
+    /**
+     * 按person查roles
+     *
+     * @param employeeId
+     * @param projectId
+     * @return
+     */
+    public List<RoleBasics> getRolesByPerson(Integer employeeId, Integer projectId) {
+        ProjectEmployee one = iProjectEmployeeService.getOne(
+                new QueryWrapper<ProjectEmployee>().lambda()
+                        .eq(ProjectEmployee::getEmployeeId, employeeId)
+                        .eq(ProjectEmployee::getProjectId, projectId)
+        );
+        List<PersonRole> personRoles = iPersonRoleService.list(
+                new QueryWrapper<PersonRole>().lambda().eq(PersonRole::getProjectEmployeeId, one.getId())
+        );
+        List<RoleBasics> roleBasics =
+                iRoleBasicsService.listByIds(
+                        personRoles.stream()
+                                .map(PersonRole::getRoleId)
+                                .collect(Collectors.toList()));
+        return roleBasics;
     }
 }

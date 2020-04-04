@@ -2,6 +2,7 @@ package com.softwaredevelopment.achieveit.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.softwaredevelopment.achieveit.PO.entity.EmployeeBasics;
+import com.softwaredevelopment.achieveit.PO.entity.RoleBasics;
 import com.softwaredevelopment.achieveit.entity.ProjectEmployeeVO;
 import com.softwaredevelopment.achieveit.entity.request.PageSearchRequest;
 import com.softwaredevelopment.achieveit.entity.request.ProjectEmployeeRequest;
@@ -51,5 +52,11 @@ public class EmployeeController extends BaseController {
     @PostMapping("employee_basics_page")
     public HttpResponse<IPage<EmployeeBasics>> getEmployeeBasics(@RequestBody PageSearchRequest<EmployeeBasics> request) {
         return responseOK(projectEmployeeService.getEmployeeBasics(request));
+    }
+
+    @ApiOperation("按employeeId和ProjectId查项目中的role")
+    @GetMapping("person_role")
+    public HttpResponse<List<RoleBasics>> getRolesByPerson(Integer employeeId, Integer projectId) {
+        return responseOK(projectEmployeeService.getRolesByPerson(employeeId, projectId));
     }
 }
