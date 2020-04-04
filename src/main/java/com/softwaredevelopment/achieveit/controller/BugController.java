@@ -2,6 +2,7 @@ package com.softwaredevelopment.achieveit.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.softwaredevelopment.achieveit.PO.entity.Bug;
+import com.softwaredevelopment.achieveit.entity.BugVO;
 import com.softwaredevelopment.achieveit.http.response.HttpResponse;
 import com.softwaredevelopment.achieveit.service.BugService;
 import io.swagger.annotations.Api;
@@ -25,7 +26,7 @@ public class BugController extends BaseController {
 
     @ApiOperation("按projectId获取bug 分页")
     @GetMapping("bugs_by_project_id")
-    public HttpResponse<Page<Bug>> getBugsByProjectId(String projectId, Integer current, Integer size) {
+    public HttpResponse<Page<BugVO>> getBugsByProjectId(String projectId, Integer current, Integer size) throws BussinessException {
         return responseOK(bugService.getBugsByProjectId(projectId, current, size));
     }
 

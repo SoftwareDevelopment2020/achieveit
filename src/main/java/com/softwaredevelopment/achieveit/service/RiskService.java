@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.softwaredevelopment.achieveit.entity.BugStatus.statusToString;
+
 /**
  * @author RainkQ
  * @date 2020/3/30 15:06
@@ -85,6 +87,7 @@ public class RiskService extends BaseService {
     public RiskVO riskToVO(Risk risk) throws BussinessException {
         RiskVO vo = new RiskVO();
 
+        vo.setId(risk.getId());
         vo.setProjectId(risk.getProjectId());
         vo.setType(risk.getType());
         vo.setDescription(risk.getDescription());
@@ -92,7 +95,7 @@ public class RiskService extends BaseService {
                 "高", "中", "低"
         };
         try {
-            vo.setLevel(level[risk.getLevel() + 1]);
+            vo.setLevel(level[risk.getLevel()]);
         } catch (Exception e) {
             throw new BussinessException("风险级别有问题", e.getCause());
         }
@@ -101,14 +104,14 @@ public class RiskService extends BaseService {
                 "严重影响", "较大影响", "中等影响", "较小影响", "可忽略影响"
         };
         try {
-            vo.setAffect(affect[risk.getAffect() + 1]);
+            vo.setAffect(affect[risk.getAffect()]);
         } catch (Exception e) {
             throw new BussinessException("影响范围有问题", e.getCause());
         }
 
         vo.setReact(risk.getReact());
         vo.setStrategy(risk.getStrategy());
-        vo.setStatus(BugStatus.statusToString(risk.getStatus()));
+        vo.setStatus(statusToString(risk.getStatus()));
 
         try {
             Integer employeeId = Integer.valueOf(risk.getResponsible());

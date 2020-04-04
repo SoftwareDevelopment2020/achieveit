@@ -15,6 +15,8 @@ import java.util.List;
 @ApiModel("风险VO")
 public class RiskVO {
 
+    private Integer id;
+
     private static final long serialVersionUID = 1L;
     @ApiModelProperty(value = "项目ID")
     private Integer projectId;
