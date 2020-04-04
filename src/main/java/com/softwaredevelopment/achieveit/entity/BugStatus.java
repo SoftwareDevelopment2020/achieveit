@@ -27,6 +27,6 @@ public enum BugStatus {
     }
 
     public static String statusToString(Integer i) {
-        return statusName[i + 1];
+        return statusName[i];
     }
 }
