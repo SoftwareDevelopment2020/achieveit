@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.softwaredevelopment.achieveit.PO.entity.*;
 import com.softwaredevelopment.achieveit.service.AuthService;
 import com.softwaredevelopment.achieveit.service.ProjectService;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -30,7 +29,7 @@ public class MockData {
     AuthService authService;
 
 
-    @Test
+//    @Test
     void mockAll() {
         int total = 100;
         Random random = new Random();
@@ -38,7 +37,7 @@ public class MockData {
         List<EmployeeBasics> employeeBasicsList = new ArrayList<>(total);
         for (int i = 0; i < total; i++) {
             EmployeeBasics eb = new EmployeeBasics();
-            eb.setName("测试雇员" + i);
+            eb.setName("测试雇员test" + i);
             // 随即两个部门
             eb.setDepartment(random.nextBoolean() ? "技术部" : "运营部");
             eb.setEmailAddress("testEmail" + i);
@@ -55,7 +54,7 @@ public class MockData {
             }
 
             User user = new User();
-            user.setUsername("testUser" + i);
+            user.setUsername("wowUser" + i);
             user.setPassword(encoder.encode("123456"));
             user.setIsAccountNonExpired(true);
             user.setIsCredentialsNonExpired(true);
@@ -117,7 +116,7 @@ public class MockData {
 
     }
 
-    @Test
+    //    @Test
     void mockUserRoles() {
         Random random = new Random();
         List<User> users = s.getIUserService().list(new QueryWrapper<User>().lambda().likeRight(User::getUsername, "testUser"));
@@ -151,7 +150,7 @@ public class MockData {
     }
 
 
-    @Test
+    //    @Test
     void mockRisks() {
         //Risk
         int total = 100;

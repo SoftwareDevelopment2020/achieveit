@@ -32,7 +32,7 @@ public class BugController extends BaseController {
 
     @ApiOperation("添加bug")
     @PostMapping("save_bug")
-    public HttpResponse<String> saveBugByProjectId(String projectId, Bug bug) {
+    public HttpResponse<String> saveBugByProjectId(String projectId, Bug bug) throws BussinessException {
         if (bugService.saveBugByProjectId(projectId, bug)) {
             return responseOK("添加成功");
         } else {

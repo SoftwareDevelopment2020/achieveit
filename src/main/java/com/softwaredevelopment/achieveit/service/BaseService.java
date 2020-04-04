@@ -7,6 +7,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.softwaredevelopment.achieveit.PO.entity.ProjectBasics;
 import com.softwaredevelopment.achieveit.PO.service.*;
+import com.softwaredevelopment.achieveit.controller.BussinessException;
 import com.softwaredevelopment.achieveit.entity.UserDetail;
 import com.softwaredevelopment.achieveit.entity.request.PageSearchRequest;
 import com.softwaredevelopment.achieveit.utils.MailUtil;
@@ -62,11 +63,11 @@ public class BaseService {
     @Autowired
     MailUtil mailUtil;
 
-    public UserDetail currentUserDetail() throws Exception {
+    public UserDetail currentUserDetail() throws BussinessException {
         try {
             return (UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         } catch (Exception e) {
-            throw new Exception("用户未登录");
+            throw new BussinessException("用户未登录", e.getCause());
         }
     }
 

@@ -73,6 +73,18 @@ class ProjectServiceTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        try {
+            authService.login("zhangsan", "123456");
+            ProjectBasics pb = new ProjectBasics();
+            pb.setClientId(100000);
+            // 1位开发类型代码
+            pb.setProjectId("M");
+            pb.setSuperior(1);
+            service.newProjectBasics(pb);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Test

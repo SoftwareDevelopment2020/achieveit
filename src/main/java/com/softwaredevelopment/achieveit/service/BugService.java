@@ -45,9 +45,15 @@ public class BugService extends BaseService {
 
     }
 
-    public Boolean saveBugByProjectId(String projectId, Bug bug) {
+    public Boolean saveBugByProjectId(String projectId, Bug bug) throws BussinessException {
         Integer id = projectIdToId(projectId);
         bug.setProjectId(id);
+        // bug提出人就是自己
+        bug.setBugIntroducerId(currentUserDetail().getEmployeeId());
+        // bug状态是new
+        bug.setStatus(BugStatus.NEW.getStatus());
+        // 结束时间未确定
+        bug.setEndTime(null);
         return iBugService.save(bug);
     }
 

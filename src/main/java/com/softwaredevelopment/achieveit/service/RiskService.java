@@ -111,7 +111,11 @@ public class RiskService extends BaseService {
 
         vo.setReact(risk.getReact());
         vo.setStrategy(risk.getStrategy());
-        vo.setStatus(statusToString(risk.getStatus()));
+        try {
+            vo.setStatus(statusToString(risk.getStatus()));
+        } catch (Exception e) {
+            throw new BussinessException("状态有问题", e.getCause());
+        }
 
         try {
             Integer employeeId = Integer.valueOf(risk.getResponsible());

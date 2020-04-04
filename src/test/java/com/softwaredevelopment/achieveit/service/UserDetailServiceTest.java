@@ -32,6 +32,7 @@ class UserDetailServiceTest {
     void loadUserByUsername() {
         System.out.println(userDetailService.loadUserByUsername("wangwu"));
         System.out.println(userDetailService.loadUserByUsername("zhangsan"));
+        System.out.println(userDetailService.loadUserByUsername("epg_leader"));
         assertThrows(UsernameNotFoundException.class,
                 () -> System.out.println(userDetailService.loadUserByUsername("noOne")));
     }
@@ -41,13 +42,13 @@ class UserDetailServiceTest {
         assertThrows(Exception.class,
                 () -> System.out.println(userDetailService.save(new UserDetail())));
         UserDetail userDetail = new UserDetail();
-        userDetail.setUsername("testUser");
+        userDetail.setUsername("wowTest");
         userDetail.setPassword("123456");
 
         System.out.println(userDetailService.save(userDetail));
 
         UserDetail userDetail1 = new UserDetail();
-        userDetail1.setUsername("testUser2");
+        userDetail1.setUsername("wowTest2");
         userDetail1.setPassword("123456");
         RoleBasics roleBasics = new RoleBasics();
         roleBasics.setName("ROLE_EPG");
