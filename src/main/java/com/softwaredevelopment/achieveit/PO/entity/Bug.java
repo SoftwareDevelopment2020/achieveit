@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.sql.Date;
 
 /**
  * <p>
@@ -42,10 +42,10 @@ public class Bug implements Serializable {
     private Integer bugResponsibleId;
 
     @ApiModelProperty(value = "bug开始时间")
-    private LocalDateTime startTime;
+    private Date startTime;
 
     @ApiModelProperty(value = "bug结束时间")
-    private LocalDateTime endTime;
+    private Date endTime;
 
     @ApiModelProperty(value = "bug描述")
     private String bugDescription;

@@ -8,6 +8,7 @@ import com.softwaredevelopment.achieveit.entity.BugStatus;
 import com.softwaredevelopment.achieveit.entity.BugVO;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +55,7 @@ public class BugService extends BaseService {
         bug.setStatus(BugStatus.NEW.getStatus());
         // 结束时间未确定
         bug.setEndTime(null);
+        bug.setStartTime(new Date(System.currentTimeMillis()));
         return iBugService.save(bug);
     }
 

@@ -4,7 +4,7 @@ import com.softwaredevelopment.achieveit.PO.entity.EmployeeBasics;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.sql.Date;
 
 /**
  * @author RainkQ
@@ -27,10 +27,10 @@ public class BugVO {
     private EmployeeBasics bugResponsible;
 
     @ApiModelProperty(value = "bug开始时间")
-    private LocalDateTime startTime;
+    private Date startTime;
 
     @ApiModelProperty(value = "bug结束时间")
-    private LocalDateTime endTime;
+    private Date endTime;
 
     @ApiModelProperty(value = "bug描述")
     private String bugDescription;
