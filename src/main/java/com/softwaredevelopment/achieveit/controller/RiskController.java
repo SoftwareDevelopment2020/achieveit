@@ -1,6 +1,7 @@
 package com.softwaredevelopment.achieveit.controller;
 
 import com.softwaredevelopment.achieveit.PO.entity.Risk;
+import com.softwaredevelopment.achieveit.entity.RiskVO;
 import com.softwaredevelopment.achieveit.http.response.HttpResponse;
 import com.softwaredevelopment.achieveit.service.RiskService;
 import io.swagger.annotations.Api;
@@ -24,7 +25,7 @@ public class RiskController extends BaseController {
 
     @ApiOperation("通过projectId获取Risks")
     @GetMapping("risks_by_project_id")
-    public HttpResponse<List<Risk>> getRisksByProjectId(String projectId) {
+    public HttpResponse<List<RiskVO>> getRisksByProjectId(String projectId) throws BussinessException {
         return responseOK(riskService.getRisksByProjectId(projectId));
     }
 

@@ -3,14 +3,14 @@ package com.softwaredevelopment.achieveit.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.softwaredevelopment.achieveit.PO.entity.EmployeeBasics;
 import com.softwaredevelopment.achieveit.PO.entity.Risk;
+import com.softwaredevelopment.achieveit.controller.BussinessException;
 import com.softwaredevelopment.achieveit.entity.BugStatus;
 import com.softwaredevelopment.achieveit.entity.MailBean;
+import com.softwaredevelopment.achieveit.entity.RiskVO;
+import com.softwaredevelopment.achieveit.utils.StringHelper;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -26,9 +26,15 @@ public class RiskService extends BaseService {
      * @param projectId
      * @return
      */
-    public List<Risk> getRisksByProjectId(String projectId) {
+    public List<RiskVO> getRisksByProjectId(String projectId) throws BussinessException {
         Integer id = projectIdToId(projectId);
-        return iRiskService.list(new QueryWrapper<Risk>().lambda().eq(Risk::getProjectId, id));
+        List<Risk> list = iRiskService.list(new QueryWrapper<Risk>().lambda().eq(Risk::getProjectId, id));
+        List<RiskVO> voList = new ArrayList<>();
+        for (Risk r :
+                list) {
+            voList.add(riskToVO(r));
+        }
+        return voList;
     }
 
     public boolean saveRiskByProjectId(Risk risk, String projectId) {
@@ -75,5 +81,50 @@ public class RiskService extends BaseService {
         }
     }
 
+
+    public RiskVO riskToVO(Risk risk) throws BussinessException {
+        RiskVO vo = new RiskVO();
+
+        vo.setProjectId(risk.getProjectId());
+        vo.setType(risk.getType());
+        vo.setDescription(risk.getDescription());
+        String[] level = new String[]{
+                "高", "中", "低"
+        };
+        try {
+            vo.setLevel(level[risk.getLevel() + 1]);
+        } catch (Exception e) {
+            throw new BussinessException("风险级别有问题", e.getCause());
+        }
+
+        String[] affect = new String[]{
+                "严重影响", "较大影响", "中等影响", "较小影响", "可忽略影响"
+        };
+        try {
+            vo.setAffect(affect[risk.getAffect() + 1]);
+        } catch (Exception e) {
+            throw new BussinessException("影响范围有问题", e.getCause());
+        }
+
+        vo.setReact(risk.getReact());
+        vo.setStrategy(risk.getStrategy());
+        vo.setStatus(BugStatus.statusToString(risk.getStatus()));
+
+        try {
+            Integer employeeId = Integer.valueOf(risk.getResponsible());
+            vo.setResponsible(iEmployeeBasicsService.getById(employeeId));
+            vo.setTrackFreq(risk.getTrackFreq());
+        } catch (Exception e) {
+            throw new BussinessException("负责人有问题", e.getCause());
+        }
+
+        try {
+            List<EmployeeBasics> related = iEmployeeBasicsService.listByIds(StringHelper.stringsDivideByCommaToList(risk.getRelated()));
+            vo.setRelated(related);
+        } catch (Exception e) {
+            throw new BussinessException("相关人有问题", e.getCause());
+        }
+        return vo;
+    }
 
 }
