@@ -25,6 +25,10 @@
     <el-main v-if="project !== null">
       <el-card v-if="activeMenu!=='base-info'">
         <span>当前项目：{{project.name}} ({{project.projectId}})</span>
+        <span v-for="role in project.roles">
+          <el-divider direction="vertical"></el-divider>
+          {{role.detail}}
+        </span>
         <el-divider direction="vertical"></el-divider>
         <span>{{getDate(project.scheduledDate)}} - {{getDate(project.deliveryDate)}}</span>
       </el-card>
