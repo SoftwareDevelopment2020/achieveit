@@ -126,31 +126,120 @@ const isReturned = [{
   label: '未归还'
 }]
 
-const riskType=[{
-  id:'1',
-  value:'需求风险'
-},{
-  id:'2',
-  value:'计划和控制风险'
-},{
-  id:'3',
-  value:'技术风险'
-},{
-  id:'4',
-  value:'用户风险'
-},{
-  id:'5',
-  value:'团队风险'
-},{
-  id:'6',
-  value:'外部风险'
-},{
-  id:'7',
-  value:'组织风险'
-},{
-  id:'8',
-  value:'合同风险'
+const riskType = [{
+  id: '1',
+  value: '需求风险'
+}, {
+  id: '2',
+  value: '计划和控制风险'
+}, {
+  id: '3',
+  value: '技术风险'
+}, {
+  id: '4',
+  value: '用户风险'
+}, {
+  id: '5',
+  value: '团队风险'
+}, {
+  id: '6',
+  value: '外部风险'
+}, {
+  id: '7',
+  value: '组织风险'
+}, {
+  id: '8',
+  value: '合同风险'
 }]
+
+const riskAffect = [
+  {
+    id: '1',
+    value: '严重影响'
+  },
+  {
+    id: '2',
+    value: '较大影响'
+  },
+  {
+    id: '3',
+    value: '中等影响'
+  },
+  {
+    id: '4',
+    value: '较小影响'
+  },
+  {
+    id: '5',
+    value: '可忽略影响'
+  }
+]
+
+const riskLevel = [
+  {
+    id: '1',
+    value: '高'
+  },
+  {
+    id: '2',
+    value: '中'
+  },
+  {
+    id: '3',
+    value: '低'
+  }
+]
+
+const status = [{
+  id: '0',
+  value: 'NEW'
+},
+  {
+    id: '1',
+    value: 'OPENED'
+  },
+  {
+    id: '2',
+    value: 'PROCESSED'
+  },
+  {
+    id: '3',
+    value: 'SOLVED'
+  },
+  {
+    id: '4',
+    value: 'CLOSED'
+  }]
+
+const riskRules = {
+  type: [
+    {required: true, message: '请填写风险类型', trigger: 'change'},
+  ],
+  status: [
+    {required: true, message: '请选择风险状态', trigger: 'change'}
+  ],
+  level: [
+    { required: true, message: '请选择风险级别'}
+  ],
+  // responsible: [
+  //   { required: true, message: '请选择风险负责人'}
+  // ],
+  // related: [
+  //   { required: true, message: '请选择风险相关者', }
+  // ],
+  affect: [
+    {required: true, message: '请选择风险影响度', trigger: 'change'}
+  ],
+  react: [
+    {required: true, message: '请填写风险应对方法', trigger: 'blur'}
+  ],
+  strategy: [
+    {required: true, message: '请填写风险应对策略', trigger: 'blur'}
+  ],
+  description: [
+    {required: true, message: '请填写风险描述', trigger: 'blur'}
+  ]
+}
 
 
 export default {
@@ -161,5 +250,9 @@ export default {
   permissions,
   deviceConditions,
   isReturned,
-  riskType
+  riskType,
+  riskAffect,
+  riskLevel,
+  status,
+  riskRules
 }

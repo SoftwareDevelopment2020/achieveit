@@ -58,3 +58,13 @@ export function setProjectEmployeeRole(data) {
 export function setProjectEmployeePermission(data) {
 
 }
+
+export function getEmployeesByProjectId(projectId) {
+  return request({
+    url: '/employee/employees_by_project_id',
+    method: 'get',
+    params: {
+      'projectId': projectId
+    }
+  })
+}
