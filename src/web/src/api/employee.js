@@ -42,7 +42,7 @@ export function addProjectEmployee(data) {
  * 删除项目人员
  */
 export function deleteProjectEmployee(data) {
-
+  return post('/delete_project_employee', data)
 }
 
 /**

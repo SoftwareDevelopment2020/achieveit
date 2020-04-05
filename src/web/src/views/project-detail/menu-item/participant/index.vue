@@ -243,7 +243,13 @@
 
 <script>
   import Pagination from '@/components/Pagination/index'
-  import {addProjectEmployee, getProjectEmployees, setPermission, setRole} from "../../../../api/employee";
+  import {
+    addProjectEmployee,
+    deleteProjectEmployee,
+    getProjectEmployees,
+    setPermission,
+    setRole
+  } from "../../../../api/employee";
   import {getNullOrValue, setTable} from "../../../../utils/common";
   export default {
     components: {
@@ -408,7 +414,21 @@
        * 删除项目人员
        */
       deleteParticipant(row) {
-
+        this.$confirm('确认删除该人员?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          deleteProjectEmployee({
+            projectKey: this.project.id,
+            employeeKey: row.employeeId
+          }).then(() => {
+            this.$message.success('删除成功')
+          }).finally(() => {
+            // 刷新
+            this.getParticipants()
+          })
+        })
       },
 
       /**
@@ -496,7 +516,3 @@
     }
   }
 </script>
-
-<style scoped>
-
-</style>
