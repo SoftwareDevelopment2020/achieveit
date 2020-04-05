@@ -1,5 +1,7 @@
 package com.softwaredevelopment.achieveit.service;
 
+import com.softwaredevelopment.achieveit.PO.entity.Property;
+import com.softwaredevelopment.achieveit.entity.request.PageSearchRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,7 +18,11 @@ class PropertyServiceTest {
     PropertyService service;
 
     @Test
-    void getPropertiesByProjectId() {
-        service.getPropertiesByProjectId("12345678901");
+    void searchProperties() {
+        PageSearchRequest<Property> request = new PageSearchRequest<>();
+        Property searchCondition = new Property();
+        searchCondition.setProjectId(1);
+        request.setSearchCondition(searchCondition);
+        service.searchProperties(request);
     }
 }

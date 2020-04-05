@@ -1,6 +1,7 @@
 package com.softwaredevelopment.achieveit.PO.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -51,5 +52,7 @@ public class Property implements Serializable {
     @ApiModelProperty(value = "归还日期")
     private LocalDate returnDate;
 
-
+    @ApiModelProperty(value = "资产管理者信息")
+    @TableField(exist = false)
+    private EmployeeBasics managerBasics;
 }
