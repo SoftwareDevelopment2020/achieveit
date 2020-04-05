@@ -1,7 +1,9 @@
 package com.softwaredevelopment.achieveit.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.softwaredevelopment.achieveit.PO.entity.Risk;
 import com.softwaredevelopment.achieveit.controller.BussinessException;
+import com.softwaredevelopment.achieveit.entity.RiskVO;
 import com.softwaredevelopment.achieveit.entity.request.PageSearchRequest;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
@@ -101,14 +103,15 @@ class RiskServiceTest {
         pageSearchRequest.setCurrent(1);
         pageSearchRequest.setSize(10);
         Map<String, String> map = new HashMap<>();
-        map.put("id", "1");
-        map.put("name", "张三");
+//        map.put("id", "1");
+//        map.put("name", "张三");
         pageSearchRequest.setSearchCondition(map);
 
         try {
-            System.out.println(service.getRisksByPage(
+            IPage<RiskVO> risksByPage = service.getRisksByPage(
                     "12345678901", pageSearchRequest
-            ));
+            );
+            System.out.println(risksByPage);
         } catch (BussinessException e) {
             e.printStackTrace();
         }

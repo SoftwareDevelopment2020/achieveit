@@ -139,7 +139,7 @@ public class RiskService extends BaseService {
 
     public IPage<RiskVO> getRisksByPage(String projectId, PageSearchRequest<Map<String, String>> pageSearchRequest) throws BussinessException {
         // 构建搜索的page
-        Page<Risk> page = new Page<Risk>(pageSearchRequest.getCurrent(), pageSearchRequest.getSize());
+        Page<Risk> page = new Page<>(pageSearchRequest.getCurrent(), pageSearchRequest.getSize());
         Map<String, String> searchCondition = pageSearchRequest.getSearchCondition();
         // 先按照名字查到这些EmployeeBasics
         List<EmployeeBasics> listByNames = iEmployeeBasicsService.list(new QueryWrapper<EmployeeBasics>()
@@ -165,14 +165,16 @@ public class RiskService extends BaseService {
 
         // 从riskPage转riskVOPage
         Page<RiskVO> riskVOPage = new Page<>(riskPage.getCurrent(), riskPage.getSize(), riskPage.getTotal(), riskPage.isSearchCount());
+        List<RiskVO> records = new ArrayList<>();
         for (Risk risk : riskPage.getRecords()) {
-            riskVOPage.getRecords().add(riskToVO(risk));
+            records.add(riskToVO(risk));
         }
+        riskVOPage.setRecords(records);
         return riskVOPage;
     }
 
     public Integer getIntOrNull(String s) {
-        if (s != null) {
+        if (s != null && !s.isEmpty()) {
             return Integer.valueOf(s);
         } else {
             return null;
