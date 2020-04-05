@@ -1,12 +1,13 @@
 import request from "@/utils/request";
 
-export function getRisks(projectId) {
+export function getRisks(projectId, data) {
   return request({
-    url: '/risk/risks_by_project_id',
-    method: 'get',
+    url: '/risk/search_risks',
+    method: 'post',
     params: {
-      'projectId': projectId
-    }
+      'projectId': projectId,
+    },
+    data: data
   })
 }
 
@@ -14,7 +15,7 @@ export function addRisk(projectId, risk) {
   return request({
     url: '/risk/save_risk',
     method: 'post',
-    data:risk,
+    data: risk,
     params: {
       'projectId': projectId
     }

@@ -60,8 +60,8 @@ const actions = {
           await dispatch('setProject', project)
         }
         // 设定角色信息
-        const { userDetail, roles } = project
-        await store.dispatch('user/setInfo',{userDetail, roles}, {root: true})
+        const {userDetail, roles} = project
+        await store.dispatch('user/setInfo', {userDetail, roles}, {root: true})
 
         resolve(project)
       }).catch(error => {

@@ -11,11 +11,11 @@ const mutations = {
   }
 }
 const actions = {
-  getRisks({commit}) {
+  getRisks({commit}, data) {
     return new Promise((resolve, reject) => {
-      getRisks(store.getters.projectId).then(response => {
-        console.log("后端获取风险信息")
-        commit('SET_RISKS', response.data)
+      getRisks(store.getters.projectId, data).then(response => {
+
+        // commit('SET_RISKS', response.data)
         resolve(response.data)
       }).catch(error => {
         reject(error)

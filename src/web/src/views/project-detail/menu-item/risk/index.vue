@@ -1,13 +1,37 @@
 <template>
   <div>
     <div>
+      <el-input
+        v-model="searchValue.id"
+        placeholder="风险ID"
+        style="width: 15%;min-width: 200px"
+        name="riskIdSearch"
+        @keyup.enter.native="getRisk"
+        clearable
+      >
+      </el-input>
       <el-autocomplete
         class="inline-input"
-        v-model="select"
+        v-model="searchValue.type"
         :fetch-suggestions="querySearch"
         placeholder="风险类型"
+        name="riskTypeSearch"
+        @keyup.enter.native="getRisk"
       ></el-autocomplete>
-      <el-button icon="el-icon-search" circle @click="search" @keyup.enter="search" name="searchRiskButton">
+      <el-input
+        v-model="searchValue.name"
+        placeholder="风险责任人"
+        style="width: 20%;min-width: 200px"
+        name="riskResponsibleSearch"
+        @keyup.enter.native="getRisk"
+        clearable
+      >
+      </el-input>
+      <el-select v-model="searchValue.status" placeholder="风险状态" name="riskStatusSearch" clearable>
+        <el-option v-for="state in riskStatus" :key="state.id" :label="state.value" :value="state.id">
+        </el-option>
+      </el-select>
+      <el-button icon="el-icon-search" circle @click="getRisk" name="searchRiskButton">
       </el-button>
       <el-button type="primary" @click="openNewRiskDialog" name="openNewRiskButton">
         <i class="el-icon-plus"></i>
@@ -48,7 +72,7 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="风险责任人" :label-width="formLabelWidth" prop="responsible">
-                <el-select v-model="newRisk.responsible" placeholder="风险责任人" name="riskResponsible">
+                <el-select v-model="newRisk.responsible" placeholder="风险责任人" name="riskResponsible" filterable>
                   <el-option v-for="employee in employees" :key="employee.id" :label="employee.name"
                              :value="employee.id">
                     <span style="float: left">{{ employee.name }}</span>
@@ -77,7 +101,7 @@
           </el-row>
           <el-row>
             <el-form-item label="风险相关者" :label-width="formLabelWidth">
-              <el-select v-model="newRisk.related" placeholder="风险相关者" multiple style="width: 100%">
+              <el-select v-model="newRisk.related" placeholder="风险相关者" multiple style="width: 100%" filterable>
                 <el-option v-for="employee in employees" :key="employee.id" :label="employee.name" :value="employee.id"
                            name="riskRelated">
                   <span style="float: left">{{ employee.name }}</span>
@@ -207,7 +231,8 @@
           </template>
         </el-table-column>
       </el-table>
-
+      <pagination :total="table.total" :page.sync="table.current" :limit.sync="table.limit"
+                  @pagination="getRisk"></pagination>
     </div>
   </div>
 </template>
@@ -239,7 +264,6 @@
     },
     data() {
       return {
-        select: '',
         riskTypeOptions: this.Constant.riskType,
         loading: false,
         dialogFormVisible_1: false,
@@ -266,7 +290,14 @@
           "strategy": "",
           "trackFreq": "",
           "type": "",
-        }//风险 ID，风险类型，风险描述，风险级别，风险影响度，风险应对策略，风险状态，风险责任人，风险跟踪频度，风险相关者
+        },//风险 ID，风险类型，风险描述，风险级别，风险影响度，风险应对策略，风险状态，风险责任人，风险跟踪频度，风险相关者
+        searchValue: {
+          id: '',
+          name: '',
+          status: '',
+          type: ''
+        },
+        table: {total: 0, limit: 10, current: 1}
       }
     },
     methods: {
@@ -274,11 +305,25 @@
         console.log(index, row);
       },
       getRisk() {
+        this.loading = true
+        const data = {
+          'current': this.table.current,
+          'size': this.table.limit,
+          'searchCondition': this.searchValue
+        }
+        this.$store.dispatch('risk/getRisks', data).then(response => {
+          this.risks = response.records
+          this.table.total = response.total
+        }).catch(error => {
 
+        }).finally(() => {
+          this.loading = false
+        })
       },
       search() {
-
+        console.log('查询风险')
       },
+      //产生风险类型的输入建议
       querySearch(queryString, cb) {
         const riskTypes = this.riskTypeOptions;
         const results = queryString ? riskTypes.filter(this.createFilter(queryString)) : riskTypes;
@@ -289,6 +334,7 @@
           return (riskType.value.toLowerCase().indexOf(queryString.toLowerCase()) !== -1);
         };
       },
+      //打开新增风险对话框
       openNewRiskDialog() {
         this.dialogFormVisible_1 = true
         if (this.employees == null) {
@@ -303,6 +349,7 @@
           return this.employees
         }
       },
+      //新增风险
       submitRisk() {
         this.$refs['newRisk'].validate((valid) => {
           if (valid) {
@@ -328,30 +375,11 @@
             return false
           }
         })
-
-
       }
     },
     mounted() {
-      this.loading = true
-      const risks = this.$store.getters.risks
-      if (risks == null) {
-        this.$store.dispatch('risk/getRisks').then(response => {
-          this.risks = response
-        }).catch(error => {
-
-        }).finally(() => {
-          this.loading = false
-        })
-      } else {
-        this.risks = risks
-        this.loading = false
-      }
-
-
+      this.getRisk()
     },
-    created() {
-    }
   }
 </script>
 

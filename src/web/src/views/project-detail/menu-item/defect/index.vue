@@ -2,13 +2,37 @@
   <div>
     <div>
       <div>
+<!--        <el-input-->
+<!--          v-model="searchValue.ID"-->
+<!--          placeholder="编号"-->
+<!--          style="width: 50%;min-width: 260px"-->
+<!--          clearable-->
+<!--        >-->
+<!--        </el-input>-->
         <el-input
-          v-model="searchValue.ID"
-          placeholder="编号"
-          style="width: 50%;min-width: 260px"
+          v-model="searchValue.id"
+          placeholder="缺陷ID"
+          style="width: 15%;min-width: 200px"
+          name="bugIdSearch"
+          @keyup.enter.native="getBugs"
           clearable
-        >
-        </el-input>
+        ></el-input>
+        <el-input
+          v-model="searchValue.bugTitle"
+          placeholder="缺陷标题"
+          style="width: 15%;min-width: 200px"
+          name="bugTitleSearch"
+          @keyup.enter.native="getBugs"
+          clearable
+        ></el-input>
+        <el-input
+          v-model="searchValue.id"
+          placeholder="缺陷提出人"
+          style="width: 15%;min-width: 200px"
+          name="bugIntroducerSearch"
+          @keyup.enter.native="getBugs"
+          clearable
+        ></el-input>
         <el-select
           v-model="searchValue.statusId"
           placeholder="状态"
@@ -204,7 +228,7 @@
           prop="id"
           label="缺陷ID"
           align="center"
-          min-width="120"
+          min-width="50"
         >
         </el-table-column>
         <el-table-column
@@ -253,7 +277,7 @@
         </el-table-column>
       </el-table>
 
-      <pagination :total="bugs.total" :page.sync="bugs.current" :limit.sync="bugs.limit"
+      <pagination :total="bugs.total" :page.sync="bugs.current" :limit.sync="bugs.size"
                   @pagination="getBugs"></pagination>
     </div>
 
