@@ -33,7 +33,7 @@
         <i class="el-icon-search"></i>
         <span>搜索</span>
       </el-button>
-      <el-button v-if="canEdit()" v-permission="['ROLE_PM']" type="primary" @click="dialog.addParticipant.show = true">
+      <el-button v-if="canEdit()" v-permission="['ROLE_PM']" type="primary" @click="openAddParticipantDialog">
         <i class="el-icon-plus"></i>
         <span>添加人员</span>
       </el-button>
@@ -120,7 +120,7 @@
           <template slot-scope="{ row }">
             <span v-if="row.exitTime === null">
               <span v-if="canEdit()"  v-permission="['ROLE_PM']">
-                <el-button type="text" size="mini" @click="setRoleDialog(row)">设置角色</el-button>
+                <el-button type="text" size="mini" @click="openSetRoleDialog(row)">设置角色</el-button>
                 <el-button type="text" size="mini" @click="setPermissionDialog(row)">设置权限</el-button>
                 <el-button type="text" size="mini" @click="deleteParticipant(row)">删除</el-button>
               </span>
@@ -137,6 +137,8 @@
 
     <!-- 添加人员 -->
     <el-dialog
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
       title="添加人员"
       :visible.sync="dialog.addParticipant.show"
       width="60%"
@@ -179,16 +181,43 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="closeAddParticipantDialog">取 消</el-button>
+        <el-button @click="dialog.addParticipant.show = false">取 消</el-button>
         <el-button type="primary" @click="addParticipant">确 定</el-button>
       </span>
     </el-dialog>
+
+    <!-- 设置角色 -->
+    <el-dialog
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      :title="dialog.setRole.title"
+      :visible.sync="dialog.setRole.show"
+      width="30%"
+      center
+    >
+      <el-checkbox-group v-model="dialog.setRole.data.roles" :min="1">
+        <el-checkbox
+          v-for="item in roleOptions"
+          :key="item.name"
+          :label="item.name"
+          :disabled="item.name === 'ROLE_PM'"
+          style="width: 70%;margin-left: 20%;"
+        >
+          {{item.detail}}
+        </el-checkbox>
+      </el-checkbox-group>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialog.setRole.show = false">取 消</el-button>
+        <el-button type="primary" @click="setRole">确 定</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
   import Pagination from '@/components/Pagination/index'
-  import {addProjectEmployee, getProjectEmployees} from "../../../../api/employee";
+  import {addProjectEmployee, getProjectEmployees, setRole} from "../../../../api/employee";
   import {getNullOrValue, setTable} from "../../../../utils/common";
   export default {
     components: {
@@ -241,6 +270,14 @@
                   trigger: 'blur'
                 }
               ]
+            }
+          },
+          setRole: {
+            title: '',
+            show: false,
+            data: {
+              employeeKey: '',
+              roles: []
             }
           }
         }
@@ -314,7 +351,7 @@
               console.error(error)
             }).finally(() => {
               // 关闭对话框
-              this.closeAddParticipantDialog()
+              this.dialog.addParticipant.show = false
               // 刷新
               this.getParticipants()
             })
@@ -323,14 +360,14 @@
           }
         })
       },
-      closeAddParticipantDialog() {
-        // 关闭对话框
-        this.dialog.addParticipant.show = false
-        // 清除数据
+      openAddParticipantDialog() {
+        // 初始化数据
         this.dialog.addParticipant.data.employeeId = ''
         this.dialog.addParticipant.data.roles = []
         this.dialog.addParticipant.data.permissions = []
-        this.dialog.addParticipant.data.superiorId = []
+        this.dialog.addParticipant.data.superiorId = ''
+        // 打开对话框
+        this.dialog.addParticipant.show = true
       },
 
       /**
@@ -343,11 +380,33 @@
       /**
        * 设置角色
        */
-      setRoleDialog(row) {
-
+      openSetRoleDialog(row) {
+        // 设置标题
+        this.dialog.setRole.title = '设置角色：' + row.employeeBasics.name + '（' + row.employeeBasics.employeeId + '）'
+        // 设置人员id
+        this.dialog.setRole.data.employeeKey = row.employeeId
+        // 设置已选角色
+        this.dialog.setRole.data.roles = []
+        row.roles.forEach(role => {
+          this.dialog.setRole.data.roles.push(role.name)
+        })
+        // 打开对话框
+        this.dialog.setRole.show = true
       },
       setRole() {
+        setRole({
+          projectKey: this.project.id,
+          ...this.dialog.setRole.data
+        }).then(() => {
 
+        }).catch(error => {
+          console.error(error)
+        }).finally(() => {
+          // 关闭对话框
+          this.dialog.setRole.show = false
+          // 刷新
+          this.getParticipants()
+        })
       },
 
       /**

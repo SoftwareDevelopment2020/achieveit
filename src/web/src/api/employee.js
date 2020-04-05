@@ -48,8 +48,8 @@ export function deleteProjectEmployee(data) {
 /**
  * 设置角色
  */
-export function setProjectEmployeeRole(data) {
-
+export function setRole(data) {
+  return post('/set_role', data)
 }
 
 /**
