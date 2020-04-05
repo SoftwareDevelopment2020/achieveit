@@ -79,12 +79,12 @@ public class EmployeeController extends BaseController {
     public HttpResponse<Boolean> setRole(@RequestBody UpdateProjectEmployeeRequest request) throws BussinessException {
         return responseOK(projectEmployeeService.setRole(request));
     }
-//
-//    @ApiOperation("设置权限")
-//    @PostMapping("set_permission")
-//    public HttpResponse<Boolean> setPermission() {
-//
-//    }
+
+    @ApiOperation("设置权限")
+    @PostMapping("set_permission")
+    public HttpResponse<Boolean> setPermission(@RequestBody UpdateProjectEmployeeRequest request) throws BussinessException {
+        return responseOK(projectEmployeeService.setPermission(request));
+    }
 
     @ApiOperation("获取项目所有人员基本信息")
     @GetMapping("get_project_employee_basics")

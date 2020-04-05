@@ -327,7 +327,7 @@
             title: '',
             show: false,
             data: {
-              employeeKey: '',
+              projectEmployeeId: '',
               permissions: []
             }
           }
@@ -484,21 +484,18 @@
         // 设置标题
         this.dialog.setPermission.title = '设置权限：' + row.employeeBasics.name + '（' + row.employeeBasics.employeeId + '）'
         // 设置项目人员id
-        this.dialog.setPermission.data.employeeKey = row.employeeId
+        this.dialog.setPermission.data.projectEmployeeId = row.id
         // 设置当前权限
         this.dialog.setPermission.data.permissions = []
         row.permissions.forEach(permission => {
-          this.dialog.setPermission.data.permissions.push(permission)
+          this.dialog.setPermission.data.permissions.push(permission.name)
         })
         // 打开对话框
         this.dialog.setPermission.show = true
       },
       setPermission() {
-        setPermission({
-          projectKey: this.project.id,
-          ...this.dialog.setPermission.data
-        }).then(response => {
-
+        setPermission(this.dialog.setPermission.data).then(response => {
+          this.$message.success('成功')
         }).catch(error => {
           console.error(error)
         }).finally(() => {

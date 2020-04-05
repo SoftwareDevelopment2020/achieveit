@@ -143,19 +143,7 @@ public class ProjectEmployeeService extends BaseService {
                 request.getPermissions().add("bug");
             }
         }
-        if (!CollectionUtils.isEmpty(request.getPermissions())) {
-            List<PersonPermission> personPermissions = new ArrayList<>();
-            List<PermissionBasics> permissions = iPermissionBasicsService.list(
-                    new QueryWrapper<PermissionBasics>()
-                            .in("name", request.getPermissions()));
-            for (PermissionBasics permissionBasics : permissions) {
-                PersonPermission personPermission = new PersonPermission();
-                personPermission.setProjectEmployeeId(projectEmployee.getId());
-                personPermission.setPermissionId(permissionBasics.getId());
-                personPermissions.add(personPermission);
-            }
-            iPersonPermissionService.saveBatch(personPermissions);
-        }
+        setPermission(projectEmployee.getId(), request.getPermissions());
         // endregion
 
         return true;
@@ -207,7 +195,7 @@ public class ProjectEmployeeService extends BaseService {
         return true;
     }
 
-    public boolean setRole(Integer projectEmployeeId, List<String> addRoles) throws BussinessException {
+    private boolean setRole(Integer projectEmployeeId, List<String> addRoles) throws BussinessException {
         boolean bugPermission = false;
         if (CollectionUtils.isEmpty(addRoles)) {
             throw new BussinessException("设置角色失败", new Exception(), "该员工角色为空");
@@ -230,6 +218,40 @@ public class ProjectEmployeeService extends BaseService {
         iPersonRoleService.saveBatch(personRoles);
 
         return bugPermission;
+    }
+
+    /**
+     * 设置权限
+     */
+    public boolean setPermission(UpdateProjectEmployeeRequest request) throws BussinessException {
+        ProjectEmployee projectEmployee = iProjectEmployeeService.getById(request.getProjectEmployeeId());
+        if (projectEmployee == null || projectEmployee.getExitTime() != null) {
+            throw new BussinessException("设置权限失败", new Exception(), "该员工不在项目中");
+        }
+
+        // 删除原来的角色
+        iPersonPermissionService.remove(new QueryWrapper<PersonPermission>().eq("project_employee_id", request.getProjectEmployeeId()));
+
+        // 设置角色，由于前端不能增加或者删除bug权限，此处不再判定角色与权限互斥
+        setPermission(request.getProjectEmployeeId(), request.getPermissions());
+
+        return true;
+    }
+
+    private void setPermission(Integer projectEmployeeId, List<String> addPermissions) {
+        if (!CollectionUtils.isEmpty(addPermissions)) {
+            List<PersonPermission> personPermissions = new ArrayList<>();
+            List<PermissionBasics> permissions = iPermissionBasicsService.list(
+                    new QueryWrapper<PermissionBasics>()
+                            .in("name", addPermissions));
+            for (PermissionBasics permissionBasics : permissions) {
+                PersonPermission personPermission = new PersonPermission();
+                personPermission.setProjectEmployeeId(projectEmployeeId);
+                personPermission.setPermissionId(permissionBasics.getId());
+                personPermissions.add(personPermission);
+            }
+            iPersonPermissionService.saveBatch(personPermissions);
+        }
     }
 
     /**
