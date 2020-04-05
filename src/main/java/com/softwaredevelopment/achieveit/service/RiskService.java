@@ -154,7 +154,7 @@ public class RiskService extends BaseService {
                         .like(searchCondition.get("type") != null, Risk::getType, searchCondition.get("type"))
                         .eq(projectIdToId(projectId) != null, Risk::getProjectId, projectIdToId(projectId))
                         .like(searchCondition.get("id") != null, Risk::getId, searchCondition.get("id"))
-                        .eq(searchCondition.get("status") != null, Risk::getStatus, searchCondition.get("status"))
+                        .eq(getIntOrNull(searchCondition.get("status")) != null, Risk::getStatus, searchCondition.get("status"))
                         // 按名字查到的employeeBasics的id们
                         .in(responsibleList.size() > 0, Risk::getResponsible, responsibleList));
 
