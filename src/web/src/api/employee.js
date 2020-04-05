@@ -32,6 +32,13 @@ export function getProjectEmployees(data) {
 }
 
 /**
+ * 获取所有项目人员基本信息
+ */
+export function getAllProjectEmployeeBasics(data) {
+  return get('/get_project_employee_basics?id=' + data.id)
+}
+
+/**
  * 添加项目人员
  */
 export function addProjectEmployee(data) {

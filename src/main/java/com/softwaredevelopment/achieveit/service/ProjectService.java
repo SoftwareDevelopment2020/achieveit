@@ -227,6 +227,7 @@ public class ProjectService extends BaseService {
      * @param newProjectBasics
      * @return 插入不成功返回false
      */
+    @Transactional
     public Boolean newProjectBasics(ProjectBasics newProjectBasics) throws Exception {
         // TODO 从外部系统判断客户信息是否存在并获取客户信息
 
@@ -286,7 +287,7 @@ public class ProjectService extends BaseService {
             // 设置权限
             PersonPermission personPermission = new PersonPermission();
             personPermission.setProjectEmployeeId(projectEmployee.getId());
-            personPermission.setPermissionId(ipermissionBasicsService.getOne(
+            personPermission.setPermissionId(iPermissionBasicsService.getOne(
                     new QueryWrapper<PermissionBasics>().eq("name", "bug"))
                     .getId()
             );

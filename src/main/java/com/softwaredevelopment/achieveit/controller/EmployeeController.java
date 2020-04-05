@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.softwaredevelopment.achieveit.PO.entity.EmployeeBasics;
 import com.softwaredevelopment.achieveit.PO.entity.RoleBasics;
 import com.softwaredevelopment.achieveit.entity.ProjectEmployeeVO;
+import com.softwaredevelopment.achieveit.entity.request.AddProjectEmployeeRequest;
 import com.softwaredevelopment.achieveit.entity.request.PageSearchRequest;
 import com.softwaredevelopment.achieveit.entity.request.ProjectEmployeeRequest;
 import com.softwaredevelopment.achieveit.http.response.HttpResponse;
@@ -58,5 +59,35 @@ public class EmployeeController extends BaseController {
     @GetMapping("person_role")
     public HttpResponse<List<RoleBasics>> getRolesByPerson(Integer employeeId, Integer projectId) {
         return responseOK(projectEmployeeService.getRolesByPerson(employeeId, projectId));
+    }
+
+    @ApiOperation("添加项目人员")
+    @PostMapping("add_project_employee")
+    public HttpResponse<Boolean> addProjectEmployee(@RequestBody AddProjectEmployeeRequest request) throws Exception {
+        return responseOK(projectEmployeeService.addProjectEmployee(request));
+    }
+
+//    @ApiOperation("删除项目人员")
+//    @PostMapping("delete_project_employee")
+//    public HttpResponse<Boolean> deleteProjectEmployee() {
+//
+//    }
+//
+//    @ApiOperation("设置角色")
+//    @PostMapping("set_role")
+//    public HttpResponse<Boolean> setRole() {
+//
+//    }
+//
+//    @ApiOperation("设置权限")
+//    @PostMapping("set_permission")
+//    public HttpResponse<Boolean> setPermission() {
+//
+//    }
+
+    @ApiOperation("获取项目所有人员基本信息")
+    @GetMapping("get_project_employee_basics")
+    public HttpResponse<List<EmployeeBasics>> getEmployeeBasics(Integer id) {
+        return responseOK(projectEmployeeService.getEmployeeBasics(id));
     }
 }

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.softwaredevelopment.achieveit.PO.entity.EmployeeBasics;
 import com.softwaredevelopment.achieveit.PO.entity.ProjectBasics;
 import com.softwaredevelopment.achieveit.PO.entity.RoleBasics;
 import com.softwaredevelopment.achieveit.PO.service.*;
@@ -13,7 +14,6 @@ import com.softwaredevelopment.achieveit.entity.UserDetail;
 import com.softwaredevelopment.achieveit.entity.request.PageSearchRequest;
 import com.softwaredevelopment.achieveit.utils.MailUtil;
 import com.softwaredevelopment.achieveit.utils.RedisUtils;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -59,8 +59,8 @@ public class BaseService {
     IUserService iUserService;
     @Autowired
     IRoleBasicsService iRoleBasicsService;
-    @ApiModelProperty
-    IPermissionBasicsService ipermissionBasicsService;
+    @Autowired
+    IPermissionBasicsService iPermissionBasicsService;
     @Autowired
     IActivityService iActivityService;
 
@@ -69,6 +69,22 @@ public class BaseService {
 
     @Autowired
     MailUtil mailUtil;
+
+    /**
+     * 从外部系统获取员工信息
+     */
+    public EmployeeBasics getOriginalEmployeeBasics(String employeeId) {
+        // TODO 从外部系统获取，此处虚拟
+        EmployeeBasics employeeBasics = new EmployeeBasics();
+        employeeBasics.setEmployeeId(employeeId);
+        employeeBasics.setName("虚拟人员" + employeeId);
+        employeeBasics.setDepartment("虚拟部门");
+        employeeBasics.setEmailAddress(employeeId + "@achieveit.com");
+        employeeBasics.setTel("132" + employeeId);
+        // 插入数据库
+        iEmployeeBasicsService.save(employeeBasics);
+        return employeeBasics;
+    }
 
     public UserDetail currentUserDetail() throws BussinessException {
         try {

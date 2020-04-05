@@ -176,8 +176,17 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="项目上级ID" prop="superiorId">
-          <el-input v-model="dialog.addParticipant.data.superiorId" name="superiorId" clearable></el-input>
+        <el-form-item label="项目上级ID" prop="superiorKey">
+          <el-select v-model="dialog.addParticipant.data.superiorKey" style="width: 100%" clearable>
+            <el-option
+              v-for="item in dialog.addParticipant.superiorOptions"
+              :key="item.id"
+              :label="item.name + '（' + item.employeeId + '）'"
+              :value="item.id"
+              :disabled="item.employeeId === dialog.addParticipant.data.employeeId"
+            >
+            </el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -246,6 +255,7 @@
   import {
     addProjectEmployee,
     deleteProjectEmployee,
+    getAllProjectEmployeeBasics,
     getProjectEmployees,
     setPermission,
     setRole
@@ -290,8 +300,9 @@
               employeeId: '',
               roles: [],
               permissions: [],
-              superiorId: ''
+              superiorKey: ''
             },
+            superiorOptions: [],
             rules: {
               employeeId:  [
                 {required: true, message: '员工ID不能为空', trigger: 'blur'}
@@ -401,11 +412,18 @@
         })
       },
       openAddParticipantDialog() {
+        // 获取所有项目人员基本信息
+        this.dialog.addParticipant.superiorOptions = []
+        getAllProjectEmployeeBasics({
+          id: this.project.id
+        }).then(response => {
+          this.dialog.addParticipant.superiorOptions = response.data
+        })
         // 初始化数据
         this.dialog.addParticipant.data.employeeId = ''
         this.dialog.addParticipant.data.roles = []
         this.dialog.addParticipant.data.permissions = []
-        this.dialog.addParticipant.data.superiorId = ''
+        this.dialog.addParticipant.data.superiorKey = ''
         // 打开对话框
         this.dialog.addParticipant.show = true
       },
