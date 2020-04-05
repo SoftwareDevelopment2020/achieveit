@@ -3,14 +3,18 @@ package com.softwaredevelopment.achieveit.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.softwaredevelopment.achieveit.PO.entity.Bug;
+import com.softwaredevelopment.achieveit.PO.entity.EmployeeBasics;
 import com.softwaredevelopment.achieveit.controller.BussinessException;
 import com.softwaredevelopment.achieveit.entity.BugStatus;
 import com.softwaredevelopment.achieveit.entity.BugVO;
+import com.softwaredevelopment.achieveit.entity.request.PageSearchRequest;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author RainkQ
@@ -18,6 +22,50 @@ import java.util.List;
  */
 @Service
 public class BugService extends BaseService {
+
+    /**
+     * 复杂条件的分页查询
+     *
+     * @param pageSearchRequest
+     * @return
+     */
+    public Page<BugVO> getBugsByPage(String projectId, PageSearchRequest<Map<String, String>> pageSearchRequest) throws BussinessException {
+        Integer project_id = projectIdToId(projectId);
+
+        Page<Bug> page = new Page<>(pageSearchRequest.getCurrent(), pageSearchRequest.getSize());
+        Map<String, String> searchCondition = pageSearchRequest.getSearchCondition();
+        // id
+        Integer id = getIntOrNull(searchCondition.get("id"));
+        // 标题
+        String title = searchCondition.get("bugTitle");
+        // 状态
+        Integer status = getIntOrNull(searchCondition.get("status"));
+        // 构造查询queryWrapper
+        QueryWrapper<Bug> qw = new QueryWrapper<>();
+        qw.lambda()
+                .eq(project_id != null, Bug::getProjectId, project_id)
+                .eq(id != null, Bug::getId, id)
+                .eq(status != null, Bug::getStatus, status)
+                .like(title != null, Bug::getBugTitle, title);
+
+        String bugIntroducer = searchCondition.get("bugIntroducer");
+        if (bugIntroducer != null) {
+            List<Integer> bugIntroducerIds = iEmployeeBasicsService.list(new QueryWrapper<EmployeeBasics>()
+                    .lambda().eq(EmployeeBasics::getName, bugIntroducer)).stream().map(EmployeeBasics::getId).collect(Collectors.toList());
+            qw.lambda()
+                    .in(bugIntroducerIds.size() > 0, Bug::getBugIntroducerId, bugIntroducerIds);
+        }
+        Page<Bug> bugPage = iBugService.page(page, qw);
+        // 从BugPage 转到 BugVOPage
+        Page<BugVO> bugVOPage = new Page<>(bugPage.getCurrent(), bugPage.getSize(), bugPage.getTotal(), bugPage.isSearchCount());
+        List<BugVO> bugVOS = new ArrayList<>();
+        for (Bug b :
+                bugPage.getRecords()) {
+            bugVOS.add(bugToVO(b));
+        }
+        bugVOPage.setRecords(bugVOS);
+        return bugVOPage;
+    }
 
     /**
      * 按projectId获取bugs

@@ -145,9 +145,7 @@ public class RiskService extends BaseService {
         List<EmployeeBasics> listByNames = iEmployeeBasicsService.list(new QueryWrapper<EmployeeBasics>()
                 .lambda().eq(EmployeeBasics::getName, searchCondition.get("name")));
 
-
         List<Integer> responsibleList = listByNames.stream().map(EmployeeBasics::getId).collect(Collectors.toList());
-
 
         Page<Risk> riskPage = iRiskService.page(page,
                 new QueryWrapper<Risk>().lambda()
@@ -166,13 +164,5 @@ public class RiskService extends BaseService {
         }
         riskVOPage.setRecords(records);
         return riskVOPage;
-    }
-
-    public Integer getIntOrNull(String s) {
-        if (s != null && !s.isEmpty()) {
-            return Integer.valueOf(s);
-        } else {
-            return null;
-        }
     }
 }

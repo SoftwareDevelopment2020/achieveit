@@ -3,12 +3,15 @@ package com.softwaredevelopment.achieveit.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.softwaredevelopment.achieveit.PO.entity.Bug;
 import com.softwaredevelopment.achieveit.entity.BugVO;
+import com.softwaredevelopment.achieveit.entity.request.PageSearchRequest;
 import com.softwaredevelopment.achieveit.http.response.HttpResponse;
 import com.softwaredevelopment.achieveit.service.BugService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 /**
  * @author RainkQ
@@ -20,6 +23,12 @@ import org.springframework.web.bind.annotation.*;
 public class BugController extends BaseController {
     @Autowired
     BugService bugService;
+
+    @ApiOperation("Bug的分页查询")
+    @PostMapping("bugs_by_page")
+    public HttpResponse<Page<BugVO>> getBugsByPage(String projectId, @RequestBody PageSearchRequest<Map<String, String>> pageSearchRequest) throws BussinessException {
+        return responseOK(bugService.getBugsByPage(projectId, pageSearchRequest));
+    }
 
     @ApiOperation("按projectId获取bug 分页")
     @GetMapping("bugs_by_project_id")

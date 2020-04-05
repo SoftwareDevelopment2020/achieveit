@@ -124,4 +124,12 @@ public class BaseService {
     interface MapperFunction<T> {
         List<T> run();
     }
+
+    public Integer getIntOrNull(String s) {
+        if (s != null && !s.isEmpty()) {
+            return Integer.valueOf(s);
+        } else {
+            return null;
+        }
+    }
 }
