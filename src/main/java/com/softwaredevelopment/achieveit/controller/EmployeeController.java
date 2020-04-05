@@ -67,11 +67,11 @@ public class EmployeeController extends BaseController {
         return responseOK(projectEmployeeService.addProjectEmployee(request));
     }
 
-//    @ApiOperation("删除项目人员")
-//    @PostMapping("delete_project_employee")
-//    public HttpResponse<Boolean> deleteProjectEmployee() {
-//
-//    }
+    @ApiOperation("删除项目人员")
+    @DeleteMapping("delete_project_employee")
+    public HttpResponse<Boolean> deleteProjectEmployee(Integer id) {
+        return responseOK(projectEmployeeService.deleteProjectEmployee(id));
+    }
 //
 //    @ApiOperation("设置角色")
 //    @PostMapping("set_role")

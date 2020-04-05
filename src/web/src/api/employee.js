@@ -25,6 +25,16 @@ export function post(url, data) {
 }
 
 /**
+ * 发送delete请求
+ */
+export function deleteMethod(url) {
+  return request({
+    url: '/employee' + url,
+    method: 'delete'
+  })
+}
+
+/**
  * 获取项目人员信息
  */
 export function getProjectEmployees(data) {
@@ -49,7 +59,8 @@ export function addProjectEmployee(data) {
  * 删除项目人员
  */
 export function deleteProjectEmployee(data) {
-  return post('/delete_project_employee', data)
+  console.info(data)
+  return deleteMethod('/delete_project_employee?id=' + data.projectEmployeeId)
 }
 
 /**

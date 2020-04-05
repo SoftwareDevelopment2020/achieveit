@@ -181,6 +181,16 @@ public class ProjectEmployeeService extends BaseService {
     }
 
     /**
+     * 删除项目人员
+     */
+    public boolean deleteProjectEmployee(Integer id) {
+        ProjectEmployee projectEmployee = new ProjectEmployee();
+        projectEmployee.setId(id);
+        projectEmployee.setExitTime(LocalDate.now());
+        return iProjectEmployeeService.updateById(projectEmployee);
+    }
+
+    /**
      * 获取项目所有人员基本信息
      */
     public List<EmployeeBasics> getEmployeeBasics(Integer id) {

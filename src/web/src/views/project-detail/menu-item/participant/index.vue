@@ -438,8 +438,7 @@
           type: 'warning'
         }).then(() => {
           deleteProjectEmployee({
-            projectKey: this.project.id,
-            employeeKey: row.employeeId
+            projectEmployeeId: row.id
           }).then(() => {
             this.$message.success('删除成功')
           }).finally(() => {
