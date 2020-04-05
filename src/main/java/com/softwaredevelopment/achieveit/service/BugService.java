@@ -59,9 +59,20 @@ public class BugService extends BaseService {
         return iBugService.save(bug);
     }
 
-    public boolean updateBugByProjectId(String projectId, Bug bug) {
-        Integer id = projectIdToId(projectId);
-        bug.setProjectId(id);
+    public boolean updateBugByProjectId(Bug bug) throws BussinessException {
+        Bug old = new Bug();
+        try {
+            old = iBugService.getById(bug.getId());
+        } catch (Exception e) {
+            throw new BussinessException("没有这个bug", e.getCause());
+        }
+        bug.setEndTime(null);
+        bug.setStartTime(old.getStartTime());
+        bug.setProjectId(old.getProjectId());
+        bug.setBugIntroducerId(old.getBugIntroducerId());
+        if (bug.getStatus() == BugStatus.CLOSED.getStatus()) {
+            bug.setEndTime(new Date(System.currentTimeMillis()));
+        }
         return iBugService.updateById(bug);
     }
 

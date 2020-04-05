@@ -23,6 +23,6 @@ class EmployeeServiceTest {
     @Test
     void getEmployeesByProjectId() {
         assertDoesNotThrow(() -> System.out.println(employeeService.getEmployeesByProjectId("12345678901")));
-        assertThrows(Exception.class, () -> System.out.println(employeeService.getEmployeesByProjectId("00000000000")));
+        assertThrows(Exception.class, () -> System.out.println(employeeService.getEmployeesByProjectId("aaaa")));
     }
 }
