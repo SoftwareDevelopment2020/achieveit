@@ -1,14 +1,13 @@
 import request from "@/utils/request";
 
-export function getBugs(projectId, currentPage, size) {
+export function getBugs(projectId, data) {
   return request({
-    url: '/bug/bugs_by_project_id',
-    method: 'get',
+    url: '/bug/bugs_by_page',
+    method: 'post',
     params: {
       'projectId': projectId,
-      'current': currentPage,
-      'size': size
-    }
+    },
+    data: data
   })
 }
 

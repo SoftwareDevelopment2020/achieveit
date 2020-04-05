@@ -2,13 +2,13 @@
   <div>
     <div>
       <div>
-<!--        <el-input-->
-<!--          v-model="searchValue.ID"-->
-<!--          placeholder="编号"-->
-<!--          style="width: 50%;min-width: 260px"-->
-<!--          clearable-->
-<!--        >-->
-<!--        </el-input>-->
+        <!--        <el-input-->
+        <!--          v-model="searchValue.ID"-->
+        <!--          placeholder="编号"-->
+        <!--          style="width: 50%;min-width: 260px"-->
+        <!--          clearable-->
+        <!--        >-->
+        <!--        </el-input>-->
         <el-input
           v-model="searchValue.id"
           placeholder="缺陷ID"
@@ -26,7 +26,7 @@
           clearable
         ></el-input>
         <el-input
-          v-model="searchValue.id"
+          v-model="searchValue.bugIntroducer"
           placeholder="缺陷提出人"
           style="width: 15%;min-width: 200px"
           name="bugIntroducerSearch"
@@ -34,7 +34,7 @@
           clearable
         ></el-input>
         <el-select
-          v-model="searchValue.statusId"
+          v-model="searchValue.status"
           placeholder="状态"
           style="width: 15%;min-width: 120px"
           clearable
@@ -42,7 +42,7 @@
           <el-option v-for="item in statusOptions" :key="item.id" :label="item.value"
                      :value="item.id"></el-option>
         </el-select>
-        <el-button type="primary" style="margin-left: 10px" @click="search" @keyup.enter="search">
+        <el-button type="primary" style="margin-left: 10px" @click="getBugs">
           <i class="el-icon-search"></i>
           <span>搜索</span>
         </el-button>
@@ -266,7 +266,7 @@
           <template slot-scope="scope">
             <el-button
               size="mini"
-              @click="handleEdit(scope.$index, scope.row)">编辑
+              @click="handleEdit(scope.$index, scope.row)" :disabled="scope.row.status=='CLOSED'">编辑
             </el-button>
             <el-button
               size="mini"
@@ -317,8 +317,10 @@
         loading: false,
         editBugDialogVisible: false,
         searchValue: {
-          ID: '',
-          statusId: '',
+          id: '',
+          status: '',
+          bugTitle: '',
+          bugIntroducer: ''
         },
         statusOptions: this.Constant.status,
         employees: null,
@@ -363,20 +365,18 @@
         this.loading = true
         console.log('查询bug页数为' + this.bugs.current)
         console.log('查询bug条目数量为' + this.bugs.size)
-        getBugs(this.$store.getters.projectId, this.bugs.current, this.bugs.size).then(response => {
+        const data = {
+          current: this.bugs.current,
+          size: this.bugs.size,
+          searchCondition: this.searchValue
+        }
+        getBugs(this.$store.getters.projectId, data).then(response => {
           this.bugs = response.data
         }).catch(error => {
 
         }).finally(() => {
           this.loading = false
         })
-      },
-
-      search() {
-        this.table.searchCondition.ID = this.searchValue.ID === '' ? null : this.searchValue.ID
-        this.table.searchCondition.statusId = this.searchValue.statusId === '' ? null : this.searchValue.statusId
-        this.table.page = 1
-        this.getProjects()
       },
       dateFormat(time) {
         if (time == null)
