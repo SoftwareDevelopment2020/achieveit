@@ -319,7 +319,7 @@
             title: '',
             show: false,
             data: {
-              employeeKey: '',
+              projectEmployeeId: '',
               roles: []
             }
           },
@@ -455,7 +455,7 @@
         // 设置标题
         this.dialog.setRole.title = '设置角色：' + row.employeeBasics.name + '（' + row.employeeBasics.employeeId + '）'
         // 设置人员id
-        this.dialog.setRole.data.employeeKey = row.employeeId
+        this.dialog.setRole.data.projectEmployeeId = row.id
         // 设置已选角色
         this.dialog.setRole.data.roles = []
         row.roles.forEach(role => {
@@ -465,11 +465,8 @@
         this.dialog.setRole.show = true
       },
       setRole() {
-        setRole({
-          projectKey: this.project.id,
-          ...this.dialog.setRole.data
-        }).then(() => {
-
+        setRole(this.dialog.setRole.data).then(() => {
+          this.$message.success('成功')
         }).catch(error => {
           console.error(error)
         }).finally(() => {

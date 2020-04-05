@@ -7,6 +7,7 @@ import com.softwaredevelopment.achieveit.entity.ProjectEmployeeVO;
 import com.softwaredevelopment.achieveit.entity.request.AddProjectEmployeeRequest;
 import com.softwaredevelopment.achieveit.entity.request.PageSearchRequest;
 import com.softwaredevelopment.achieveit.entity.request.ProjectEmployeeRequest;
+import com.softwaredevelopment.achieveit.entity.request.UpdateProjectEmployeeRequest;
 import com.softwaredevelopment.achieveit.http.response.HttpResponse;
 import com.softwaredevelopment.achieveit.service.EmployeeService;
 import com.softwaredevelopment.achieveit.service.ProjectEmployeeService;
@@ -72,12 +73,12 @@ public class EmployeeController extends BaseController {
     public HttpResponse<Boolean> deleteProjectEmployee(Integer id) {
         return responseOK(projectEmployeeService.deleteProjectEmployee(id));
     }
-//
-//    @ApiOperation("设置角色")
-//    @PostMapping("set_role")
-//    public HttpResponse<Boolean> setRole() {
-//
-//    }
+
+    @ApiOperation("设置角色")
+    @PostMapping("set_role")
+    public HttpResponse<Boolean> setRole(@RequestBody UpdateProjectEmployeeRequest request) throws BussinessException {
+        return responseOK(projectEmployeeService.setRole(request));
+    }
 //
 //    @ApiOperation("设置权限")
 //    @PostMapping("set_permission")

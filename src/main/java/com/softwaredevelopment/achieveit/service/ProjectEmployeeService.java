@@ -10,6 +10,7 @@ import com.softwaredevelopment.achieveit.entity.ProjectEmployeeVO;
 import com.softwaredevelopment.achieveit.entity.request.AddProjectEmployeeRequest;
 import com.softwaredevelopment.achieveit.entity.request.PageSearchRequest;
 import com.softwaredevelopment.achieveit.entity.request.ProjectEmployeeRequest;
+import com.softwaredevelopment.achieveit.entity.request.UpdateProjectEmployeeRequest;
 import com.softwaredevelopment.achieveit.mapper.ProjectEmployeeVOMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -128,28 +129,8 @@ public class ProjectEmployeeService extends BaseService {
         // 添加员工
         iProjectEmployeeService.save(projectEmployee);
 
-        // region 设置角色
-        boolean bugPermission = false;
-        if (CollectionUtils.isEmpty(request.getRoles())) {
-            throw new BussinessException("添加项目人员失败", new Exception(), "该员工角色为空");
-        }
-        List<RoleBasics> roles = iRoleBasicsService.list(new QueryWrapper<RoleBasics>().in("name", request.roles));
-        if (CollectionUtils.isEmpty(roles)) {
-            throw new BussinessException("添加项目人员失败", new Exception(), "该员工角色为空");
-        }
-        List<PersonRole> personRoles = new ArrayList<>();
-        for (RoleBasics roleBasics : roles) {
-            PersonRole personRole = new PersonRole();
-            personRole.setProjectEmployeeId(projectEmployee.getId());
-            personRole.setRoleId(roleBasics.getId());
-            personRoles.add(personRole);
-
-            if (roleBasics.getName().equals("ROLE_PM") || roleBasics.getName().equals("ROLE_DEVLEADER") || roleBasics.getName().equals("ROLE_TESTLEADER")) {
-                bugPermission = true;
-            }
-        }
-        iPersonRoleService.saveBatch(personRoles);
-        // endregion
+        // 设置角色
+        boolean bugPermission = setRole(projectEmployee.getId(), request.getRoles());
 
         // region 设置权限
         if (bugPermission) {
@@ -188,6 +169,67 @@ public class ProjectEmployeeService extends BaseService {
         projectEmployee.setId(id);
         projectEmployee.setExitTime(LocalDate.now());
         return iProjectEmployeeService.updateById(projectEmployee);
+    }
+
+    /**
+     * 设置角色
+     */
+    @Transactional
+    public boolean setRole(UpdateProjectEmployeeRequest request) throws BussinessException {
+        ProjectEmployee projectEmployee = iProjectEmployeeService.getById(request.getProjectEmployeeId());
+        if (projectEmployee == null || projectEmployee.getExitTime() != null) {
+            throw new BussinessException("设置角色失败", new Exception(), "该员工不在项目中");
+        }
+
+        // 删除原来的角色
+        iPersonRoleService.remove(new QueryWrapper<PersonRole>().eq("project_employee_id", projectEmployee.getId()));
+
+        // 获取角色id
+        boolean bugPermisson = setRole(request.getProjectEmployeeId(), request.getRoles());
+
+        // 查看是否有bug权限
+        Integer bugPermissionId = iPermissionBasicsService.getOne(new QueryWrapper<PermissionBasics>().eq("name", "bug")).getId();
+        PersonPermission personPermission = iPersonPermissionService.getOne(new QueryWrapper<PersonPermission>()
+                .eq("project_employee_id", projectEmployee.getId())
+                .eq("permission_id", bugPermissionId));
+
+        if (bugPermisson && personPermission == null) {
+            // 需要bug权限，但是当前没有
+            PersonPermission bugPersonPermission = new PersonPermission();
+            bugPersonPermission.setProjectEmployeeId(projectEmployee.getId());
+            bugPersonPermission.setPermissionId(bugPermissionId);
+            iPersonPermissionService.save(bugPersonPermission);
+        } else if (!bugPermisson && personPermission != null) {
+            // 不需要bug权限，但是当前有
+            iPersonPermissionService.removeById(personPermission.getId());
+        }
+
+        return true;
+    }
+
+    public boolean setRole(Integer projectEmployeeId, List<String> addRoles) throws BussinessException {
+        boolean bugPermission = false;
+        if (CollectionUtils.isEmpty(addRoles)) {
+            throw new BussinessException("设置角色失败", new Exception(), "该员工角色为空");
+        }
+        List<RoleBasics> roleBasics = iRoleBasicsService.list(new QueryWrapper<RoleBasics>().in("name", addRoles));
+        if (CollectionUtils.isEmpty(roleBasics)) {
+            throw new BussinessException("设置角色失败", new Exception(), "该员工角色为空");
+        }
+        List<PersonRole> personRoles = new ArrayList<>();
+        for (RoleBasics rb : roleBasics) {
+            PersonRole personRole = new PersonRole();
+            personRole.setProjectEmployeeId(projectEmployeeId);
+            personRole.setRoleId(rb.getId());
+            personRoles.add(personRole);
+
+            if (rb.getName().equals("ROLE_PM") || rb.getName().equals("ROLE_DEVLEADER") || rb.getName().equals("ROLE_TESTLEADER")) {
+                bugPermission = true;
+            }
+        }
+        iPersonRoleService.saveBatch(personRoles);
+
+        return bugPermission;
     }
 
     /**
