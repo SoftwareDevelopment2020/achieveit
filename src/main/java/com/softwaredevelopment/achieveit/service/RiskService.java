@@ -148,7 +148,10 @@ public class RiskService extends BaseService {
         Risk search = new Risk();
         search.setProjectId(projectIdToId(projectId));
         search.setId(getIntOrNull(searchCondition.get("id")));
-        search.setType(searchCondition.get("type"));
+        String type = searchCondition.get("type");
+        if (!type.isEmpty()) {
+            search.setType(type);
+        }
         search.setStatus(getIntOrNull(searchCondition.get("status")));
         List<Integer> responsibleList = listByNames.stream().map(EmployeeBasics::getId).collect(Collectors.toList());
 
