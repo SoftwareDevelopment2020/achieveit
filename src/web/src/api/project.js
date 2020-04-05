@@ -35,7 +35,7 @@ export function getProjects(data) {
  * 获取当前项目信息
  */
 export function getProjectById(data) {
-  return get('/select_project_by_id?id=' + (data.id ? data.id : ''))
+  return get('/select_project_by_id?id=' + (data.id === null || data.id === 'null' ? '' : data.id))
 }
 
 /**
