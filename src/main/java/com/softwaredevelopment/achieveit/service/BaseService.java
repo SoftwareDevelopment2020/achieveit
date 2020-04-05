@@ -13,6 +13,7 @@ import com.softwaredevelopment.achieveit.entity.UserDetail;
 import com.softwaredevelopment.achieveit.entity.request.PageSearchRequest;
 import com.softwaredevelopment.achieveit.utils.MailUtil;
 import com.softwaredevelopment.achieveit.utils.RedisUtils;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -58,6 +59,8 @@ public class BaseService {
     IUserService iUserService;
     @Autowired
     IRoleBasicsService iRoleBasicsService;
+    @ApiModelProperty
+    IPermissionBasicsService ipermissionBasicsService;
     @Autowired
     IActivityService iActivityService;
 

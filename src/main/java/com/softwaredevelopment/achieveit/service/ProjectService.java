@@ -275,6 +275,21 @@ public class ProjectService extends BaseService {
             projectEmployee.setSuperiorId(newProjectBasics.getSuperior());
             projectEmployee.setJoinTime(LocalDate.now());
             iProjectEmployeeService.save(projectEmployee);
+            // 设置角色
+            PersonRole personRole = new PersonRole();
+            personRole.setProjectEmployeeId(projectEmployee.getId());
+            personRole.setRoleId(iRoleBasicsService.getOne(
+                    new QueryWrapper<RoleBasics>().select("name", "ROLE_PM"))
+                    .getId()
+            );
+            iPersonRoleService.save(personRole);
+            // 设置权限
+            PersonPermission personPermission = new PersonPermission();
+            personPermission.setProjectEmployeeId(projectEmployee.getId());
+            personPermission.setPermissionId(ipermissionBasicsService.getOne(
+                    new QueryWrapper<PermissionBasics>().select("name", "bug"))
+                    .getId()
+            );
 
             // 上级添加到项目中
             ProjectEmployee superior = new ProjectEmployee();
@@ -282,6 +297,13 @@ public class ProjectService extends BaseService {
             superior.setProjectId(newProjectBasics.getId());
             superior.setJoinTime(LocalDate.now());
             iProjectEmployeeService.save(superior);
+            // 设置角色
+            PersonRole superiorRole = new PersonRole();
+            superiorRole.setProjectEmployeeId(projectEmployee.getId());
+            superiorRole.setRoleId(iRoleBasicsService.getOne(
+                    new QueryWrapper<RoleBasics>().select("name", "ROLE_SUPERIOR"))
+                    .getId());
+            iPersonRoleService.save(superiorRole);
 
         } catch (Exception e) {
             throw new BussinessException(e.getMessage(), e.getCause(), "立项失败");
