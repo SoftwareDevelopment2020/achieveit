@@ -55,8 +55,8 @@ export function setRole(data) {
 /**
  * 设置权限
  */
-export function setProjectEmployeePermission(data) {
-
+export function setPermission(data) {
+  return post('/set_permission', data)
 }
 
 export function getEmployeesByProjectId(projectId) {

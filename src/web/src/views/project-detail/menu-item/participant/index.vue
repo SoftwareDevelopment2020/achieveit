@@ -121,7 +121,7 @@
             <span v-if="row.exitTime === null">
               <span v-if="canEdit()"  v-permission="['ROLE_PM']">
                 <el-button type="text" size="mini" @click="openSetRoleDialog(row)">设置角色</el-button>
-                <el-button type="text" size="mini" @click="setPermissionDialog(row)">设置权限</el-button>
+                <el-button type="text" size="mini" @click="openSetPermissionDialog(row)">设置权限</el-button>
                 <el-button type="text" size="mini" @click="deleteParticipant(row)">删除</el-button>
               </span>
             </span>
@@ -212,12 +212,38 @@
       </span>
     </el-dialog>
 
+    <!-- 设置权限 -->
+    <el-dialog
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      :title="dialog.setPermission.title"
+      :visible.sync="dialog.setPermission.show"
+      width="30%"
+      center
+    >
+      <el-checkbox-group v-model="dialog.setPermission.data.permissions">
+        <el-checkbox
+          v-for="item in permissionOptions"
+          :key="item.name"
+          :label="item.name"
+          :disabled="item.name === 'bug'"
+          style="width: 70%;margin-left: 20%;"
+        >
+          {{item.detail}}
+        </el-checkbox>
+      </el-checkbox-group>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialog.setPermission.show = false">取 消</el-button>
+        <el-button type="primary" @click="setPermission">确 定</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
   import Pagination from '@/components/Pagination/index'
-  import {addProjectEmployee, getProjectEmployees, setRole} from "../../../../api/employee";
+  import {addProjectEmployee, getProjectEmployees, setPermission, setRole} from "../../../../api/employee";
   import {getNullOrValue, setTable} from "../../../../utils/common";
   export default {
     components: {
@@ -278,6 +304,14 @@
             data: {
               employeeKey: '',
               roles: []
+            }
+          },
+          setPermission: {
+            title: '',
+            show: false,
+            data: {
+              employeeKey: '',
+              permissions: []
             }
           }
         }
@@ -412,11 +446,33 @@
       /**
        * 设置权限
        */
-      setPermissionDialog(row) {
-
+      openSetPermissionDialog(row) {
+        // 设置标题
+        this.dialog.setPermission.title = '设置权限：' + row.employeeBasics.name + '（' + row.employeeBasics.employeeId + '）'
+        // 设置项目人员id
+        this.dialog.setPermission.data.employeeKey = row.employeeId
+        // 设置当前权限
+        this.dialog.setPermission.data.permissions = []
+        row.permissions.forEach(permission => {
+          this.dialog.setPermission.data.permissions.push(permission)
+        })
+        // 打开对话框
+        this.dialog.setPermission.show = true
       },
       setPermission() {
+        setPermission({
+          projectKey: this.project.id,
+          ...this.dialog.setPermission.data
+        }).then(response => {
 
+        }).catch(error => {
+          console.error(error)
+        }).finally(() => {
+          // 关闭对话框
+          this.dialog.setPermission.show = false
+          // 刷新
+          this.getParticipants()
+        })
       },
       /**
        * 产品经理、开发Leader、测试Leader自动配置缺陷追踪管理权限
