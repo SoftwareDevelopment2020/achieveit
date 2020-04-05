@@ -93,6 +93,7 @@
               <p>部门：{{row.employeeBasics.department}}</p>
               <p>电话：{{row.employeeBasics.tel}}</p>
               <p>邮件地址：{{row.employeeBasics.emailAddress}}</p>
+              <p>加入时间：{{row.joinTime}}</p>
             </el-card>
           </template>
         </el-table-column>
@@ -104,7 +105,8 @@
         >
           <template slot-scope="{row}">
             <el-card v-if="row.superiorBasics">
-              <p>{{row.superiorBasics.name}}（{{row.superiorBasics.employeeId}}） {{row.superiorBasics.department}}</p>
+              <p>{{row.superiorBasics.name}}（{{row.superiorBasics.employeeId}}）</p>
+              <p>部门：{{row.superiorBasics.department}}</p>
               <p>电话：{{row.superiorBasics.tel}}</p>
               <p>邮件地址：{{row.superiorBasics.emailAddress}}</p>
             </el-card>
@@ -116,11 +118,16 @@
         <el-table-column
           min-width="200">
           <template slot-scope="{ row }">
-            <span v-if="canEdit()" v-permission="['ROLE_PM']">
-              <el-button type="text" size="mini" @click="setRoleDialog(row)">设置角色</el-button>
-              <el-button type="text" size="mini" @click="setPermissionDialog(row)">设置权限</el-button>
-              <el-button type="text" size="mini" @click="deleteEmployee(row)">删除</el-button>
+            <span v-if="row.exitTime === null">
+              <span v-if="canEdit()"  v-permission="['ROLE_PM']">
+                <el-button type="text" size="mini" @click="setRoleDialog(row)">设置角色</el-button>
+                <el-button type="text" size="mini" @click="setPermissionDialog(row)">设置权限</el-button>
+                <el-button type="text" size="mini" @click="deleteEmployee(row)">删除</el-button>
+              </span>
             </span>
+            <span v-else style="color: red; font-size: 13px">
+                {{row.exitTime}}退出
+              </span>
           </template>
         </el-table-column>
       </el-table>
