@@ -57,7 +57,11 @@ class BugServiceTest {
 
     @Test
     void updateBugByProjectId() {
-        service.updateBugByProjectId("12345678901", mockBug());
+        try {
+            service.updateBugByProjectId(mockBug());
+        } catch (BussinessException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
