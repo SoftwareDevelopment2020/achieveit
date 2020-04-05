@@ -34,17 +34,15 @@
             </el-form-item>
             <el-row>
               <el-col :span="12">
-                <div>
-                  <el-form-item label="开始时间" :label-width="formLabelWidth" prop="startTime">
-                    <el-date-picker type="date" v-model="newBug.startTime" name="scheduledDate"
-                                    format="yyyy 年 MM 月 dd 日"
-                                    value-format="yyyy-MM-dd" style="width: 90%;" :picker-options="{
-            disabledDate (time) {
-              return time.getTime() > new Date()
-             }
-          }"></el-date-picker>
-                  </el-form-item>
-                </div>
+                <el-form-item label="缺陷负责人" :label-width="formLabelWidth" prop="bugResponsibleId">
+                  <el-select v-model="newBug.bugResponsibleId" placeholder="缺陷负责人">
+                    <el-option v-for="employee in employees" :key="employee.id" :label="employee.name"
+                               :value="employee.id">
+                      <span style="float: left">{{ employee.name }}</span>
+                      <span style="float: right; color: #8492a6; font-size: 13px">{{ employee.id }}</span>
+                    </el-option>
+                  </el-select>
+                </el-form-item>
               </el-col>
               <el-col :span="12">
                 <div>
@@ -58,16 +56,15 @@
               </el-col>
             </el-row>
             <el-row>
+
               <el-col :span="12">
-                <el-form-item label="缺陷负责人" :label-width="formLabelWidth" prop="bugResponsibleId">
-                  <el-select v-model="newBug.bugResponsibleId" placeholder="缺陷负责人">
-                    <el-option v-for="employee in employees" :key="employee.id" :label="employee.name"
-                               :value="employee.id">
-                      <span style="float: left">{{ employee.name }}</span>
-                      <span style="float: right; color: #8492a6; font-size: 13px">{{ employee.id }}</span>
-                    </el-option>
-                  </el-select>
-                </el-form-item>
+                <div>
+                  <el-form-item label="开始时间" :label-width="formLabelWidth" prop="startTime">
+                    <el-date-picker type="date" v-model="newBug.startTime" name="scheduledDate"
+                                    format="yyyy 年 MM 月 dd 日"
+                                    value-format="yyyy-MM-dd" style="width: 90%;" disabled></el-date-picker>
+                  </el-form-item>
+                </div>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="缺陷状态" :label-width="formLabelWidth" prop="status">
@@ -106,11 +103,8 @@
               <div>
                 <el-form-item label="开始时间" :label-width="formLabelWidth" prop="startTime">
                   <el-date-picker type="date" v-model="editBug.startTime" name="startTime" format="yyyy 年 MM 月 dd 日"
-                                  value-format="yyyy-MM-dd" style="width: 90%;" :picker-options="{
-            disabledDate (time) {
-              return time.getTime() > new Date()
-             }
-          }"></el-date-picker>
+                                  disabled
+                  ></el-date-picker>
                 </el-form-item>
               </div>
             </el-col>
@@ -140,7 +134,7 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="缺陷状态" :label-width="formLabelWidth">
-                <el-select v-model="editBug.status" placeholder="请选择缺陷状态">
+                <el-select v-model="editBug.status" placeholder="请选择缺陷状态" :disabled="editBug.status==4">
                   <el-option v-for="item in statusOptions" :key="item.id" :label="item.value"
                              :value="item.id"></el-option>
                 </el-select>
@@ -318,7 +312,7 @@
           bugTitle: '',
           bugIntroducerId: '',
           bugResponsibleId: '',
-          startTime: '',
+          startTime: new Date(),
           endTime: '',
           bugDescription: '',
           priority: '',
@@ -396,7 +390,6 @@
         })
       },
       handleEdit(index, row) {
-        console.log(row)
         if (this.employees == null) {
           console.log('后端获取人员信息')
           getEmployeesByProjectId(this.$store.getters.projectId).then(res => {
@@ -441,11 +434,10 @@
         } else if (row.status === 'CLOSED') {
           statusId = 4;
         }
+        this.editBug.id = row.id
         this.editBug.bugTitle = row.bugTitle
         this.editBug.bugResponsibleId = row.bugResponsible.id
-        this.editBug.bugIntroducerId = row.bugIntroducer.id
         this.editBug.startTime = row.startTime
-        this.editBug.endTime = row.endTime
         this.editBug.bugDescription = row.bugDescription
         this.editBug.priority = row.priority.toString()
         this.editBug.status = statusId.toString()
