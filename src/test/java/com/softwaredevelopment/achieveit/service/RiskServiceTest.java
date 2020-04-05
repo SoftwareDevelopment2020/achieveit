@@ -2,10 +2,15 @@ package com.softwaredevelopment.achieveit.service;
 
 import com.softwaredevelopment.achieveit.PO.entity.Risk;
 import com.softwaredevelopment.achieveit.controller.BussinessException;
+import com.softwaredevelopment.achieveit.entity.request.PageSearchRequest;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author RainkQ
@@ -87,5 +92,30 @@ class RiskServiceTest {
         } catch (BussinessException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    void getRisksByPage() {
+        PageSearchRequest<Map<String, String>> pageSearchRequest = new PageSearchRequest<>();
+        pageSearchRequest.setCurrent(1);
+        pageSearchRequest.setSize(10);
+        Map<String, String> map = new HashMap<>();
+        map.put("id", "1");
+        map.put("name", "张三");
+        pageSearchRequest.setSearchCondition(map);
+
+        try {
+            System.out.println(service.getRisksByPage(
+                    pageSearchRequest
+            ));
+        } catch (BussinessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    void getIntOrNull() {
+        Assert.assertTrue(service.getIntOrNull("123") == 123);
+        Assert.assertNull(service.getIntOrNull(null));
     }
 }

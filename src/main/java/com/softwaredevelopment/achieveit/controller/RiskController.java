@@ -1,7 +1,9 @@
 package com.softwaredevelopment.achieveit.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.softwaredevelopment.achieveit.PO.entity.Risk;
 import com.softwaredevelopment.achieveit.entity.RiskVO;
+import com.softwaredevelopment.achieveit.entity.request.PageSearchRequest;
 import com.softwaredevelopment.achieveit.http.response.HttpResponse;
 import com.softwaredevelopment.achieveit.service.RiskService;
 import io.swagger.annotations.Api;
@@ -11,6 +13,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author RainkQ
@@ -22,6 +25,13 @@ import java.util.List;
 public class RiskController extends BaseController {
     @Autowired
     RiskService riskService;
+
+    @ApiOperation("分页查询Risks")
+    @GetMapping("search_risks")
+    public HttpResponse<IPage<RiskVO>> getRisksByPage(@RequestBody PageSearchRequest<Map<String, String>> pageSearchRequest) throws BussinessException {
+        return responseOK(riskService.getRisksByPage(pageSearchRequest));
+    }
+
 
     @ApiOperation("通过projectId获取Risks")
     @GetMapping("risks_by_project_id")

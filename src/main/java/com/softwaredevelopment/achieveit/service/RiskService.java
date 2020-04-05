@@ -1,12 +1,15 @@
 package com.softwaredevelopment.achieveit.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.softwaredevelopment.achieveit.PO.entity.EmployeeBasics;
 import com.softwaredevelopment.achieveit.PO.entity.Risk;
 import com.softwaredevelopment.achieveit.controller.BussinessException;
 import com.softwaredevelopment.achieveit.entity.BugStatus;
 import com.softwaredevelopment.achieveit.entity.MailBean;
 import com.softwaredevelopment.achieveit.entity.RiskVO;
+import com.softwaredevelopment.achieveit.entity.request.PageSearchRequest;
 import com.softwaredevelopment.achieveit.utils.StringHelper;
 import org.springframework.stereotype.Service;
 
@@ -134,4 +137,44 @@ public class RiskService extends BaseService {
         return vo;
     }
 
+    public IPage<RiskVO> getRisksByPage(PageSearchRequest<Map<String, String>> pageSearchRequest) throws BussinessException {
+        // 构建搜索的page
+        Page<Risk> page = new Page<Risk>(pageSearchRequest.getCurrent(), pageSearchRequest.getSize());
+        Map<String, String> searchCondition = pageSearchRequest.getSearchCondition();
+        // 先按照名字查到这些EmployeeBasics
+        List<EmployeeBasics> listByNames = iEmployeeBasicsService.list(new QueryWrapper<EmployeeBasics>()
+                .lambda().eq(EmployeeBasics::getName, searchCondition.get("name")));
+
+        Risk search = new Risk();
+        search.setId(getIntOrNull(searchCondition.get("id")));
+        search.setType(searchCondition.get("type"));
+        search.setStatus(getIntOrNull(searchCondition.get("status")));
+        List<Integer> responsibleList = listByNames.stream().map(EmployeeBasics::getId).collect(Collectors.toList());
+
+        Page<Risk> riskPage;
+        if (responsibleList.size() > 0) {
+            riskPage = iRiskService.page(page,
+                    new QueryWrapper<>(search)
+                            .lambda()
+                            // 按名字查到的employeeBasics的id们
+                            .in(Risk::getResponsible, responsibleList));
+        } else {
+            riskPage = iRiskService.page(page, new QueryWrapper<>(search));
+        }
+
+        // 从riskPage转riskVOPage
+        Page<RiskVO> riskVOPage = new Page<>(riskPage.getCurrent(), riskPage.getSize(), riskPage.getTotal(), riskPage.isSearchCount());
+        for (Risk risk : riskPage.getRecords()) {
+            riskVOPage.getRecords().add(riskToVO(risk));
+        }
+        return riskVOPage;
+    }
+
+    public Integer getIntOrNull(String s) {
+        if (s != null) {
+            return Integer.valueOf(s);
+        } else {
+            return null;
+        }
+    }
 }

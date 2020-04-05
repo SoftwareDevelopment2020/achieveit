@@ -77,7 +77,7 @@ class ProjectServiceTest {
         try {
             authService.login("zhangsan", "123456");
             ProjectBasics pb = new ProjectBasics();
-            pb.setClientId(100000);
+            pb.setClientId(100);
             // 1位开发类型代码
             pb.setProjectId("M");
             pb.setSuperior(1);

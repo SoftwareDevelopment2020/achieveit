@@ -76,8 +76,15 @@ public class BaseService {
     }
 
     public Integer projectIdToId(String projectId) {
-        return iProjectBasicsService.getOne(
-                new QueryWrapper<ProjectBasics>().lambda().eq(ProjectBasics::getProjectId, projectId)).getId();
+        ProjectBasics one = iProjectBasicsService.getOne(
+                new QueryWrapper<ProjectBasics>()
+                        .lambda()
+                        .eq(ProjectBasics::getProjectId, projectId));
+        if (one == null) {
+            return null;
+        } else {
+            return one.getId();
+        }
     }
 
     /**

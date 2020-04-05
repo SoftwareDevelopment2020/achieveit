@@ -68,6 +68,12 @@ class BugServiceTest {
     void bugToVO() {
         try {
             System.out.println(service.bugToVO(mockBug()));
+
+        } catch (BussinessException e) {
+            e.printStackTrace();
+        }
+        try {
+            service.bugToVO(mockBug().setStatus(-1));
         } catch (BussinessException e) {
             e.printStackTrace();
         }

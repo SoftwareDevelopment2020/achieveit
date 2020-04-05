@@ -13,10 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 class PropertyServiceTest {
     @Autowired
-    ProjectService service;
+    PropertyService service;
 
     @Test
     void getPropertiesByProjectId() {
-        service.getProjectBasicsByProjectId("12345678901");
+        service.getPropertiesByProjectId("12345678901");
     }
 }

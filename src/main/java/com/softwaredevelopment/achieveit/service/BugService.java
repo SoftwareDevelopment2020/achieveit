@@ -82,24 +82,16 @@ public class BugService extends BaseService {
         vo.setId(bug.getId());
         vo.setProjectId(bug.getProjectId());
         vo.setBugTitle(bug.getBugTitle());
-        try {
-            vo.setBugIntroducer(
-                    iEmployeeBasicsService.getById(
-                            bug.getBugIntroducerId()
-                    )
-            );
-        } catch (Exception e) {
-            throw new BussinessException("bug提出人有问题", e.getCause());
-        }
-        try {
-            vo.setBugResponsible(
-                    iEmployeeBasicsService.getById(
-                            bug.getBugResponsibleId()
-                    )
-            );
-        } catch (Exception e) {
-            throw new BussinessException("bug负责人有问题", e.getCause());
-        }
+        vo.setBugIntroducer(
+                iEmployeeBasicsService.getById(
+                        bug.getBugIntroducerId()
+                )
+        );
+        vo.setBugResponsible(
+                iEmployeeBasicsService.getById(
+                        bug.getBugResponsibleId()
+                )
+        );
         vo.setStartTime(bug.getStartTime());
         vo.setEndTime(bug.getEndTime());
         vo.setBugDescription(bug.getBugDescription());
