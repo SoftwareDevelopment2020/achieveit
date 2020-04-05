@@ -279,7 +279,7 @@ public class ProjectService extends BaseService {
             PersonRole personRole = new PersonRole();
             personRole.setProjectEmployeeId(projectEmployee.getId());
             personRole.setRoleId(iRoleBasicsService.getOne(
-                    new QueryWrapper<RoleBasics>().select("name", "ROLE_PM"))
+                    new QueryWrapper<RoleBasics>().eq("name", "ROLE_PM"))
                     .getId()
             );
             iPersonRoleService.save(personRole);
@@ -287,7 +287,7 @@ public class ProjectService extends BaseService {
             PersonPermission personPermission = new PersonPermission();
             personPermission.setProjectEmployeeId(projectEmployee.getId());
             personPermission.setPermissionId(ipermissionBasicsService.getOne(
-                    new QueryWrapper<PermissionBasics>().select("name", "bug"))
+                    new QueryWrapper<PermissionBasics>().eq("name", "bug"))
                     .getId()
             );
 
@@ -301,7 +301,7 @@ public class ProjectService extends BaseService {
             PersonRole superiorRole = new PersonRole();
             superiorRole.setProjectEmployeeId(projectEmployee.getId());
             superiorRole.setRoleId(iRoleBasicsService.getOne(
-                    new QueryWrapper<RoleBasics>().select("name", "ROLE_SUPERIOR"))
+                    new QueryWrapper<RoleBasics>().eq("name", "ROLE_SUPERIOR"))
                     .getId());
             iPersonRoleService.save(superiorRole);
 
