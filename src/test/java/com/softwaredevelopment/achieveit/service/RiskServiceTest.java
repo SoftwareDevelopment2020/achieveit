@@ -103,15 +103,15 @@ class RiskServiceTest {
         pageSearchRequest.setCurrent(1);
         pageSearchRequest.setSize(10);
         Map<String, String> map = new HashMap<>();
-//        map.put("id", "1");
-//        map.put("name", "张三");
+        map.put("id", "1");
+        map.put("name", "张三");
         pageSearchRequest.setSearchCondition(map);
 
         try {
             IPage<RiskVO> risksByPage = service.getRisksByPage(
                     "12345678901", pageSearchRequest
             );
-            System.out.println(risksByPage);
+            System.out.println(risksByPage.getRecords());
         } catch (BussinessException e) {
             e.printStackTrace();
         }

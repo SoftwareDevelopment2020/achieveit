@@ -145,26 +145,18 @@ public class RiskService extends BaseService {
         List<EmployeeBasics> listByNames = iEmployeeBasicsService.list(new QueryWrapper<EmployeeBasics>()
                 .lambda().eq(EmployeeBasics::getName, searchCondition.get("name")));
 
-        Risk search = new Risk();
-        search.setProjectId(projectIdToId(projectId));
-        search.setId(getIntOrNull(searchCondition.get("id")));
-        String type = searchCondition.get("type");
-        if (!type.isEmpty()) {
-            search.setType(type);
-        }
-        search.setStatus(getIntOrNull(searchCondition.get("status")));
+
         List<Integer> responsibleList = listByNames.stream().map(EmployeeBasics::getId).collect(Collectors.toList());
 
-        Page<Risk> riskPage;
-        if (responsibleList.size() > 0) {
-            riskPage = iRiskService.page(page,
-                    new QueryWrapper<>(search)
-                            .lambda()
-                            // 按名字查到的employeeBasics的id们
-                            .in(Risk::getResponsible, responsibleList));
-        } else {
-            riskPage = iRiskService.page(page, new QueryWrapper<>(search));
-        }
+
+        Page<Risk> riskPage = iRiskService.page(page,
+                new QueryWrapper<Risk>().lambda()
+                        .like(searchCondition.get("type") != null, Risk::getType, searchCondition.get("type"))
+                        .eq(projectIdToId(projectId) != null, Risk::getProjectId, projectIdToId(projectId))
+                        .like(searchCondition.get("id") != null, Risk::getId, searchCondition.get("id"))
+                        .eq(searchCondition.get("status") != null, Risk::getStatus, searchCondition.get("status"))
+                        // 按名字查到的employeeBasics的id们
+                        .in(responsibleList.size() > 0, Risk::getResponsible, responsibleList));
 
         // 从riskPage转riskVOPage
         Page<RiskVO> riskVOPage = new Page<>(riskPage.getCurrent(), riskPage.getSize(), riskPage.getTotal(), riskPage.isSearchCount());
