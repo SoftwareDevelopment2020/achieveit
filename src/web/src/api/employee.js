@@ -35,7 +35,7 @@ export function getProjectEmployees(data) {
  * 添加项目人员
  */
 export function addProjectEmployee(data) {
-
+  return post('/add_project_employee', data)
 }
 
 /**

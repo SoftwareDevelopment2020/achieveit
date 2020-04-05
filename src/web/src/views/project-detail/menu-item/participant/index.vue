@@ -33,7 +33,7 @@
         <i class="el-icon-search"></i>
         <span>搜索</span>
       </el-button>
-      <el-button v-if="canEdit()" v-permission="['ROLE_PM']" type="primary" @click="addEmployee">
+      <el-button v-if="canEdit()" v-permission="['ROLE_PM']" type="primary" @click="dialog.addParticipant.show = true">
         <i class="el-icon-plus"></i>
         <span>添加人员</span>
       </el-button>
@@ -122,7 +122,7 @@
               <span v-if="canEdit()"  v-permission="['ROLE_PM']">
                 <el-button type="text" size="mini" @click="setRoleDialog(row)">设置角色</el-button>
                 <el-button type="text" size="mini" @click="setPermissionDialog(row)">设置权限</el-button>
-                <el-button type="text" size="mini" @click="deleteEmployee(row)">删除</el-button>
+                <el-button type="text" size="mini" @click="deleteParticipant(row)">删除</el-button>
               </span>
             </span>
             <span v-else style="color: red; font-size: 13px">
@@ -134,18 +134,73 @@
 
       <pagination :total="table.total" :page.sync="table.page" :limit.sync="table.limit" @pagination="getParticipants"></pagination>
     </div>
+
+    <!-- 添加人员 -->
+    <el-dialog
+      title="添加人员"
+      :visible.sync="dialog.addParticipant.show"
+      width="60%"
+      center
+    >
+      <el-form
+        ref="addParticipantForm"
+        :model="dialog.addParticipant.data"
+        :rules="dialog.addParticipant.rules"
+        :hide-required-asterisk="true"
+        label-width="100px"
+        style="width: 80%"
+      >
+        <el-form-item label="员工ID" prop="employeeId">
+          <el-input v-model="dialog.addParticipant.data.employeeId" name="employeeId" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="角色" prop="roles">
+          <el-select v-model="dialog.addParticipant.data.roles" style="width: 100%" multiple clearable  @change="autoSetPermission">
+            <el-option
+              v-for="item in roleOptions.slice(1, roleOptions.length)"
+              :key="item.name"
+              :label="item.detail"
+              :value="item.name">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="权限" prop="permissions">
+          <el-select v-model="dialog.addParticipant.data.permissions" style="width: 100%" multiple clearable @clear="autoSetPermission">
+            <el-option
+              v-for="item in permissionOptions"
+              :key="item.name"
+              :label="item.detail"
+              :value="item.name"
+              :disabled="item.name === 'bug'">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="项目上级ID" prop="superiorId">
+          <el-input v-model="dialog.addParticipant.data.superiorId" name="superiorId" clearable></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="closeAddParticipantDialog">取 消</el-button>
+        <el-button type="primary" @click="addParticipant">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
   import Pagination from '@/components/Pagination/index'
-  import {getProjectEmployees} from "../../../../api/employee";
+  import {addProjectEmployee, getProjectEmployees} from "../../../../api/employee";
   import {getNullOrValue, setTable} from "../../../../utils/common";
   export default {
     components: {
       Pagination
     },
     data() {
+      const checkRoles = (rule, value, callback) => {
+        if (value.length === 0){
+          callback(new Error('角色不能为空'))
+        }
+        callback()
+      }
       return {
         loading: false,
         project: this.$store.getters.project,
@@ -161,10 +216,33 @@
           }
         },
         roleOptions: this.Constant.roles,
+        permissionOptions: this.Constant.permissions,
         searchValue: {
           employeeId: '',
           employeeName: '',
           roles: []
+        },
+        dialog: {
+          addParticipant: {
+            show: false,
+            data: {
+              employeeId: '',
+              roles: [],
+              permissions: [],
+              superiorId: ''
+            },
+            rules: {
+              employeeId:  [
+                {required: true, message: '员工ID不能为空', trigger: 'blur'}
+              ],
+              roles: [
+                {
+                  validator: checkRoles,
+                  trigger: 'blur'
+                }
+              ]
+            }
+          }
         }
       }
     },
@@ -224,14 +302,41 @@
       /**
        * 添加项目人员
        */
-      addEmployee() {
+      addParticipant() {
+        this.$refs.addParticipantForm.validate(valid => {
+          if (valid) {
+            addProjectEmployee({
+              projectKey: this.project.id,
+              ...this.dialog.addParticipant.data
+            }).then(() => {
 
+            }).catch((error) => {
+              console.error(error)
+            }).finally(() => {
+              // 关闭对话框
+              this.closeAddParticipantDialog()
+              // 刷新
+              this.getParticipants()
+            })
+          } else {
+            return false
+          }
+        })
+      },
+      closeAddParticipantDialog() {
+        // 关闭对话框
+        this.dialog.addParticipant.show = false
+        // 清除数据
+        this.dialog.addParticipant.data.employeeId = ''
+        this.dialog.addParticipant.data.roles = []
+        this.dialog.addParticipant.data.permissions = []
+        this.dialog.addParticipant.data.superiorId = []
       },
 
       /**
        * 删除项目人员
        */
-      deleteEmployee(row) {
+      deleteParticipant(row) {
 
       },
 
@@ -253,6 +358,25 @@
       },
       setPermission() {
 
+      },
+      /**
+       * 产品经理、开发Leader、测试Leader自动配置缺陷追踪管理权限
+       */
+      autoSetPermission() {
+        // 已选权限中获取追踪管理权限下标
+        const bugPermissionIndex = this.dialog.addParticipant.data.permissions.indexOf('bug')
+        if(this.dialog.addParticipant.data.roles.some(
+          role => (role === 'ROLE_PM' || role === 'ROLE_DEVLEADER' || role === 'ROLE_TESTLEADER'))) {
+          // 如果有产品经理、开发Leader、测试Leader角色，在权限中添加缺陷追踪管理
+          if (bugPermissionIndex === -1) {
+            this.dialog.addParticipant.data.permissions.push('bug')
+          }
+        } else {
+          // 没有如果有产品经理、开发Leader、测试Leader角色，在权限中去除缺陷追踪管理
+          if (bugPermissionIndex > -1) {
+            this.dialog.addParticipant.data.permissions.splice(bugPermissionIndex, 1)
+          }
+        }
       }
     }
   }
