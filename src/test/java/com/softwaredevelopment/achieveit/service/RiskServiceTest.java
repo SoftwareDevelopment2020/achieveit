@@ -97,6 +97,7 @@ class RiskServiceTest {
     @Test
     void getRisksByPage() {
         PageSearchRequest<Map<String, String>> pageSearchRequest = new PageSearchRequest<>();
+
         pageSearchRequest.setCurrent(1);
         pageSearchRequest.setSize(10);
         Map<String, String> map = new HashMap<>();
@@ -106,7 +107,7 @@ class RiskServiceTest {
 
         try {
             System.out.println(service.getRisksByPage(
-                    pageSearchRequest
+                    "12345678901", pageSearchRequest
             ));
         } catch (BussinessException e) {
             e.printStackTrace();

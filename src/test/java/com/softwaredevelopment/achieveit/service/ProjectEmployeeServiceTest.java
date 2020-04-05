@@ -37,4 +37,13 @@ class ProjectEmployeeServiceTest {
         request.setSearchCondition(condition);
         System.out.println(projectEmployeeService.getProjectEmployeeVO(request));
     }
+
+    @Test
+    void getEmployeeBasics() {
+
+    }
+
+    @Test
+    void getRolesByPerson() {
+    }
 }

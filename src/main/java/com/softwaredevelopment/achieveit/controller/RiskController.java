@@ -28,8 +28,8 @@ public class RiskController extends BaseController {
 
     @ApiOperation("分页查询Risks")
     @GetMapping("search_risks")
-    public HttpResponse<IPage<RiskVO>> getRisksByPage(@RequestBody PageSearchRequest<Map<String, String>> pageSearchRequest) throws BussinessException {
-        return responseOK(riskService.getRisksByPage(pageSearchRequest));
+    public HttpResponse<IPage<RiskVO>> getRisksByPage(@RequestParam String projectId, @RequestBody PageSearchRequest<Map<String, String>> pageSearchRequest) throws BussinessException {
+        return responseOK(riskService.getRisksByPage(projectId, pageSearchRequest));
     }
 
 

@@ -137,7 +137,7 @@ public class RiskService extends BaseService {
         return vo;
     }
 
-    public IPage<RiskVO> getRisksByPage(PageSearchRequest<Map<String, String>> pageSearchRequest) throws BussinessException {
+    public IPage<RiskVO> getRisksByPage(String projectId, PageSearchRequest<Map<String, String>> pageSearchRequest) throws BussinessException {
         // 构建搜索的page
         Page<Risk> page = new Page<Risk>(pageSearchRequest.getCurrent(), pageSearchRequest.getSize());
         Map<String, String> searchCondition = pageSearchRequest.getSearchCondition();
@@ -146,6 +146,7 @@ public class RiskService extends BaseService {
                 .lambda().eq(EmployeeBasics::getName, searchCondition.get("name")));
 
         Risk search = new Risk();
+        search.setProjectId(projectIdToId(projectId));
         search.setId(getIntOrNull(searchCondition.get("id")));
         search.setType(searchCondition.get("type"));
         search.setStatus(getIntOrNull(searchCondition.get("status")));
