@@ -7,64 +7,91 @@
         :fetch-suggestions="querySearch"
         placeholder="风险类型"
       ></el-autocomplete>
-      <el-button icon="el-icon-search" circle @click="search" @keyup.enter="search">
+      <el-button icon="el-icon-search" circle @click="search" @keyup.enter="search" name="searchRiskButton">
       </el-button>
-      <el-button type="primary" @click="openNewRiskDialog">
+      <el-button type="primary" @click="openNewRiskDialog" name="openNewRiskButton">
         <i class="el-icon-plus"></i>
         <span>新建风险</span>
       </el-button>
       <el-dialog title="新建风险" :visible.sync="dialogFormVisible_1">
         <el-form :model="newRisk" :rules="riskRules" ref="newRisk">
-          <el-form-item label="风险类型" :label-width="formLabelWidth" prop="type">
-            <el-autocomplete
-              class="inline-input"
-              v-model="newRisk.type"
-              :fetch-suggestions="querySearch"
-              placeholder="请填写风险类型"
-            ></el-autocomplete>
-          </el-form-item>
-          <el-form-item label="风险状态" :label-width="formLabelWidth" prop="status">
-            <el-select v-model="newRisk.status" placeholder="风险状态">
-              <el-option v-for="state in riskStatus" :key="state.id" :label="state.value" :value="state.id">
-              </el-option>
-            </el-select>
-          </el-form-item>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="风险类型" :label-width="formLabelWidth" prop="type">
+                <el-autocomplete
+                  class="inline-input"
+                  v-model="newRisk.type"
+                  :fetch-suggestions="querySearch"
+                  placeholder="请填写风险类型"
+                  name="riskType"
+                ></el-autocomplete>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="风险状态" :label-width="formLabelWidth" prop="status">
+                <el-select v-model="newRisk.status" placeholder="风险状态" name="riskStatus">
+                  <el-option v-for="state in riskStatus" :key="state.id" :label="state.value" :value="state.id">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
 
-          <el-form-item label="风险级别" :label-width="formLabelWidth" prop="level">
-            <el-select v-model="newRisk.level" placeholder="风险级别">
-              <el-option v-for="level in riskLevel" :key="level.id" :label="level.value" :value="level.id">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="风险责任人" :label-width="formLabelWidth" prop="responsible">
-            <el-select v-model="newRisk.responsible" placeholder="风险责任人">
-              <el-option v-for="employee in employees" :key="employee.id" :label="employee.name" :value="employee.id">
-                <span style="float: left">{{ employee.name }}</span>
-                <span style="float: right; color: #8492a6; font-size: 13px">{{ employee.id }}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="风险相关者" :label-width="formLabelWidth">
-            <el-select v-model="newRisk.related" placeholder="风险相关者" multiple>
-              <el-option v-for="employee in employees" :key="employee.id" :label="employee.name" :value="employee.id">
-                <span style="float: left">{{ employee.name }}</span>
-                <span style="float: right; color: #8492a6; font-size: 13px">{{ employee.id }}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="风险影响度" :label-width="formLabelWidth" prop="affect">
-            <el-select v-model="newRisk.affect" placeholder="风险影响度">
-              <el-option v-for="affect in riskAffect" :key="affect.id" :label="affect.value" :value="affect.id">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="风险跟踪频度(天)" :label-width="formLabelWidth" required>
-            <el-input-number v-model="newRisk.trackFreq" :min="1" :max="9999" label="天数"></el-input-number>
-          </el-form-item>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="风险级别" :label-width="formLabelWidth" prop="level">
+                <el-select v-model="newRisk.level" placeholder="风险级别" name="riskLevel">
+                  <el-option v-for="level in riskLevel" :key="level.id" :label="level.value" :value="level.id">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="风险责任人" :label-width="formLabelWidth" prop="responsible">
+                <el-select v-model="newRisk.responsible" placeholder="风险责任人" name="riskResponsible">
+                  <el-option v-for="employee in employees" :key="employee.id" :label="employee.name"
+                             :value="employee.id">
+                    <span style="float: left">{{ employee.name }}</span>
+                    <span style="float: right; color: #8492a6; font-size: 13px">{{ employee.id }}</span>
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="风险影响度" :label-width="formLabelWidth" prop="affect">
+                <el-select v-model="newRisk.affect" placeholder="风险影响度" name="riskAffect">
+                  <el-option v-for="affect in riskAffect" :key="affect.id" :label="affect.value" :value="affect.id">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="风险跟踪频度(天)" :label-width="formLabelWidth" required>
+                <el-input-number v-model="newRisk.trackFreq" :min="1" :max="9999" label="天数"
+                                 name="riskTrackFreq"></el-input-number>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-form-item label="风险相关者" :label-width="formLabelWidth">
+              <el-select v-model="newRisk.related" placeholder="风险相关者" multiple style="width: 100%">
+                <el-option v-for="employee in employees" :key="employee.id" :label="employee.name" :value="employee.id"
+                           name="riskRelated">
+                  <span style="float: left">{{ employee.name }}</span>
+                  <span style="float: right; color: #8492a6; font-size: 13px">{{ employee.id }}</span>
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-row>
+
           <el-form-item label="风险应对" :label-width="formLabelWidth" prop="react">
             <el-input
               placeholder="风险应对方法"
               v-model="newRisk.react"
+              name="riskReact"
               clearable>
             </el-input>
           </el-form-item>
@@ -72,6 +99,7 @@
             <el-input
               placeholder="风险应对策略"
               v-model="newRisk.strategy"
+              name="riskStrategy"
               clearable>
             </el-input>
           </el-form-item>
@@ -81,17 +109,18 @@
               type="textarea"
               :rows="4"
               placeholder="请输入风险的描述内容"
+              name="riskDescription"
               v-model="newRisk.description">
             </el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible_1 = false">取 消</el-button>
-          <el-button type="primary" @click="submitRisk">确 定</el-button>
+          <el-button @click="dialogFormVisible_1 = false" name="cancelSubmitButton">取 消</el-button>
+          <el-button type="primary" @click="submitRisk" name="submitButton">确 定</el-button>
         </div>
       </el-dialog>
 
-      <el-button type="primary" @click="dialogFormVisible_2 = true">
+      <el-button type="primary" @click="dialogFormVisible_2 = true" name="openImportRiskButton">
         导入已有风险<i class="el-icon-upload el-icon--right"></i>
       </el-button>
 
@@ -102,8 +131,8 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible_2 = false">取 消</el-button>
-          <el-button type="primary" @click="dialogFormVisible_2 = false">确 定</el-button>
+          <el-button @click="dialogFormVisible_2 = false" name="cancelImportButton">取 消</el-button>
+          <el-button type="primary" @click="dialogFormVisible_2 = false" name="importButton">确 定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -111,7 +140,7 @@
     <div>
       <el-table
         :data="risks"
-        style="width: 100%">
+        style="width: 100%" v-loading="loading">
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-form label-position="left" inline class="demo-table-expand">
@@ -140,7 +169,7 @@
                 <span>{{ props.row.strategy }}</span>
               </el-form-item>
               <el-form-item label="跟踪频度">
-                <span>{{ props.row.trackFreq }}</span>
+                <span>{{ props.row.trackFreq }} (天/次)</span>
               </el-form-item>
               <el-form-item label="风险级别">
                 <span>{{ props.row.level }}</span>
@@ -196,7 +225,6 @@
   .demo-table-expand .el-form-item {
     margin-right: 0;
     margin-bottom: 0;
-    width: 50%;
   }
 </style>
 
@@ -213,6 +241,7 @@
       return {
         select: '',
         riskTypeOptions: this.Constant.riskType,
+        loading: false,
         dialogFormVisible_1: false,
         dialogFormVisible_2: false,
         form_2: {
@@ -283,7 +312,7 @@
                 this.$message({
                   type: 'success',
                   message: '风险新增成功',
-                  duration: 2*1000
+                  duration: 2 * 1000
                 })
               })
 
@@ -304,13 +333,19 @@
       }
     },
     mounted() {
+      this.loading = true
       const risks = this.$store.getters.risks
       if (risks == null) {
         this.$store.dispatch('risk/getRisks').then(response => {
           this.risks = response
+        }).catch(error => {
+
+        }).finally(() => {
+          this.loading = false
         })
       } else {
         this.risks = risks
+        this.loading = false
       }
 
 

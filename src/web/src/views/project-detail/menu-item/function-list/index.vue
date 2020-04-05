@@ -2,7 +2,7 @@
 
   <div class="app-container">
     <h3>功能列表</h3>
-    <el-tree :data="functionList" :props="defaultProps">
+    <el-tree :data="functionList" :props="defaultProps" v-loading="loading">
       <span class="custom-tree-node" slot-scope="{ node, data }">
         <span>{{ node.label }}</span>
         <span>
@@ -39,6 +39,7 @@
     components: {UploadExcelComponent},
     data() {
       return {
+        loading: false,
         tableData: [],
         tableHeader: [],
         downloadLoading: false,
@@ -52,14 +53,18 @@
       }
     },
     mounted() {
+      this.loading = true
       const features = this.$store.getters.features
       if (features === null) {
         this.$store.dispatch('feature/getFeatures').then(res => {
           console.log(JSON.stringify(res))
           this.functionList = res
+        }).finally(() => {
+          this.loading = false
         })
       } else {
         this.functionList = features
+        this.loading = false
       }
     },
     methods: {

@@ -8,10 +8,7 @@ import com.softwaredevelopment.achieveit.service.BugService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author RainkQ
@@ -32,7 +29,7 @@ public class BugController extends BaseController {
 
     @ApiOperation("添加bug")
     @PostMapping("save_bug")
-    public HttpResponse<String> saveBugByProjectId(String projectId, Bug bug) throws BussinessException {
+    public HttpResponse<String> saveBugByProjectId(String projectId,@RequestBody Bug bug) throws BussinessException {
         if (bugService.saveBugByProjectId(projectId, bug)) {
             return responseOK("添加成功");
         } else {
@@ -42,7 +39,7 @@ public class BugController extends BaseController {
 
     @ApiOperation("更新bug信息（包括状态等）")
     @PostMapping("update_bug")
-    public HttpResponse<String> updateBugByProjectId(String projectId, Bug bug) {
+    public HttpResponse<String> updateBugByProjectId(String projectId,@RequestBody Bug bug) {
         if (bugService.updateBugByProjectId(projectId, bug)) {
             return responseOK("添加成功");
         } else {

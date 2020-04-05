@@ -219,10 +219,10 @@ const riskRules = {
     {required: true, message: '请选择风险状态', trigger: 'change'}
   ],
   level: [
-    { required: true, message: '请选择风险级别'}
+    {required: true, message: '请选择风险级别'}
   ],
   responsible: [
-    { required: true, message: '请选择风险负责人',trigger:'change'}
+    {required: true, message: '请选择风险负责人', trigger: 'change'}
   ],
   // related: [
   //   { required: true, message: '请选择风险相关者', }
@@ -241,6 +241,26 @@ const riskRules = {
   ]
 }
 
+const bugPriority = [{
+  id: '0',
+  value: '高'
+},
+  {
+    id: '1',
+    value: '一般'
+  }, {
+    id: '2',
+    value: '低'
+  }]
+
+const bugRules = {
+  bugTitle: [{required: true, message: '请填写缺陷标题', trigger: 'blur'}],
+  bugResponsibleId: [{required: true, message: '请选择缺陷负责人', trigger: 'change'}],
+  startTime: [{required: true, message: '请选择缺陷开始时间', trigger: 'change'}],
+  priority: [{required: true, message: '请选择缺陷优先级', trigger: 'change'}],
+  bugDescription: [{required: true, message: '请填写缺陷描述', trigger: 'blur'}],
+  status:[{required: true, message: '请选择缺陷状态', trigger: 'change'}]
+}
 
 export default {
   projectStatus,
@@ -254,5 +274,7 @@ export default {
   riskAffect,
   riskLevel,
   status,
-  riskRules
+  riskRules,
+  bugPriority,
+  bugRules
 }

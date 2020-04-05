@@ -11,3 +11,24 @@ export function getBugs(projectId, currentPage, size) {
     }
   })
 }
+
+export function addBug(projectId, bug) {
+  return request({
+    url: '/bug/save_bug',
+    method: 'post',
+    params: {
+      'projectId': projectId
+    },
+    data: bug
+  })
+
+}
+
+export function updateBug(projectId, bug) {
+  return request({
+    url: '/bug/update_bug',
+    method: 'post',
+    params: {'projectId': projectId},
+    data: bug
+  })
+}

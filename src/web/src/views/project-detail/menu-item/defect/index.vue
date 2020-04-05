@@ -1,129 +1,166 @@
 <template>
   <div>
     <div>
-      <el-input
-        v-model="searchValue.ID"
-        placeholder="编号"
-        style="width: 50%;min-width: 260px"
-        clearable
-      >
-      </el-input>
-      <el-select
-        v-model="searchValue.statusId"
-        placeholder="状态"
-        style="width: 15%;min-width: 120px"
-        clearable
-      >
-        <el-option
-          v-for="(item,index) in statusOptions"
-          :key="index"
-          :label="item.label"
-          :value="index">
-        </el-option>
-      </el-select>
-      <el-button type="primary" style="margin-left: 10px" @click="search" @keyup.enter="search">
-        <i class="el-icon-search"></i>
-        <span>搜索</span>
-      </el-button>
-      <el-button type="primary" @click="dialogFormVisible = true">
-        <i class="el-icon-plus"></i>
-        <span>新建项目</span>
-      </el-button>
+      <div>
+        <el-input
+          v-model="searchValue.ID"
+          placeholder="编号"
+          style="width: 50%;min-width: 260px"
+          clearable
+        >
+        </el-input>
+        <el-select
+          v-model="searchValue.statusId"
+          placeholder="状态"
+          style="width: 15%;min-width: 120px"
+          clearable
+        >
+          <el-option v-for="item in statusOptions" :key="item.id" :label="item.value"
+                     :value="item.id"></el-option>
+        </el-select>
+        <el-button type="primary" style="margin-left: 10px" @click="search" @keyup.enter="search">
+          <i class="el-icon-search"></i>
+          <span>搜索</span>
+        </el-button>
+        <el-button type="primary" @click="openNewBugDialog">
+          <i class="el-icon-plus"></i>
+          <span>添加缺陷</span>
+        </el-button>
 
-      <el-dialog title="新建缺陷" :visible.sync="dialogFormVisible">
-        <el-form :model="form">
-          <el-form-item label="标题" :label-width="formLabelWidth">
-            <el-input v-model="form.title" autocomplete="off"></el-input>
+        <el-dialog title="新建缺陷" :visible.sync="dialogFormVisible">
+          <el-form :model="newBug" :rules="bugRules" ref="newBug">
+            <el-form-item label="标题" :label-width="formLabelWidth" prop="bugTitle">
+              <el-input v-model="newBug.bugTitle" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-row>
+              <el-col :span="12">
+                <div>
+                  <el-form-item label="开始时间" :label-width="formLabelWidth" prop="startTime">
+                    <el-date-picker type="date" v-model="newBug.startTime" name="scheduledDate"
+                                    format="yyyy 年 MM 月 dd 日"
+                                    value-format="yyyy-MM-dd" style="width: 90%;" :picker-options="{
+            disabledDate (time) {
+              return time.getTime() > new Date()
+             }
+          }"></el-date-picker>
+                  </el-form-item>
+                </div>
+              </el-col>
+              <el-col :span="12">
+                <div>
+                  <el-form-item label="优先级" :label-width="formLabelWidth" prop="priority">
+                    <el-select v-model="newBug.priority" placeholder="请选择优先级">
+                      <el-option v-for="item in bugPriority" :key="item.id" :label="item.value"
+                                 :value="item.id"></el-option>
+                    </el-select>
+                  </el-form-item>
+                </div>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="缺陷负责人" :label-width="formLabelWidth" prop="bugResponsibleId">
+                  <el-select v-model="newBug.bugResponsibleId" placeholder="缺陷负责人">
+                    <el-option v-for="employee in employees" :key="employee.id" :label="employee.name"
+                               :value="employee.id">
+                      <span style="float: left">{{ employee.name }}</span>
+                      <span style="float: right; color: #8492a6; font-size: 13px">{{ employee.id }}</span>
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="缺陷状态" :label-width="formLabelWidth" prop="status">
+                  <el-select v-model="newBug.status" placeholder="请选择缺陷状态" disabled>
+                    <el-option v-for="item in statusOptions" :key="item.id" :label="item.value"
+                               :value="item.id"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-form-item label="缺陷描述" :label-width="formLabelWidth" prop="bugDescription">
+              <el-input
+                type="textarea"
+                :rows="4"
+                placeholder="请输入缺陷的描述内容"
+                v-model="newBug.bugDescription">
+              </el-input>
+            </el-form-item>
+
+
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="submitBug">确 定</el-button>
+          </div>
+        </el-dialog>
+      </div>
+
+      <el-dialog title="编辑缺陷" :visible.sync="editBugDialogVisible">
+        <el-form :model="editBug" :rules="bugRules" ref="editBugForm">
+          <el-form-item label="标题" :label-width="formLabelWidth" prop="bugTitle">
+            <el-input v-model="editBug.bugTitle" autocomplete="off"></el-input>
           </el-form-item>
-          <el-form-item label="负责人" :label-width="formLabelWidth">
-            <el-input v-model="form.personInCharge" autocomplete="off"></el-input>
-          </el-form-item>
           <el-row>
             <el-col :span="12">
               <div>
-                <el-form-item label="开始时间" :label-width="formLabelWidth">
-                  <el-date-picker type="date" v-model="form.startDate" name="scheduledDate" format="yyyy 年 MM 月 dd 日"
-                                  value-format="yyyy-MM-dd" style="width: 90%;"></el-date-picker>
-                </el-form-item>
-              </div>
-            </el-col>
-            <el-col :span="12">
-              <div>
-                <el-form-item label="结束时间" :label-width="formLabelWidth">
-                  <el-date-picker type="date" v-model="form.endDate" name="scheduledDate" format="yyyy 年 MM 月 dd 日"
-                                  value-format="yyyy-MM-dd" style="width: 90%;"></el-date-picker>
-                </el-form-item>
-              </div>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="12">
-              <div>
-                <el-form-item label="严重程度" :label-width="formLabelWidth">
-                  <el-select v-model="form.severity" placeholder="请选择严重程度">
-                    <el-option label="致命" value="致命"></el-option>
-                    <el-option label="严重" value="beijing"></el-option>
-                    <el-option label="一般" value="beijing"></el-option>
-                    <el-option label="建议" value="beijing"></el-option>
-                  </el-select>
-                </el-form-item>
-              </div>
-            </el-col>
-            <el-col :span="12">
-              <div>
-                <el-form-item label="缺陷类型" :label-width="formLabelWidth">
-                  <el-select v-model="form.type" placeholder="请选择缺陷类别">
-                    <el-option label="功能问题" value="shanghai"></el-option>
-                    <el-option label="性能问题" value="beijing"></el-option>
-                    <el-option label="接口问题" value="beijing"></el-option>
-                    <el-option label="安全问题" value="beijing"></el-option>
-                    <el-option label="UI问题" value="beijing"></el-option>
-                    <el-option label="兼容性问题" value="beijing"></el-option>
-                    <el-option label="易用性问题" value="beijing"></el-option>
-                  </el-select>
-                </el-form-item>
-              </div>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="12">
-              <div>
-                <el-form-item label="复现概率" :label-width="formLabelWidth">
-                  <el-select v-model="form.prob" placeholder="请选择复现概率">
-                    <el-option label="必现" value=0></el-option>
-                    <el-option label="大概率复现" value=1></el-option>
-                    <el-option label="小概率复现" value=2></el-option>
-                    <el-option label="仅出现一次" value=3></el-option>
-                  </el-select>
+                <el-form-item label="开始时间" :label-width="formLabelWidth" prop="startTime">
+                  <el-date-picker type="date" v-model="editBug.startTime" name="startTime" format="yyyy 年 MM 月 dd 日"
+                                  value-format="yyyy-MM-dd" style="width: 90%;" :picker-options="{
+            disabledDate (time) {
+              return time.getTime() > new Date()
+             }
+          }"></el-date-picker>
                 </el-form-item>
               </div>
             </el-col>
             <el-col :span="12">
               <div>
                 <el-form-item label="优先级" :label-width="formLabelWidth">
-                  <el-select v-model="form.priority" placeholder="请选择优先级">
-                    <el-option label="最高" value="shanghai"></el-option>
-                    <el-option label="较高" value="beijing"></el-option>
-                    <el-option label="普通" value="beijing"></el-option>
-                    <el-option label="较低" value="beijing"></el-option>
-                    <el-option label="最低" value="beijing"></el-option>
+                  <el-select v-model="editBug.priority" placeholder="请选择优先级">
+                    <el-option v-for="priority in bugPriority" :key="priority.id" :label="priority.value"
+                               :value="priority.id">
+                    </el-option>
                   </el-select>
                 </el-form-item>
               </div>
             </el-col>
           </el-row>
-          <el-form-item label="描述" :label-width="formLabelWidth">
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="缺陷负责人" :label-width="formLabelWidth">
+                <el-select v-model="editBug.bugResponsibleId" placeholder="缺陷负责人">
+                  <el-option v-for="employee in employees" :key="employee.id" :label="employee.name"
+                             :value="employee.id">
+                    <span style="float: left">{{ employee.name }}</span>
+                    <span style="float: right; color: #8492a6; font-size: 13px">{{ employee.id }}</span>
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="缺陷状态" :label-width="formLabelWidth">
+                <el-select v-model="editBug.status" placeholder="请选择缺陷状态">
+                  <el-option v-for="item in statusOptions" :key="item.id" :label="item.value"
+                             :value="item.id"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-form-item label="缺陷描述" :label-width="formLabelWidth" prop="bugDescription">
             <el-input
               type="textarea"
-              :rows="3"
-              placeholder="请输入内容"
-              v-model="form.describe">
+              :rows="4"
+              placeholder="请输入缺陷的描述内容"
+              v-model="editBug.bugDescription">
             </el-input>
           </el-form-item>
+
+
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+          <el-button @click="editBugDialogVisible=false">取 消</el-button>
+          <el-button type="primary" @click="submitEditBug">确 定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -131,7 +168,7 @@
     <div>
       <el-table
         v-loading="loading"
-        :data="res.records"
+        :data="bugs.records"
         style="width: 100%; margin-top: 30px"
         empty-text="无缺陷条目"
       >
@@ -145,10 +182,10 @@
                 <span>{{ props.row.id }}</span>
               </el-form-item>
               <el-form-item label="提出人">
-                <span>{{ props.row.bugIntroducerId}}</span>
+                <span>{{ props.row.bugIntroducer.name}}</span>
               </el-form-item>
               <el-form-item label="负责人">
-                <span>{{ props.row.bugResponsibleId}}</span>
+                <span>{{ props.row.bugResponsible.name}}</span>
               </el-form-item>
               <el-form-item label="开始时间">
                 <span>{{ dateFormat(props.row.startTime) }}</span>
@@ -160,7 +197,7 @@
                 <span>{{ props.row.status }}</span>
               </el-form-item>
               <el-form-item label="优先级">
-                <span>{{ props.row.priority }}</span>
+                <span v-for="priority in bugPriority" v-if="priority.id==props.row.priority">{{ priority.value }}</span>
               </el-form-item>
               <el-form-item label="缺陷描述">
                 <span>{{ props.row.bugDescription }}</span>
@@ -184,7 +221,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop="bugIntroducerId"
+          prop="bugIntroducer.name"
           label="提出人"
           width="150"
           align="center"
@@ -207,9 +244,22 @@
             <span style="margin-left: 10px">{{ dateFormat(scope.row.startTime) }}</span>
           </template>
         </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              @click="handleEdit(scope.$index, scope.row)">编辑
+            </el-button>
+            <el-button
+              size="mini"
+              type="danger"
+              @click="handleDelete(scope.$index, scope.row)">删除
+            </el-button>
+          </template>
+        </el-table-column>
       </el-table>
 
-      <pagination :total="res.total" :page.sync="res.current" :limit.sync="res.limit"
+      <pagination :total="bugs.total" :page.sync="bugs.current" :limit.sync="bugs.limit"
                   @pagination="getBugs"></pagination>
     </div>
 
@@ -235,24 +285,28 @@
 <script>
 
   import Pagination from '@/components/Pagination/index'
-  import {getBugs} from "../../../../api/bug";
-
+  import {getBugs, addBug, updateBug} from "../../../../api/bug";
   import dayjs from 'dayjs'
+  import {getEmployeesByProjectId} from "../../../../api/employee";
+
   export default {
+    inject: ['reload'],
     components: {
-      Pagination
+      Pagination,
     },
     data() {
       return {
         loading: false,
-
+        editBugDialogVisible: false,
         searchValue: {
           ID: '',
           statusId: '',
         },
-        statusOptions: this.Constant.defectStatus, //这里要设置缺陷类型
-
-        res: {
+        statusOptions: this.Constant.status,
+        employees: null,
+        bugPriority: this.Constant.bugPriority,
+        bugRules: this.Constant.bugRules,
+        bugs: {
           size: 10,
           current: 1,
           total: 0,
@@ -260,16 +314,25 @@
         },
         dialogTableVisible: false,
         dialogFormVisible: false,
-        form: {
-          title: '',
-          personInCharge: '',
-          startDate: '',
-          endDate: '',
-          severity: '',
-          type: '',
-          prob: '',
+        newBug: {
+          bugTitle: '',
+          bugIntroducerId: '',
+          bugResponsibleId: '',
+          startTime: '',
+          endTime: '',
+          bugDescription: '',
           priority: '',
-          describe: ''
+          status: '0'
+        },
+        editBug: {
+          bugTitle: '',
+          bugIntroducerId: '',
+          bugResponsibleId: '',
+          startTime: '',
+          endTime: '',
+          bugDescription: '',
+          priority: null,
+          status: null
         },
         formLabelWidth: '120px'
       }
@@ -279,12 +342,15 @@
     },
     methods: {
       getBugs() {
-        console.log('查询bug页数为' + this.res.current)
-        console.log('查询bug条目数量为' + this.res.size)
-        getBugs(this.$store.getters.projectId, this.res.current, this.res.size).then(response => {
-          this.res = response.data
+        this.loading = true
+        console.log('查询bug页数为' + this.bugs.current)
+        console.log('查询bug条目数量为' + this.bugs.size)
+        getBugs(this.$store.getters.projectId, this.bugs.current, this.bugs.size).then(response => {
+          this.bugs = response.data
         }).catch(error => {
 
+        }).finally(() => {
+          this.loading = false
         })
       },
 
@@ -294,8 +360,95 @@
         this.table.page = 1
         this.getProjects()
       },
-      dateFormat(time){
-        return dayjs(time).format('YYYY-MM-DD HH:mm:ss')
+      dateFormat(time) {
+        if (time == null)
+          return "未定"
+        return dayjs(time).format('YYYY年MM月DD日')
+      },
+      openNewBugDialog() {
+        this.dialogFormVisible = true
+        if (this.employees == null) {
+          console.log('后端获取人员信息')
+          getEmployeesByProjectId(this.$store.getters.projectId).then(res => {
+            this.employees = res.data
+          }).catch(error => {
+
+          })
+        } else {
+        }
+      },
+      submitBug() {
+        this.$refs['newBug'].validate(valid => {
+          if (valid) {
+            addBug(this.$store.getters.projectId, this.newBug).then(() => {
+              this.reload()
+              this.$message({
+                type: 'success',
+                message: '新增缺陷成功',
+                duration: 2 * 1000
+              })
+            }).catch(error => {
+
+            })
+          } else {
+            return false
+          }
+        })
+      },
+      handleEdit(index, row) {
+        console.log(row)
+        if (this.employees == null) {
+          console.log('后端获取人员信息')
+          getEmployeesByProjectId(this.$store.getters.projectId).then(res => {
+            this.employees = res.data
+            this.setEditBug(row)
+            this.editBugDialogVisible = true
+          }).catch(error => {
+          })
+        } else {
+          this.setEditBug(row)
+          this.editBugDialogVisible = true
+        }
+
+      },
+      handleDelete(index, row) {
+        console.log(row)
+      },
+      submitEditBug() {
+        this.$refs['editBugForm'].validate(valid => {
+          if (valid) {
+            updateBug(this.$store.getters.projectId, this.editBug).then(() => {
+              this.reload();
+              this.$message({
+                type: 'success',
+                message: '缺陷更新成功',
+                duration: 2 * 1000
+              })
+            })
+          } else {
+            return false
+          }
+        })
+      },
+      setEditBug(row) {
+        var statusId = 0;
+        if (row.status === 'OPENED') {
+          statusId = 1;
+        } else if (row.status === 'PROCESSED') {
+          statusId = 2;
+        } else if (row.status === 'SOLVED') {
+          statusId = 3;
+        } else if (row.status === 'CLOSED') {
+          statusId = 4;
+        }
+        this.editBug.bugTitle = row.bugTitle
+        this.editBug.bugResponsibleId = row.bugResponsible.id
+        this.editBug.bugIntroducerId = row.bugIntroducer.id
+        this.editBug.startTime = row.startTime
+        this.editBug.endTime = row.endTime
+        this.editBug.bugDescription = row.bugDescription
+        this.editBug.priority = row.priority.toString()
+        this.editBug.status = statusId.toString()
       }
     }
   }
