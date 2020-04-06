@@ -1,13 +1,16 @@
 package com.softwaredevelopment.achieveit.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.softwaredevelopment.achieveit.PO.entity.EmployeeBasics;
-import com.softwaredevelopment.achieveit.PO.entity.ProjectEmployee;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.softwaredevelopment.achieveit.PO.entity.*;
 import com.softwaredevelopment.achieveit.controller.BussinessException;
+import com.softwaredevelopment.achieveit.entity.request.PageSearchRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author RainkQ
@@ -47,5 +50,27 @@ public class EmployeeService extends BaseService {
         }
         // 再从EmployeeBasics中查找这些员工
         return iEmployeeBasicsService.list(new QueryWrapper<EmployeeBasics>().lambda().in(EmployeeBasics::getId, employeeIds));
+    }
+
+    public IPage<EmployeeBasics> searchEmployeeByGlobalRoles(PageSearchRequest<String> request) throws BussinessException {
+        if (!request.getSearchCondition().startsWith("ROLE_")) {
+            throw new BussinessException("role字符串有问题", null);
+        }
+        // 先查到role对应的id们
+        List<RoleBasics> list = iRoleBasicsService.list(new QueryWrapper<RoleBasics>().lambda()
+                .likeRight(RoleBasics::getName, request.getSearchCondition()));
+        List<Integer> roleIds = list.stream().map(RoleBasics::getId).collect(Collectors.toList());
+        // 然后查到users
+        List<Integer> userIds = iUserRoleService.list(
+                new QueryWrapper<UserRole>().lambda()
+                        .in(UserRole::getRoleId, roleIds)).stream().map(UserRole::getUserId).collect(Collectors.toList());
+        List<User> users = iUserService.listByIds(userIds);
+        // 然后拿到employee的id们
+        List<Integer> employeeIds = users.stream().map(User::getEmployeeBasicsId).collect(Collectors.toList());
+        // 最后查到employees
+        Page<EmployeeBasics> page = new Page<>(request.getCurrent(), request.getSize());
+        return iEmployeeBasicsService.page(page,
+                new QueryWrapper<EmployeeBasics>().lambda().in(EmployeeBasics::getId, employeeIds));
+
     }
 }

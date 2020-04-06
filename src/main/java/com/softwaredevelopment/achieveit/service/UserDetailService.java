@@ -119,13 +119,15 @@ public class UserDetailService extends BaseService implements UserDetailsService
                 userRoles.add(ur);
             }
             iUserRoleService.saveBatch(userRoles);
-        } else {
-            // 如果没有role
-            UserRole ur = new UserRole();
-            ur.setUserId(userToAdd.getId());
-            ur.setRoleId(3);
-            iUserRoleService.save(ur);
         }
+        // 现在UserRole 只存全局的
+//        else {
+//            // 如果没有role
+//            UserRole ur = new UserRole();
+//            ur.setUserId(userToAdd.getId());
+//            ur.setRoleId(3);
+//            iUserRoleService.save(ur);
+//        }
         return userToAdd;
     }
 
