@@ -10,10 +10,12 @@
         </span>
       </span>
     </el-tree>
-    <upload-excel-component :on-success="handleSuccess" :before-upload="beforeUpload"/>
-    <el-table :data="tableData" border highlight-current-row style="width: 100%;margin-top:20px;">
-      <el-table-column v-for="item of tableHeader" :key="item" :prop="item" :label="item"/>
-    </el-table>
+    <div v-permission="['ROLE_PM']">
+      <upload-excel-component :on-success="handleSuccess" :before-upload="beforeUpload"/>
+      <el-table :data="tableData" border highlight-current-row style="width: 100%;margin-top:20px;">
+        <el-table-column v-for="item of tableHeader" :key="item" :prop="item" :label="item"/>
+      </el-table>
+    </div>
     <div class="components-container">
 
       <el-button :loading="downloadLoading" style="margin:0 0 20px 20px; float: right;" type="primary"
@@ -21,7 +23,7 @@
         导出Excel
       </el-button>
       <el-button :loading="uploadLoading" style="margin:0 0 20px 20px; float: right;" type="primary"
-                 icon="el-icon-document" @click="handleUpload" name="uploadFunctionList">
+                 icon="el-icon-document" @click="handleUpload" name="uploadFunctionList" v-permission="['ROLE_PM']">
         上传Excel
       </el-button>
     </div>

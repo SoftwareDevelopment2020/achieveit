@@ -54,13 +54,13 @@
 
         <el-dialog title="新建缺陷" :visible.sync="dialogFormVisible">
           <el-form :model="newBug" :rules="bugRules" ref="newBug">
-            <el-form-item label="标题" :label-width="formLabelWidth" prop="bugTitle" name="newBugTitle">
-              <el-input v-model="newBug.bugTitle" autocomplete="off"></el-input>
+            <el-form-item label="标题" :label-width="formLabelWidth" prop="bugTitle">
+              <el-input v-model="newBug.bugTitle" autocomplete="off" name="newBugTitle"></el-input>
             </el-form-item>
             <el-row>
               <el-col :span="12">
-                <el-form-item label="缺陷负责人" :label-width="formLabelWidth" prop="bugResponsibleId" name="newBugResponsible">
-                  <el-select v-model="newBug.bugResponsibleId" placeholder="缺陷负责人">
+                <el-form-item label="缺陷负责人" :label-width="formLabelWidth" prop="bugResponsibleId" >
+                  <el-select v-model="newBug.bugResponsibleId" placeholder="缺陷负责人" name="newBugResponsible">
                     <el-option v-for="employee in employees" :key="employee.id" :label="employee.name" name="newBugResponsibleOption"
                                :value="employee.id">
                       <span style="float: left">{{ employee.name }}</span>
@@ -71,8 +71,8 @@
               </el-col>
               <el-col :span="12">
                 <div>
-                  <el-form-item label="优先级" :label-width="formLabelWidth" prop="priority" name="newBugPriority">
-                    <el-select v-model="newBug.priority" placeholder="请选择优先级">
+                  <el-form-item label="优先级" :label-width="formLabelWidth" prop="priority" >
+                    <el-select v-model="newBug.priority" placeholder="请选择优先级" name="newBugPriority">
                       <el-option v-for="item in bugPriority" :key="item.id" :label="item.value" name="newBugPriorityOption"
                                  :value="item.id"></el-option>
                     </el-select>
@@ -100,8 +100,9 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-form-item label="缺陷描述" :label-width="formLabelWidth" prop="bugDescription" name="newBugDescription">
+            <el-form-item label="缺陷描述" :label-width="formLabelWidth" prop="bugDescription" >
               <el-input
+                name="newBugDescription"
                 type="textarea"
                 :rows="4"
                 placeholder="请输入缺陷的描述内容"
@@ -120,8 +121,8 @@
 
       <el-dialog title="编辑缺陷" :visible.sync="editBugDialogVisible">
         <el-form :model="editBug" :rules="bugRules" ref="editBugForm">
-          <el-form-item label="标题" :label-width="formLabelWidth" prop="bugTitle" name="editBugTitle">
-            <el-input v-model="editBug.bugTitle" autocomplete="off"></el-input>
+          <el-form-item label="标题" :label-width="formLabelWidth" prop="bugTitle" >
+            <el-input v-model="editBug.bugTitle" autocomplete="off" name="editBugTitle"></el-input>
           </el-form-item>
           <el-row>
             <el-col :span="12">
@@ -135,8 +136,8 @@
             </el-col>
             <el-col :span="12">
               <div>
-                <el-form-item label="优先级" :label-width="formLabelWidth" name="editBugPriority">
-                  <el-select v-model="editBug.priority" placeholder="请选择优先级">
+                <el-form-item label="优先级" :label-width="formLabelWidth" >
+                  <el-select v-model="editBug.priority" placeholder="请选择优先级" name="editBugPriority">
                     <el-option v-for="priority in bugPriority" :key="priority.id" :label="priority.value" name="editBugPriorityOption"
                                :value="priority.id">
                     </el-option>
@@ -147,8 +148,8 @@
           </el-row>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="缺陷负责人" :label-width="formLabelWidth" name="editBugResponsible">
-                <el-select v-model="editBug.bugResponsibleId" placeholder="缺陷负责人">
+              <el-form-item label="缺陷负责人" :label-width="formLabelWidth" >
+                <el-select v-model="editBug.bugResponsibleId" placeholder="缺陷负责人" name="editBugResponsible">
                   <el-option v-for="employee in employees" :key="employee.id" :label="employee.name" name="editBugResponsibleOption"
                              :value="employee.id">
                     <span style="float: left">{{ employee.name }}</span>
@@ -166,10 +167,11 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-form-item label="缺陷描述" :label-width="formLabelWidth" prop="bugDescription" name="editBugDescription">
+          <el-form-item label="缺陷描述" :label-width="formLabelWidth" prop="bugDescription" >
             <el-input
               type="textarea"
               :rows="4"
+              name="editBugDescription"
               placeholder="请输入缺陷的描述内容"
               v-model="editBug.bugDescription">
             </el-input>
@@ -411,6 +413,11 @@
 
             })
           } else {
+            this.$message({
+              type: 'error',
+              message: '请完整填写所需内容',
+              duration: 2 * 1000
+            })
             return false
           }
         })

@@ -10,20 +10,20 @@
         label-width="100px"
         style="width: 80%"
       >
-        <el-form-item label="项目ID" prop="projectId">
+        <el-form-item label="项目ID">
           <el-input v-model="form.projectId" name="projectId" style="width: 50%;" disabled></el-input>
         </el-form-item>
         <el-form-item label="项目名称" prop="name">
           <el-input v-model="form.name" name="projectName"></el-input>
         </el-form-item>
         <el-form-item label="客户信息" prop="clientId">
-          <el-input v-model="form.clientId"></el-input>
+          <el-input v-model="form.clientId" name="clientId"></el-input>
         </el-form-item>
-        <el-form-item label="预定时间">
+        <el-form-item label="预定时间" prop="scheduledData">
           <el-date-picker type="date" v-model="form.scheduledDate" name="scheduledDate" format="yyyy 年 MM 月 dd 日"
                           value-format="yyyy-MM-dd" style="width: 50%;"></el-date-picker>
         </el-form-item>
-        <el-form-item label="交付时间">
+        <el-form-item label="交付时间" prop="deliveryDate">
           <el-date-picker type="date" v-model="form.deliveryDate" name="deliveryDate" format="yyyy 年 MM 月 dd 日"
                           value-format="yyyy-MM-dd" style="width: 50%;"
                           :picker-options="{
@@ -87,8 +87,11 @@
       return {
         form: null,
         submitRules: {
-          projectId: [{required: true, message: '项目ID不能为空', trigger: 'blur'}],
-          name: [{required: true, message: '项目名称不能为空', trigger: 'blur'}]
+          name: [{required: true, message: '项目名称不能为空', trigger: 'blur'}],
+          clientId:[{required: true, message: '客户信息不能为空', trigger: 'blur'}],
+          scheduledDate: [{required: true, message: '预定时间不能为空', trigger: 'change'}],
+          deliveryDate: [{required: true, message: '交付时间不能为空', trigger: 'change'}],
+          superior: [{required: true, message: '项目上级不能为空', trigger: 'blur'}],
         },
         status: this.Constant.projectStatus,
       }

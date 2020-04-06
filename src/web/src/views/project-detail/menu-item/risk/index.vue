@@ -33,7 +33,7 @@
       </el-select>
       <el-button icon="el-icon-search" circle @click="getRisk" name="searchRiskButton">
       </el-button>
-      <el-button type="primary" @click="openNewRiskDialog" name="openNewRiskButton">
+      <el-button type="primary" @click="openNewRiskDialog" name="openNewRiskButton" v-permission="['ROLE_PM']">
         <i class="el-icon-plus"></i>
         <span>新建风险</span>
       </el-button>
@@ -144,7 +144,7 @@
         </div>
       </el-dialog>
 
-      <el-button type="primary" @click="dialogFormVisible_2 = true" name="openImportRiskButton">
+      <el-button type="primary" @click="dialogFormVisible_2 = true" name="openImportRiskButton" v-permission="['ROLE_PM']">
         导入已有风险<i class="el-icon-upload el-icon--right"></i>
       </el-button>
 
