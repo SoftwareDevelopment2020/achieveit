@@ -2,12 +2,15 @@ package com.softwaredevelopment.achieveit.service;
 
 import com.softwaredevelopment.achieveit.PO.entity.Bug;
 import com.softwaredevelopment.achieveit.controller.BussinessException;
+import com.softwaredevelopment.achieveit.entity.request.PageSearchRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author RainkQ
@@ -77,5 +80,19 @@ class BugServiceTest {
         } catch (BussinessException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    void getBugsByPage() throws BussinessException {
+        service.getBugsByPage("12345678901", new PageSearchRequest<>());
+        PageSearchRequest<Map<String, String>> request = new PageSearchRequest<>();
+        request.setCurrent(1);
+        request.setSize(10);
+        Map<String, String> map = new HashMap<>();
+        map.put("title", "");
+        map.put("status", "1");
+        map.put("bugIntroducer", "张三");
+        request.setSearchCondition(map);
+        service.getBugsByPage("12345678901", request);
     }
 }

@@ -1,6 +1,10 @@
 package com.softwaredevelopment.achieveit.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.softwaredevelopment.achieveit.PO.entity.EmployeeBasics;
 import com.softwaredevelopment.achieveit.PO.entity.ManHour;
+import com.softwaredevelopment.achieveit.PO.entity.ProjectEmployee;
+import com.softwaredevelopment.achieveit.PO.entity.User;
 import com.softwaredevelopment.achieveit.entity.request.PageSearchRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +22,8 @@ import java.time.LocalDateTime;
 class ManHourServiceTest {
     @Autowired
     ManHourService service;
+    @Autowired
+    AuthService authService;
 
     ManHour mockManHour() {
         ManHour manHour = new ManHour();
@@ -40,7 +46,7 @@ class ManHourServiceTest {
         request.setSize(10);
 
         request.setSearchCondition(mockManHour());
-        System.out.println("service.getManHourSearchPage(request)");
+        System.out.println(service.getManHourSearchPage(request));
     }
 
     @Test
@@ -56,7 +62,18 @@ class ManHourServiceTest {
 
     @Test
     void auditManHour() {
-        service.auditManHour(mockManHour());
+        Integer employeeId = 1;
+        Integer projectId = 1;
+        ProjectEmployee projectEmployee = service.getIProjectEmployeeService().getOne(
+                new QueryWrapper<ProjectEmployee>()
+                        .lambda().eq(ProjectEmployee::getProjectId, projectId).eq(ProjectEmployee::getEmployeeId, employeeId));
+        EmployeeBasics byId = service.getIEmployeeBasicsService().getById(projectEmployee.getEmployeeId());
+        User one = service.getIUserService().getOne(new QueryWrapper<User>()
+                .lambda().eq(User::getEmployeeBasicsId, byId.getId()));
+        authService.login(one.getUsername(), "123456");
+        service.auditManHour(1);
+        authService.login("epg_leader", "123456");
+        service.auditManHour(1);
     }
 
 

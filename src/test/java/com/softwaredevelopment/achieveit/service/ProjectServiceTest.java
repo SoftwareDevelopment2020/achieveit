@@ -43,12 +43,13 @@ class ProjectServiceTest {
         projectBasics.setName("测");
         projectBasics.setProjectManagerName("   ");
         projectBasics.setMainFunction("");
+        projectBasics.setStatusId(3);
         projectBasics.setIsArchived(false);
         IPage<ProjectBasics> listHttpResponse = service.searchProjects(new Page<>(1, 10), projectBasics);
         System.out.println(listHttpResponse);
 
         authService.login("zhangsan", "123456");
-        System.out.println(service.searchProjects(new Page<>(1, 1), null));
+        System.out.println(service.searchProjects(new Page<>(1, 10), null));
     }
 
 
@@ -64,6 +65,7 @@ class ProjectServiceTest {
         projectBasics.setId(10);
         projectBasics.setName("测");
         service.updateProject(projectBasics);
+        service.updateProject(new ProjectBasics());
     }
 
     @Test
@@ -102,5 +104,12 @@ class ProjectServiceTest {
     void initProject() throws Exception {
         authService.login("epg_leader", "123456");
         service.initProject("12310239109");
+    }
+
+    @Test
+    void selectProjectById() throws Exception {
+        authService.login("zhangsan", "123456");
+        service.selectProjectById(1);
+        service.selectProjectById(null);
     }
 }
