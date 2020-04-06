@@ -60,13 +60,22 @@ public class EmployeeService extends BaseService {
         List<RoleBasics> list = iRoleBasicsService.list(new QueryWrapper<RoleBasics>().lambda()
                 .likeRight(RoleBasics::getName, request.getSearchCondition()));
         List<Integer> roleIds = list.stream().map(RoleBasics::getId).collect(Collectors.toList());
+        if (roleIds.size() == 0) {
+            return new Page<>(request.getCurrent(), request.getSize(), 0);
+        }
         // 然后查到users
         List<Integer> userIds = iUserRoleService.list(
                 new QueryWrapper<UserRole>().lambda()
                         .in(UserRole::getRoleId, roleIds)).stream().map(UserRole::getUserId).collect(Collectors.toList());
+        if (userIds.size() == 0) {
+            return new Page<>(request.getCurrent(), request.getSize(), 0);
+        }
         List<User> users = iUserService.listByIds(userIds);
         // 然后拿到employee的id们
         List<Integer> employeeIds = users.stream().map(User::getEmployeeBasicsId).collect(Collectors.toList());
+        if (employeeIds.size() == 0) {
+            return new Page<>(request.getCurrent(), request.getSize(), 0);
+        }
         // 最后查到employees
         Page<EmployeeBasics> page = new Page<>(request.getCurrent(), request.getSize());
         // 如果-1就全部
