@@ -28,7 +28,7 @@
       >
       </el-input>
       <el-select v-model="searchValue.status" placeholder="风险状态" name="riskStatusSearch" clearable>
-        <el-option v-for="state in riskStatus" :key="state.id" :label="state.value" :value="state.id">
+        <el-option v-for="state in riskStatus" :key="state.id" :label="state.value" :value="state.id" name="riskStatusOptionSearch">
         </el-option>
       </el-select>
       <el-button icon="el-icon-search" circle @click="getRisk" name="searchRiskButton">
@@ -54,7 +54,7 @@
             <el-col :span="12">
               <el-form-item label="风险状态" :label-width="formLabelWidth" prop="status">
                 <el-select v-model="newRisk.status" placeholder="风险状态" name="riskStatus">
-                  <el-option v-for="state in riskStatus" :key="state.id" :label="state.value" :value="state.id">
+                  <el-option v-for="state in riskStatus" :key="state.id" :label="state.value" :value="state.id" name="newRiskStatusOption">
                   </el-option>
                 </el-select>
               </el-form-item>
@@ -65,7 +65,7 @@
             <el-col :span="12">
               <el-form-item label="风险级别" :label-width="formLabelWidth" prop="level">
                 <el-select v-model="newRisk.level" placeholder="风险级别" name="riskLevel">
-                  <el-option v-for="level in riskLevel" :key="level.id" :label="level.value" :value="level.id">
+                  <el-option v-for="level in riskLevel" :key="level.id" :label="level.value" :value="level.id" name="newRiskLevelOption">
                   </el-option>
                 </el-select>
               </el-form-item>
@@ -74,7 +74,7 @@
               <el-form-item label="风险责任人" :label-width="formLabelWidth" prop="responsible">
                 <el-select v-model="newRisk.responsible" placeholder="风险责任人" name="riskResponsible" filterable>
                   <el-option v-for="employee in employees" :key="employee.id" :label="employee.name"
-                             :value="employee.id">
+                             :value="employee.id" name="newRiskResponsibleOption">
                     <span style="float: left">{{ employee.name }}</span>
                     <span style="float: right; color: #8492a6; font-size: 13px">{{ employee.id }}</span>
                   </el-option>
@@ -87,7 +87,7 @@
             <el-col :span="12">
               <el-form-item label="风险影响度" :label-width="formLabelWidth" prop="affect">
                 <el-select v-model="newRisk.affect" placeholder="风险影响度" name="riskAffect">
-                  <el-option v-for="affect in riskAffect" :key="affect.id" :label="affect.value" :value="affect.id">
+                  <el-option v-for="affect in riskAffect" :key="affect.id" :label="affect.value" :value="affect.id" name="newRiskAffectOption">
                   </el-option>
                 </el-select>
               </el-form-item>
@@ -101,9 +101,9 @@
           </el-row>
           <el-row>
             <el-form-item label="风险相关者" :label-width="formLabelWidth">
-              <el-select v-model="newRisk.related" placeholder="风险相关者" multiple style="width: 100%" filterable>
+              <el-select v-model="newRisk.related" placeholder="风险相关者" multiple style="width: 100%" name="riskRelated" filterable>
                 <el-option v-for="employee in employees" :key="employee.id" :label="employee.name" :value="employee.id"
-                           name="riskRelated">
+                           name="newRiskRelatedOption">
                   <span style="float: left">{{ employee.name }}</span>
                   <span style="float: right; color: #8492a6; font-size: 13px">{{ employee.id }}</span>
                 </el-option>
@@ -206,6 +206,7 @@
         </el-table-column>
         <el-table-column
           label="风险 ID"
+          name="idResults"
           prop="id">
         </el-table-column>
         <el-table-column

@@ -37,30 +37,31 @@
           v-model="searchValue.status"
           placeholder="状态"
           style="width: 15%;min-width: 120px"
+          name="bugStatusSearch"
           clearable
         >
-          <el-option v-for="item in statusOptions" :key="item.id" :label="item.value"
+          <el-option v-for="item in statusOptions" :key="item.id" :label="item.value" name="bugStatusSearchOption"
                      :value="item.id"></el-option>
         </el-select>
-        <el-button type="primary" style="margin-left: 10px" @click="getBugs">
+        <el-button type="primary" style="margin-left: 10px" @click="getBugs" name="bugSearchButton">
           <i class="el-icon-search"></i>
           <span>搜索</span>
         </el-button>
-        <el-button type="primary" @click="openNewBugDialog">
+        <el-button type="primary" @click="openNewBugDialog" name="bugOpenAddBugDialogButton">
           <i class="el-icon-plus"></i>
           <span>添加缺陷</span>
         </el-button>
 
         <el-dialog title="新建缺陷" :visible.sync="dialogFormVisible">
           <el-form :model="newBug" :rules="bugRules" ref="newBug">
-            <el-form-item label="标题" :label-width="formLabelWidth" prop="bugTitle">
+            <el-form-item label="标题" :label-width="formLabelWidth" prop="bugTitle" name="newBugTitle">
               <el-input v-model="newBug.bugTitle" autocomplete="off"></el-input>
             </el-form-item>
             <el-row>
               <el-col :span="12">
-                <el-form-item label="缺陷负责人" :label-width="formLabelWidth" prop="bugResponsibleId">
+                <el-form-item label="缺陷负责人" :label-width="formLabelWidth" prop="bugResponsibleId" name="newBugResponsible">
                   <el-select v-model="newBug.bugResponsibleId" placeholder="缺陷负责人">
-                    <el-option v-for="employee in employees" :key="employee.id" :label="employee.name"
+                    <el-option v-for="employee in employees" :key="employee.id" :label="employee.name" name="newBugResponsibleOption"
                                :value="employee.id">
                       <span style="float: left">{{ employee.name }}</span>
                       <span style="float: right; color: #8492a6; font-size: 13px">{{ employee.id }}</span>
@@ -70,9 +71,9 @@
               </el-col>
               <el-col :span="12">
                 <div>
-                  <el-form-item label="优先级" :label-width="formLabelWidth" prop="priority">
+                  <el-form-item label="优先级" :label-width="formLabelWidth" prop="priority" name="newBugPriority">
                     <el-select v-model="newBug.priority" placeholder="请选择优先级">
-                      <el-option v-for="item in bugPriority" :key="item.id" :label="item.value"
+                      <el-option v-for="item in bugPriority" :key="item.id" :label="item.value" name="newBugPriorityOption"
                                  :value="item.id"></el-option>
                     </el-select>
                   </el-form-item>
@@ -99,7 +100,7 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-form-item label="缺陷描述" :label-width="formLabelWidth" prop="bugDescription">
+            <el-form-item label="缺陷描述" :label-width="formLabelWidth" prop="bugDescription" name="newBugDescription">
               <el-input
                 type="textarea"
                 :rows="4"
@@ -111,15 +112,15 @@
 
           </el-form>
           <div slot="footer" class="dialog-footer">
-            <el-button @click="dialogFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click="submitBug">确 定</el-button>
+            <el-button @click="dialogFormVisible = false" name="newBugCancelSubmit">取 消</el-button>
+            <el-button type="primary" @click="submitBug" name="newBugSubmit">确 定</el-button>
           </div>
         </el-dialog>
       </div>
 
       <el-dialog title="编辑缺陷" :visible.sync="editBugDialogVisible">
         <el-form :model="editBug" :rules="bugRules" ref="editBugForm">
-          <el-form-item label="标题" :label-width="formLabelWidth" prop="bugTitle">
+          <el-form-item label="标题" :label-width="formLabelWidth" prop="bugTitle" name="editBugTitle">
             <el-input v-model="editBug.bugTitle" autocomplete="off"></el-input>
           </el-form-item>
           <el-row>
@@ -134,9 +135,9 @@
             </el-col>
             <el-col :span="12">
               <div>
-                <el-form-item label="优先级" :label-width="formLabelWidth">
+                <el-form-item label="优先级" :label-width="formLabelWidth" name="editBugPriority">
                   <el-select v-model="editBug.priority" placeholder="请选择优先级">
-                    <el-option v-for="priority in bugPriority" :key="priority.id" :label="priority.value"
+                    <el-option v-for="priority in bugPriority" :key="priority.id" :label="priority.value" name="editBugPriorityOption"
                                :value="priority.id">
                     </el-option>
                   </el-select>
@@ -146,9 +147,9 @@
           </el-row>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="缺陷负责人" :label-width="formLabelWidth">
+              <el-form-item label="缺陷负责人" :label-width="formLabelWidth" name="editBugResponsible">
                 <el-select v-model="editBug.bugResponsibleId" placeholder="缺陷负责人">
-                  <el-option v-for="employee in employees" :key="employee.id" :label="employee.name"
+                  <el-option v-for="employee in employees" :key="employee.id" :label="employee.name" name="editBugResponsibleOption"
                              :value="employee.id">
                     <span style="float: left">{{ employee.name }}</span>
                     <span style="float: right; color: #8492a6; font-size: 13px">{{ employee.id }}</span>
@@ -158,14 +159,14 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="缺陷状态" :label-width="formLabelWidth">
-                <el-select v-model="editBug.status" placeholder="请选择缺陷状态" :disabled="editBug.status==4">
-                  <el-option v-for="item in statusOptions" :key="item.id" :label="item.value"
+                <el-select v-model="editBug.status" placeholder="请选择缺陷状态" :disabled="editBug.status==4" name="editBugStatus">
+                  <el-option v-for="item in statusOptions" :key="item.id" :label="item.value" name="editBugStatusOption"
                              :value="item.id"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
           </el-row>
-          <el-form-item label="缺陷描述" :label-width="formLabelWidth" prop="bugDescription">
+          <el-form-item label="缺陷描述" :label-width="formLabelWidth" prop="bugDescription" name="editBugDescription">
             <el-input
               type="textarea"
               :rows="4"
@@ -177,8 +178,8 @@
 
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="editBugDialogVisible=false">取 消</el-button>
-          <el-button type="primary" @click="submitEditBug">确 定</el-button>
+          <el-button @click="editBugDialogVisible=false" name="editBugCancelSubmit">取 消</el-button>
+          <el-button type="primary" @click="submitEditBug" name="editBugSubmit">确 定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -266,11 +267,12 @@
           <template slot-scope="scope">
             <el-button
               size="mini"
-              @click="handleEdit(scope.$index, scope.row)" :disabled="scope.row.status=='CLOSED'">编辑
+              @click="handleEdit(scope.$index, scope.row)" :disabled="scope.row.status=='CLOSED'" name="openEditDialogButton">编辑
             </el-button>
             <el-button
               size="mini"
               type="danger"
+              name="bugDeleteButton"
               @click="handleDelete(scope.$index, scope.row)">删除
             </el-button>
           </template>
@@ -443,6 +445,11 @@
               })
             })
           } else {
+            this.$message({
+              type: 'error',
+              message: '请完整填写所需内容',
+              duration: 2 * 1000
+            })
             return false
           }
         })
