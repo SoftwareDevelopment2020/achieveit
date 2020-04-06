@@ -1,6 +1,8 @@
 package com.softwaredevelopment.achieveit.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.softwaredevelopment.achieveit.PO.entity.RoleBasics;
+import com.softwaredevelopment.achieveit.config.CustomAuthorityDeserializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -49,6 +51,7 @@ public class UserDetail implements UserDetails {
 
     private List<GrantedAuthority> authorities;
 
+    @JsonDeserialize(using = CustomAuthorityDeserializer.class)
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (roles == null || roles.size() == 0) {
