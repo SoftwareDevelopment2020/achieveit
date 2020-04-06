@@ -34,27 +34,31 @@ public class BugService extends BaseService {
 
         Page<Bug> page = new Page<>(pageSearchRequest.getCurrent(), pageSearchRequest.getSize());
         Map<String, String> searchCondition = pageSearchRequest.getSearchCondition();
-        // id
-        Integer id = getIntOrNull(searchCondition.get("id"));
-        // 标题
-        String title = searchCondition.get("bugTitle");
-        // 状态
-        Integer status = getIntOrNull(searchCondition.get("status"));
-        // 构造查询queryWrapper
         QueryWrapper<Bug> qw = new QueryWrapper<>();
-        qw.lambda()
-                .eq(project_id != null, Bug::getProjectId, project_id)
-                .eq(id != null, Bug::getId, id)
-                .eq(status != null, Bug::getStatus, status)
-                .like(title != null, Bug::getBugTitle, title);
-
-        String bugIntroducer = searchCondition.get("bugIntroducer");
-        if (bugIntroducer != null) {
-            List<Integer> bugIntroducerIds = iEmployeeBasicsService.list(new QueryWrapper<EmployeeBasics>()
-                    .lambda().eq(EmployeeBasics::getName, bugIntroducer)).stream().map(EmployeeBasics::getId).collect(Collectors.toList());
+        if (searchCondition != null) {
+            // id
+            String idFromMap = searchCondition.getOrDefault("id", null);
+            Integer id = getIntOrNull(idFromMap);
+            // 标题
+            String title = searchCondition.getOrDefault("bugTitle", null);
+            // 状态
+            Integer status = getIntOrNull(searchCondition.getOrDefault("status", null));
+            // 构造查询queryWrapper
             qw.lambda()
-                    .in(bugIntroducerIds.size() > 0, Bug::getBugIntroducerId, bugIntroducerIds);
+                    .eq(project_id != null, Bug::getProjectId, project_id)
+                    .eq(id != null, Bug::getId, id)
+                    .eq(status != null, Bug::getStatus, status)
+                    .like(title != null, Bug::getBugTitle, title);
+
+            String bugIntroducer = searchCondition.get("bugIntroducer");
+            if (bugIntroducer != null) {
+                List<Integer> bugIntroducerIds = iEmployeeBasicsService.list(new QueryWrapper<EmployeeBasics>()
+                        .lambda().eq(EmployeeBasics::getName, bugIntroducer)).stream().map(EmployeeBasics::getId).collect(Collectors.toList());
+                qw.lambda()
+                        .in(bugIntroducerIds.size() > 0, Bug::getBugIntroducerId, bugIntroducerIds);
+            }
         }
+
         Page<Bug> bugPage = iBugService.page(page, qw);
         // 从BugPage 转到 BugVOPage
         Page<BugVO> bugVOPage = new Page<>(bugPage.getCurrent(), bugPage.getSize(), bugPage.getTotal(), bugPage.isSearchCount());

@@ -5,6 +5,7 @@ import com.softwaredevelopment.achieveit.utils.MailUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
@@ -18,6 +19,7 @@ import java.util.concurrent.Future;
  * created on 2020-03-05 20:50
  */
 @SpringBootTest
+@Transactional
 public class MailTest {
     //接收人
     private static final String RECIPINET = "rainkq@gmail.com";

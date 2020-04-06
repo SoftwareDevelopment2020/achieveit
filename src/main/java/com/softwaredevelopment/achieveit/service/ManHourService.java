@@ -44,6 +44,9 @@ public class ManHourService extends BaseService {
      */
     public boolean auditManHour(Integer manHourId) {
         ManHour mh = iManHourService.getById(manHourId);
+        if (mh == null) {
+            return false;
+        }
         return auditManHour(mh);
     }
 
