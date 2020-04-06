@@ -92,7 +92,7 @@ public class EmployeeController extends BaseController {
         return responseOK(projectEmployeeService.getEmployeeBasics(id));
     }
 
-    @ApiOperation("按全局角色查找雇员 request传 ROLE_ 格式的字符串")
+    @ApiOperation("按全局角色查找雇员 request传 ROLE_ 格式的字符串 current -1 则为全部")
     @PostMapping("search_employee_by_global_roles")
     public HttpResponse<IPage<EmployeeBasics>> searchEmployeeByGlobalRoles(@RequestBody PageSearchRequest<String> request) throws BussinessException {
         return responseOK(employeeService.searchEmployeeByGlobalRoles(request));

@@ -69,6 +69,12 @@ public class EmployeeService extends BaseService {
         List<Integer> employeeIds = users.stream().map(User::getEmployeeBasicsId).collect(Collectors.toList());
         // 最后查到employees
         Page<EmployeeBasics> page = new Page<>(request.getCurrent(), request.getSize());
+        // 如果-1就全部
+        if (request.getCurrent() == -1) {
+            int count = iEmployeeBasicsService.count();
+            page.setCurrent(1);
+            page.setSize(count);
+        }
         return iEmployeeBasicsService.page(page,
                 new QueryWrapper<EmployeeBasics>().lambda().in(EmployeeBasics::getId, employeeIds));
 
