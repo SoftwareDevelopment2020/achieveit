@@ -143,7 +143,11 @@ public class BaseService {
 
     public Integer getIntOrNull(String s) {
         if (s != null && !s.isEmpty()) {
-            return Integer.valueOf(s);
+            try {
+                return Integer.valueOf(s);
+            } catch (NumberFormatException e) {
+                return null;
+            }
         } else {
             return null;
         }

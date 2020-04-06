@@ -89,6 +89,7 @@ class BugServiceTest {
         request.setCurrent(1);
         request.setSize(10);
         Map<String, String> map = new HashMap<>();
+        map.put("id", "wocao");
         map.put("title", "");
         map.put("status", "1");
         map.put("bugIntroducer", "张三");
