@@ -8,6 +8,11 @@ export function stringToChinese(date) {
   return d.getFullYear() + '年' + month + '月' + d.getDate() + '日'
 }
 
+export function stringToTime(date) {
+  const d = new Date(date)
+  return d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds()
+}
+
 export function dateToString(date) {
   const year = date.getFullYear()
   const month = date.getMonth()+1

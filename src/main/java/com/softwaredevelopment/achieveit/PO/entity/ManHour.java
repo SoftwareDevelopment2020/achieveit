@@ -1,6 +1,7 @@
 package com.softwaredevelopment.achieveit.PO.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -22,7 +23,7 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@ApiModel(value = "ManHour对象", description = "")
+@ApiModel(value = "ManHour对象")
 public class ManHour implements Serializable {
 
     @TableId(type = IdType.AUTO)
@@ -48,5 +49,7 @@ public class ManHour implements Serializable {
     @ApiModelProperty(value = "审核状态")
     private Integer auditingStatus;
 
-
+    @ApiModelProperty(value = "员工信息")
+    @TableField(exist = false)
+    private EmployeeBasics employeeBasics;
 }
