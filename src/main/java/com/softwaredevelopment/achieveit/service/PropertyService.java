@@ -35,7 +35,7 @@ public class PropertyService extends BaseService {
             searchCondition = new Property();
         } else {
             // 将实体中的空字符串设置为NULL
-            ObjectHelper.setObjectEmptyToNul(searchCondition);
+            ObjectHelper.setObjectEmptyToNull(searchCondition);
         }
 
         // region 查询条件

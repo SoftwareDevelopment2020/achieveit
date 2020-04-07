@@ -25,8 +25,8 @@ public class ManHourController extends BaseController {
     ManHourService manHourService;
 
     @ApiOperation("分页查询工时信息")
-    @GetMapping("search_manhour")
-    public HttpResponse<IPage<ManHour>> getManHourSearchPage(@RequestBody PageSearchRequest<ManHour> request) {
+    @PostMapping("search_manhour")
+    public HttpResponse<IPage<ManHour>> getManHourSearchPage(@RequestBody PageSearchRequest<ManHour> request) throws BussinessException {
         return responseOK(manHourService.getManHourSearchPage(request));
     }
 

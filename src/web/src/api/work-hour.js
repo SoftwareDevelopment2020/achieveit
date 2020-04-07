@@ -27,7 +27,7 @@ export function post(url, data) {
 /**
  * 获取活动列表
  */
-export function getActivities(url) {
+export function getActivities() {
   return get('/activities')
 }
 
@@ -36,4 +36,11 @@ export function getActivities(url) {
  */
 export function addWorkHour(data) {
   return post('/add_manhour', data)
+}
+
+/**
+ * 查询工时信息
+ */
+export function getWorkHours(data) {
+  return post('/search_manhour', data)
 }

@@ -10,7 +10,10 @@ export function stringToChinese(date) {
 
 export function stringToTime(date) {
   const d = new Date(date)
-  return d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds()
+  const hours = d.getHours()
+  const minutes = d.getMinutes()
+  const seconds = d.getSeconds()
+  return (hours < 10 ? '0' : '') + hours + ':' + (minutes < 10 ? '0' : '') + minutes  + ':' + (seconds < 10 ? '0' : '') + seconds
 }
 
 export function dateToString(date) {

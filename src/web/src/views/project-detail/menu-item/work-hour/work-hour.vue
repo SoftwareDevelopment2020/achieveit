@@ -81,21 +81,23 @@
             width="200"
           >
             <template slot-scope="{row}">
-              <span>{{getTime(row.startTime)}}-{{getTime(row.endTime)}}</span>
+              <span>{{getTime(row.startTime)}} - {{getTime(row.endTime)}}</span>
             </template>
           </el-table-column>
           <el-table-column
-            prop="featureName"
             label="功能名称"
             align="center"
           >
+            <template slot-scope="{row}">
+              <span>{{row.featureName? row.featureName : getTreeLabel(options.featureOptions, row.featureId)}}</span>
+            </template>
           </el-table-column>
           <el-table-column
             label="活动名称"
             align="center"
           >
             <template slot-scope="{row}">
-              <span>{{options.activityOptions[row.activityId/10].children[row.activityId%10].label}}</span>
+              <span>{{getTreeLabel(options.activityOptions, row.activityId)}}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -111,7 +113,7 @@
           >
             <template slot-scope="{row}">
               <!-- 审核中的工时可以进行操作 -->
-              <span v-if="row.auditingStatus === 0">
+              <span v-if="canUpdate(row)">
                 <!-- 撤回自己的工时 -->
                 <span v-if="type === 1">
                   <el-button type="text"  style="color: #E6A23C" @click="openUpdateWorkHourDialog(row)">修改</el-button>
@@ -220,7 +222,8 @@
   import Pagination from '@/components/Pagination/index'
   import {stringToChinese, stringToTime} from "../../../../utils/date";
   import {getFeatures} from "../../../../api/feature";
-  import {addWorkHour, getActivities} from "../../../../api/work-hour";
+  import {addWorkHour, getActivities, getWorkHours} from "../../../../api/work-hour";
+  import {setTable} from "../../../../utils/common";
   export default {
     components: {
       Pagination
@@ -236,7 +239,7 @@
         project: this.$store.getters.project,
 
         searchValue: {
-          employeeOriginalId: '',
+          employeeId: '',
           startTime: '',
           auditingStatus: ''
         },
@@ -263,7 +266,7 @@
           page: 1,
           limit: 10,
           searchCondition: {
-            employeeOriginalId: '',
+            employeeId: '',
             startTime: '',
             auditingStatus: ''
           }
@@ -291,12 +294,12 @@
       }
     },
     mounted() {
-      // 获取工时信息
-      this.getWorkHour()
       // 初始化功能列表
       this.getFeatures()
       // 初始化活动列表
       this.getActivities()
+      // 获取工时信息
+      this.getWorkHour()
     },
     methods: {
       /**
@@ -313,7 +316,23 @@
        * 获取工时信息
        */
       getWorkHour() {
-
+        this.loading = true
+        getWorkHours({
+          current: this.table.page,
+          size: this.table.limit,
+          searchCondition: {
+            projectId: this.project.id,
+            startTime: this.table.searchCondition.startTime,
+            auditingStatus: this.table.searchCondition.auditingStatus,
+            employeeBasics: {
+              employeeId: this.table.searchCondition.employeeId
+            }
+          }
+        }).then(response => {
+          setTable(response.data, this.table, this.setSearchValue())
+        }).finally(() => {
+          this.loading = false
+        })
       },
       search() {
 
@@ -420,14 +439,31 @@
         // 打开对话框
         this.addWorkHourDialog.show = true
       },
-      getTreeValue(options, id) {
-        options.forEach(option => {
-          option.children.forEach(child => {
-            if (child.id === id) {
-              return [option.id, child.id]
+
+      getTree(options, id) {
+        for (let i = 0; i < options.length; i++) {
+          const children = options[i].children
+          for (let j = 0; j < children.length; j++) {
+            if (children[j].id === id) {
+             return [options[i], children[j]]
             }
-          })
-        })
+          }
+        }
+      },
+      getTreeValue(options, id) {
+        const tree = this.getTree(options, id)
+        return [tree[0].id, tree[1].id]
+      },
+      getTreeLabel(options, id) {
+        const tree = this.getTree(options, id)
+        if (tree) {
+          if (tree[0].label) {
+            return tree[0].label + ' / ' + tree[1].label
+          }
+          if (tree[0].name) {
+            return tree[0].name + ' / ' + tree[1].name
+          }
+        }
       },
 
       /**
@@ -453,6 +489,17 @@
        */
       refuse(row) {
 
+      },
+      /**
+       * 可以更新工时信息
+       */
+      canUpdate(row) {
+        // 审核中且日期在三天内
+        const date = new Date(row.startTime)
+        date.setHours(0)
+        date.setMinutes(0)
+        date.setSeconds(0)
+        return row.auditingStatus === 0 && date.getTime() + 4 * 24 * 60 * 60 * 1000 > new Date().getTime()
       }
     }
   }

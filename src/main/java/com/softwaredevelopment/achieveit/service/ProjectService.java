@@ -63,7 +63,7 @@ public class ProjectService extends BaseService {
             projectBasics = new ProjectBasics();
         } else {
             // 将实体中的空字符串设置为NULL
-            ObjectHelper.setObjectEmptyToNul(projectBasics);
+            ObjectHelper.setObjectEmptyToNull(projectBasics);
         }
 
         QueryWrapper<ProjectBasics> qw = new QueryWrapper<>();

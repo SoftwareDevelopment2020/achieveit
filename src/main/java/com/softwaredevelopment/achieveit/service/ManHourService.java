@@ -1,20 +1,27 @@
 package com.softwaredevelopment.achieveit.service;
 
+import com.alibaba.druid.util.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.softwaredevelopment.achieveit.PO.entity.Activity;
+import com.softwaredevelopment.achieveit.PO.entity.EmployeeBasics;
 import com.softwaredevelopment.achieveit.PO.entity.ManHour;
 import com.softwaredevelopment.achieveit.PO.entity.ProjectEmployee;
 import com.softwaredevelopment.achieveit.controller.BussinessException;
 import com.softwaredevelopment.achieveit.entity.ActivityVO;
 import com.softwaredevelopment.achieveit.entity.request.PageSearchRequest;
+import com.softwaredevelopment.achieveit.utils.ObjectHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author RainkQ
@@ -23,9 +30,63 @@ import java.util.Map;
 @Service
 public class ManHourService extends BaseService {
 
-    public IPage<ManHour> getManHourSearchPage(PageSearchRequest<ManHour> request) {
-        return iManHourService.page(new Page<>(request.getCurrent(), request.getSize()),
-                new QueryWrapper<>(request.getSearchCondition()));
+    public IPage<ManHour> getManHourSearchPage(PageSearchRequest<ManHour> request) throws BussinessException {
+        ManHour searchCondition = request.getSearchCondition();
+        if (searchCondition == null) {
+            searchCondition = new ManHour();
+        } else {
+            ObjectHelper.setObjectEmptyToNull(searchCondition);
+        }
+
+        QueryWrapper<ManHour> queryWrapper = new QueryWrapper<>();
+
+        switch (searchCondition.getType()) {
+            case 1: // 我的
+                searchCondition.setEmployeeId(currentUserDetail().getEmployeeId());
+                break;
+            case 2: // 下属的
+                // 查询员工ID
+                if (searchCondition.getEmployeeBasics() != null && !StringUtils.isEmpty(searchCondition.getEmployeeBasics().getEmployeeId())) {
+                    List<EmployeeBasics> employeeBasics = iEmployeeBasicsService.list(
+                            new QueryWrapper<EmployeeBasics>()
+                                    .like("employee_id", searchCondition.getEmployeeBasics().getEmployeeId()));
+                    // 如果不存在，直接返回
+                    if (CollectionUtils.isEmpty(employeeBasics)) {
+                        return new Page<>(request.getCurrent(), request.getSize());
+                    }
+
+                    queryWrapper.in("employee_id", employeeBasics.stream().map(EmployeeBasics::getId).collect(Collectors.toList()));
+                }
+                // TODO 查询下属
+                break;
+        }
+
+        // 日期
+        if (searchCondition.getStartTime() != null) {
+            queryWrapper.eq("DATE_FORMAT(startTime, '%Y%m%d')", searchCondition.getStartTime().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+            searchCondition.setStartTime(null);
+        }
+        // 其他条件
+        queryWrapper.setEntity(searchCondition);
+
+        // 查询
+        IPage<ManHour> result = iManHourService.page(new Page<>(request.getCurrent(), request.getSize()),queryWrapper);
+
+        // 设置employeeBasics
+        List<ManHour> manHours = result.getRecords();
+        if (!CollectionUtils.isEmpty(manHours)) {
+            List<EmployeeBasics> employeeBasics = iEmployeeBasicsService.listByIds(manHours.stream().map(ManHour::getEmployeeId).collect(Collectors.toList()));
+            // to map
+            Map<Integer, EmployeeBasics> employeeBasicsMap = employeeBasics.stream().collect(Collectors.toMap(EmployeeBasics::getId, Function.identity()));
+            // 设置employeeBasics
+            for (ManHour manHour : manHours) {
+                manHour.setEmployeeBasics(employeeBasicsMap.get(manHour.getEmployeeId()));
+            }
+            // 设置record
+            result.setRecords(manHours);
+        }
+
+        return result;
     }
 
     /**
@@ -34,6 +95,7 @@ public class ManHourService extends BaseService {
     public boolean addManHour(ManHour manHour) throws BussinessException {
         // 设置员工key
         manHour.setEmployeeId(currentUserDetail().getEmployeeId());
+        // endregion
         // 设置审核状态
         manHour.setAuditingStatus(0);
 

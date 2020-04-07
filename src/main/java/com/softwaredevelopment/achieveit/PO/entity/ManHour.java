@@ -52,4 +52,8 @@ public class ManHour implements Serializable {
     @ApiModelProperty(value = "员工信息")
     @TableField(exist = false)
     private EmployeeBasics employeeBasics;
+
+    @ApiModelProperty(value = "查询类型", example = "1 我的，2 我的下属")
+    @TableField(exist = false)
+    private int type;
 }

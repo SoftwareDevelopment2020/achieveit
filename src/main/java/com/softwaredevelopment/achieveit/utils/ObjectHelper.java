@@ -13,7 +13,7 @@ public class ObjectHelper {
     /**
      * 对象中的String类型的属性 空字符串设置为NULL
      */
-    public static void setObjectEmptyToNul(Object object) {
+    public static void setObjectEmptyToNull(Object object) {
         Field[] fields = object.getClass().getDeclaredFields();
         for (Field field : fields) {
             if (field.getType().equals(String.class)) {
