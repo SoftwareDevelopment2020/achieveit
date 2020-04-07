@@ -15,6 +15,7 @@ import com.softwaredevelopment.achieveit.utils.ObjectHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,7 +31,13 @@ import java.util.stream.Collectors;
 @Service
 public class ManHourService extends BaseService {
 
+    /**
+     * 获取工时信息
+     */
     public IPage<ManHour> getManHourSearchPage(PageSearchRequest<ManHour> request) throws BussinessException {
+        Page<ManHour> page = new Page<>(request.getCurrent(), request.getSize());
+
+        // 将空字符串设置为NULL
         ManHour searchCondition = request.getSearchCondition();
         if (searchCondition == null) {
             searchCondition = new ManHour();
@@ -38,32 +45,41 @@ public class ManHourService extends BaseService {
             ObjectHelper.setObjectEmptyToNull(searchCondition);
         }
 
+        // 查询条件
         QueryWrapper<ManHour> queryWrapper = new QueryWrapper<>();
-
+        // employeeId
         switch (searchCondition.getType()) {
             case 1: // 我的
                 searchCondition.setEmployeeId(currentUserDetail().getEmployeeId());
                 break;
             case 2: // 下属的
+                // 查询下属ID
+                List<ProjectEmployee> employeeBasics = iProjectEmployeeService.list(
+                        new QueryWrapper<ProjectEmployee>().eq("superior_id", currentUserDetail().getEmployeeId()));
+                if (CollectionUtils.isEmpty(employeeBasics)) {
+                    // 没有下属，直接返回
+                    return page;
+                }
                 // 查询员工ID
                 if (searchCondition.getEmployeeBasics() != null && !StringUtils.isEmpty(searchCondition.getEmployeeBasics().getEmployeeId())) {
-                    List<EmployeeBasics> employeeBasics = iEmployeeBasicsService.list(
+                    List<EmployeeBasics> searchEmployeeBasics = iEmployeeBasicsService.list(
                             new QueryWrapper<EmployeeBasics>()
+                                    .in("id", employeeBasics.stream().map(ProjectEmployee::getEmployeeId).collect(Collectors.toList()))
                                     .like("employee_id", searchCondition.getEmployeeBasics().getEmployeeId()));
-                    // 如果不存在，直接返回
-                    if (CollectionUtils.isEmpty(employeeBasics)) {
-                        return new Page<>(request.getCurrent(), request.getSize());
+                    if (CollectionUtils.isEmpty(searchEmployeeBasics)) {
+                        // 没有，直接返回
+                        return page;
                     }
 
-                    queryWrapper.in("employee_id", employeeBasics.stream().map(EmployeeBasics::getId).collect(Collectors.toList()));
+                    // 设置查询条件
+                    queryWrapper.in("employee_id", searchEmployeeBasics.stream().map(EmployeeBasics::getId).collect(Collectors.toList()));
                 }
-                // TODO 查询下属
                 break;
         }
 
         // 日期
         if (searchCondition.getStartTime() != null) {
-            queryWrapper.eq("DATE_FORMAT(startTime, '%Y%m%d')", searchCondition.getStartTime().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+            queryWrapper.eq("DATE_FORMAT(start_time, '%Y%m%d')", searchCondition.getStartTime().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
             searchCondition.setStartTime(null);
         }
         // 其他条件
@@ -95,13 +111,48 @@ public class ManHourService extends BaseService {
     public boolean addManHour(ManHour manHour) throws BussinessException {
         // 设置员工key
         manHour.setEmployeeId(currentUserDetail().getEmployeeId());
-        // endregion
         // 设置审核状态
         manHour.setAuditingStatus(0);
 
-        // TODO 检查工时冲突
+        // region 检查工时冲突
+        // 获取当天已提交的工时
+        List<ManHour> manHours = iManHourService.list(
+                new QueryWrapper<ManHour>()
+                        .eq("project_id", manHour.getProjectId())
+                        .eq("employee_id", manHour.getEmployeeId())
+                        .eq("DATE_FORMAT(start_time, '%Y%m%d')", manHour.getStartTime().format(DateTimeFormatter.ofPattern("yyyyMMdd")))
+                        .orderByAsc("start_time")
+        );
+        if (!checkManHourTime(manHours, manHour)) {
+            throw new BussinessException("添加工时失败", new Exception(), "当前时段与其他工时冲突");
+        }
+        // endregion
 
         return iManHourService.save(manHour);
+    }
+
+    /**
+     * 判断区间
+     */
+    private boolean checkManHourTime(List<ManHour> existManHour, ManHour checkManHour) {
+        if (CollectionUtils.isEmpty(existManHour)) {
+            return true;
+        }
+
+        LocalDateTime left = checkManHour.getStartTime().withHour(0).withMinute(0).withSecond(0);
+        LocalDateTime right;
+        for (ManHour manHour : existManHour) {
+            // 右区间是下一项的start_time
+            right = manHour.getStartTime();
+            // left <= start_time < end_time <= right满足条件
+            if (!checkManHour.getStartTime().isBefore(left) && !checkManHour.getEndTime().isAfter(right)) {
+                return true;
+            }
+            // 左区间是上一项的end_time
+            left = manHour.getEndTime();
+        }
+
+        return false;
     }
 
     /**

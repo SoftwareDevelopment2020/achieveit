@@ -326,7 +326,8 @@
             auditingStatus: this.table.searchCondition.auditingStatus,
             employeeBasics: {
               employeeId: this.table.searchCondition.employeeId
-            }
+            },
+            type: this.type
           }
         }).then(response => {
           setTable(response.data, this.table, this.setSearchValue())
@@ -371,8 +372,8 @@
             const date = this.addWorkHourDialog.data.date
             const startTime = this.addWorkHourDialog.data.startTime
             const endTime = this.addWorkHourDialog.data.endTime
-            this.addWorkHourDialog.data.startTime = new Date(date.getFullYear(), date.getMonth(), date.getDay(), startTime.getHours(), startTime.getMinutes(), startTime.getSeconds())
-            this.addWorkHourDialog.data.endTime = new Date(date.getFullYear(), date.getMonth(), date.getDay(), endTime.getHours(), endTime.getMinutes(), endTime.getSeconds())
+            this.addWorkHourDialog.data.startTime = new Date(date.getFullYear(), date.getMonth(), date.getDate(), startTime.getHours()+8, startTime.getMinutes(), startTime.getSeconds())
+            this.addWorkHourDialog.data.endTime = new Date(date.getFullYear(), date.getMonth(), date.getDate(), endTime.getHours()+8, endTime.getMinutes(), endTime.getSeconds())
             // 功能
             const feature = this.addWorkHourDialog.data.feature
             this.addWorkHourDialog.data.featureId = feature[1]
@@ -389,11 +390,6 @@
                 this.updateWorkHour(this.addWorkHourDialog.data)
                 break;
             }
-
-            // 关闭对话框
-            this.addWorkHourDialog.show = false
-            // 刷新
-            this.getWorkHour()
           }
         })
       },
@@ -407,6 +403,11 @@
           ...this.addWorkHourDialog.data
         }).then(response => {
           this.$message.success('成功')
+        }).finally(() => {
+          // 关闭对话框
+          this.addWorkHourDialog.show = false
+          // 刷新
+          this.getWorkHour()
         })
       },
       openAddWorkHourDialog() {
@@ -432,9 +433,9 @@
         this.addWorkHourDialog.data.date = new Date(row.startTime)
         this.addWorkHourDialog.data.startTime = new Date(row.startTime)
         this.addWorkHourDialog.data.endTime = new Date(row.endTime)
-        this.addWorkHourDialog.data.feature = this.getTreeValue(row.featureId)
+        this.addWorkHourDialog.data.feature = this.getTreeValue(this.options.featureOptions, row.featureId)
         this.addWorkHourDialog.data.featureId = row.featureId
-        this.addWorkHourDialog.data.activity = this.getTreeValue(row.activityId)
+        this.addWorkHourDialog.data.activity = this.getTreeValue(this.options.activityOptions, row.activityId)
         this.addWorkHourDialog.data.activityId = row.activityId
         // 打开对话框
         this.addWorkHourDialog.show = true

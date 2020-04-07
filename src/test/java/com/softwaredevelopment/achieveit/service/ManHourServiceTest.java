@@ -41,7 +41,7 @@ class ManHourServiceTest {
     }
 
     @Test
-    void getManHourSearchPage() {
+    void getManHourSearchPage() throws BussinessException {
         PageSearchRequest<ManHour> request = new PageSearchRequest<>();
         request.setCurrent(1);
         request.setSize(10);
