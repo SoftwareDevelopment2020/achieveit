@@ -36,14 +36,10 @@ public class ManHourController extends BaseController {
         return responseOK(manHourService.addManHour(manHour));
     }
 
-    @ApiOperation("审批工时 只需工时里有id")
-    @PostMapping("audit_manhour")
-    public HttpResponse<String> auditManHour(@RequestBody ManHour manHour) {
-        if (manHourService.auditManHour(manHour.getId())) {
-            return responseOK("审批成功");
-        } else {
-            return responseFail("审批失败");
-        }
+    @ApiOperation("修改工时")
+    @PostMapping("update_manhour")
+    public HttpResponse<Boolean> updateManHour(@RequestBody ManHour manHour) throws BussinessException {
+        return responseOK(manHourService.updateManHour(manHour));
     }
 
     @ApiOperation("获取所有Activities")

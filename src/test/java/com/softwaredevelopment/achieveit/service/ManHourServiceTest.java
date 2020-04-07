@@ -60,22 +60,4 @@ class ManHourServiceTest {
         System.out.println(service.getAllActivities());
     }
 
-
-    @Test
-    void auditManHour() {
-        Integer employeeId = 1;
-        Integer projectId = 1;
-        ProjectEmployee projectEmployee = service.getIProjectEmployeeService().getOne(
-                new QueryWrapper<ProjectEmployee>()
-                        .lambda().eq(ProjectEmployee::getProjectId, projectId).eq(ProjectEmployee::getEmployeeId, employeeId));
-        EmployeeBasics byId = service.getIEmployeeBasicsService().getById(projectEmployee.getEmployeeId());
-        User one = service.getIUserService().getOne(new QueryWrapper<User>()
-                .lambda().eq(User::getEmployeeBasicsId, byId.getId()));
-        authService.login(one.getUsername(), "123456");
-        service.auditManHour(1);
-        authService.login("epg_leader", "123456");
-        service.auditManHour(1);
-    }
-
-
 }

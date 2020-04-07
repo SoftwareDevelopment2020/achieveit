@@ -28,7 +28,7 @@
         clearable
       >
         <el-option
-          v-for="(item,index) in options.manHourAuditingStatusOptions"
+          v-for="(item,index) in options.auditingStatusOptions"
           :key="index"
           :label="item"
           :value="index">
@@ -101,10 +101,12 @@
             </template>
           </el-table-column>
           <el-table-column
-            prop="auditingStatus"
             label="审核状态"
             align="center"
           >
+            <template slot-scope="{row}">
+              <span>{{options.auditingStatusOptions[row.auditingStatus]}}</span>
+            </template>
           </el-table-column>
           <el-table-column
             fixed="right"
@@ -222,7 +224,7 @@
   import Pagination from '@/components/Pagination/index'
   import {stringToChinese, stringToTime} from "../../../../utils/date";
   import {getFeatures} from "../../../../api/feature";
-  import {addWorkHour, getActivities, getWorkHours} from "../../../../api/work-hour";
+  import {addWorkHour, getActivities, getWorkHours, updateWorkHour} from "../../../../api/work-hour";
   import {getNullOrValue, setTable} from "../../../../utils/common";
   export default {
     components: {
@@ -244,7 +246,7 @@
           auditingStatus: ''
         },
         options: {
-          manHourAuditingStatusOptions: ['审核中', '已通过', '已驳回', '已撤回'],
+          auditingStatusOptions: ['审核中', '已通过', '已驳回', '已撤回'],
           featureOptions: [],
           activityOptions: [],
           dateOptions: {
@@ -478,25 +480,57 @@
        * 修改工时信息
        */
       updateWorkHour(params) {
-
+        updateWorkHour(params).then(() => {
+          this.$message.success('成功')
+        }).finally(() => {
+          // 关闭对话框
+          this.addWorkHourDialog.show = false
+          // 刷新
+          this.getWorkHour()
+        })
       },
       /**
        * 撤销
        */
       withdraw(row) {
-
+        this.$confirm('确定撤销?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+          closeOnClickModal: false,
+          closeOnPressEscape: false
+        }).then(() => {
+          this.updateWorkHour({
+            id: row.id,
+            auditingStatus: 3
+          })
+        })
       },
       /**
        * 通过
        */
       pass(row) {
-
+        this.updateWorkHour({
+          id: row.id,
+          auditingStatus: 1
+        })
       },
       /**
        * 拒绝
        */
       refuse(row) {
-
+        this.$confirm('确定驳回?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+          closeOnClickModal: false,
+          closeOnPressEscape: false
+        }).then(() => {
+          this.updateWorkHour({
+            id: row.id,
+            auditingStatus: 2
+          })
+        })
       },
       /**
        * 可以更新工时信息

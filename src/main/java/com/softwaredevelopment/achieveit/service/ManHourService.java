@@ -132,6 +132,33 @@ public class ManHourService extends BaseService {
     }
 
     /**
+     * 修改工时信息
+     */
+    public boolean updateManHour(ManHour manHour) throws BussinessException {
+        // 如果修改基本信息，需要判断时间冲突
+        if (manHour.getAuditingStatus() == null) {
+            // 原始信息
+            ManHour original = iManHourService.getById(manHour.getId());
+            if (!manHour.getStartTime().equals(original.getStartTime()) || !manHour.getEndTime().equals(original.getEndTime())) {
+                // 时间修改，重新判定
+                List<ManHour> existManHours = iManHourService.list(
+                        new QueryWrapper<ManHour>()
+                                .ne("id", original.getId())
+                                .eq("project_id", original.getProjectId())
+                                .eq("employee_id", original.getEmployeeId())
+                                .eq("DATE_FORMAT(start_time, '%Y%m%d')", manHour.getStartTime().format(DateTimeFormatter.ofPattern("yyyyMMdd")))
+                                .orderByAsc("start_time")
+                );
+                if (!checkManHourTime(existManHours, manHour)) {
+                    throw new BussinessException("修改工时失败", new Exception(), "当前时段与其他工时冲突");
+                }
+            }
+        }
+
+        return iManHourService.updateById(manHour);
+    }
+
+    /**
      * 判断区间
      */
     private boolean checkManHourTime(List<ManHour> existManHour, ManHour checkManHour) {
@@ -185,20 +212,6 @@ public class ManHourService extends BaseService {
             }
         }
         return new ArrayList<>(map.values());
-    }
-
-    /**
-     * 审批工时
-     *
-     * @param manHourId
-     * @return
-     */
-    public boolean auditManHour(Integer manHourId) {
-        ManHour mh = iManHourService.getById(manHourId);
-        if (mh == null) {
-            return false;
-        }
-        return auditManHour(mh);
     }
 
     public Boolean auditManHour(ManHour manHour) {

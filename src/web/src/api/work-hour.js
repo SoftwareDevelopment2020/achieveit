@@ -39,6 +39,13 @@ export function addWorkHour(data) {
 }
 
 /**
+ * 修改工时信息
+ */
+export function updateWorkHour(data) {
+  return post('/update_manhour', data)
+}
+
+/**
  * 查询工时信息
  */
 export function getWorkHours(data) {

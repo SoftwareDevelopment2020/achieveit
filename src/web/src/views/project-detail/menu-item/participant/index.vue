@@ -435,7 +435,9 @@
         this.$confirm('确认删除该人员?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-          type: 'warning'
+          type: 'warning',
+          closeOnClickModal: false,
+          closeOnPressEscape: false
         }).then(() => {
           deleteProjectEmployee({
             projectEmployeeId: row.id
