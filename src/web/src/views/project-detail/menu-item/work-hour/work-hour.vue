@@ -223,7 +223,7 @@
   import {stringToChinese, stringToTime} from "../../../../utils/date";
   import {getFeatures} from "../../../../api/feature";
   import {addWorkHour, getActivities, getWorkHours} from "../../../../api/work-hour";
-  import {setTable} from "../../../../utils/common";
+  import {getNullOrValue, setTable} from "../../../../utils/common";
   export default {
     components: {
       Pagination
@@ -336,10 +336,17 @@
         })
       },
       search() {
-
+        this.table.page = 1
+        this.table.searchCondition.employeeId = getNullOrValue(this.searchValue.employeeId)
+        const date = this.searchValue.startTime
+        this.table.searchCondition.startTime = date ? new Date(date.getFullYear(), date.getMonth(), date.getDate(), 8, 0, 0) : null
+        this.table.searchCondition.auditingStatus = getNullOrValue(this.searchValue.auditingStatus)
+        this.getWorkHour()
       },
       setSearchValue() {
-
+        this.searchValue.employeeId = this.table.searchCondition.employeeId
+        this.searchValue.startTime = this.table.searchCondition.startTime
+        this.searchValue.auditingStatus = this.table.searchCondition.auditingStatus
       },
 
       /**
