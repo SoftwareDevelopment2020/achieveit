@@ -97,4 +97,10 @@ public class EmployeeController extends BaseController {
     public HttpResponse<IPage<EmployeeBasics>> searchEmployeeByGlobalRoles(@RequestBody PageSearchRequest<String> request) throws BussinessException {
         return responseOK(employeeService.searchEmployeeByGlobalRoles(request));
     }
+
+    @ApiOperation("获取所有需要填写工时的项目人员信息")
+    @GetMapping("get_project_manhour_employee")
+    public HttpResponse<List<EmployeeBasics>> getProjectManHourEmployee(int id, boolean isSubordinate) throws BussinessException {
+        return responseOK(employeeService.getProjectManhourEmployee(id, isSubordinate));
+    }
 }

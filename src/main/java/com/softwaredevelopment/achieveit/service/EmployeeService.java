@@ -7,9 +7,11 @@ import com.softwaredevelopment.achieveit.PO.entity.*;
 import com.softwaredevelopment.achieveit.controller.BussinessException;
 import com.softwaredevelopment.achieveit.entity.request.PageSearchRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -87,5 +89,48 @@ public class EmployeeService extends BaseService {
         return iEmployeeBasicsService.page(page,
                 new QueryWrapper<EmployeeBasics>().lambda().in(EmployeeBasics::getId, employeeIds));
 
+    }
+
+    /**
+     * 获取所有需要填写工时信息的项目员工
+     */
+    public List<EmployeeBasics> getProjectManhourEmployee(int id, boolean isSubordinate) throws BussinessException {
+        QueryWrapper<ProjectEmployee> qw = new QueryWrapper<>();
+
+        // 项目id
+        qw.eq("project_id", id);
+        // 只查询下属
+        if (isSubordinate) {
+            qw.eq("superior_id", currentUserDetail().getEmployeeId());
+        }
+        // 获取项目员工ID
+        List<ProjectEmployee> projectEmployees = iProjectEmployeeService.list(qw);
+
+        // 需要填写工时信息的角色
+        List<RoleBasics> roleBasics = iRoleBasicsService.list(
+                new QueryWrapper<RoleBasics>().in("name",
+                        "ROLE_DEVLEADER", "ROLE_DEV", "ROLE_TESTLEADER", "ROLE_TEST", "ROLE_QA"));
+        // 获取需要填写工时信息的项目员工ID
+        List<PersonRole> personRoles = iPersonRoleService.list(
+                new QueryWrapper<PersonRole>()
+                        .in("project_employee_id", projectEmployees.stream().map(ProjectEmployee::getId).collect(Collectors.toList()))
+                        .in("role_id", roleBasics.stream().map(RoleBasics::getId).collect(Collectors.toList()))
+        );
+        Set<Integer> projectEmployeeIds = personRoles.stream().map(PersonRole::getProjectEmployeeId).collect(Collectors.toSet());
+
+        // 获取员工基本信息
+        List<Integer> employeeIds = new ArrayList<>();
+        for (ProjectEmployee projectEmployee : projectEmployees) {
+            if (projectEmployeeIds.contains(projectEmployee.getId())) {
+                employeeIds.add(projectEmployee.getEmployeeId());
+            }
+        }
+
+        // 获取员工基本信息
+        if (CollectionUtils.isEmpty(employeeIds)) {
+            return new ArrayList<>();
+        }
+
+        return iEmployeeBasicsService.listByIds(employeeIds);
     }
 }

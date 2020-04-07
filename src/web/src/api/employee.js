@@ -96,3 +96,11 @@ export function getAllSuperiors(data) {
     data
   })
 }
+
+/**
+ * 获取需要记录工时的员工信息
+ */
+export function getProjectWorkHourEmployee(data) {
+  return get('/get_project_manhour_employee?id=' + data.id
+    + '&isSubordinate=' + data.isSubordinate)
+}

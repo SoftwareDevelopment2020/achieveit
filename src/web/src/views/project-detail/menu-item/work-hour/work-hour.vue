@@ -3,14 +3,21 @@
 
     <!-- 搜索栏 -->
     <div>
-      <el-input
-        v-if="type===2"
-        v-model="searchValue.employeeOriginalId"
-        placeholder="人员ID"
+      <el-select
+        v-if="type!==1"
+        v-model="searchValue.employeeId"
+        placeholder="选择员工"
         style="width: 15%;min-width: 200px"
         clearable
       >
-      </el-input>
+        <el-option
+          v-for="item in options.employeeOptions"
+          :key="item.id"
+          :label="item.name + '（' + item.employeeId + '）'"
+          :value="item.id"
+        >
+        </el-option>
+      </el-select>
       <el-date-picker
         v-model="searchValue.startTime"
         name="date"
@@ -228,6 +235,8 @@
   import {getFeatures} from "../../../../api/feature";
   import {addWorkHour, getActivities, getWorkHours, updateWorkHour} from "../../../../api/work-hour";
   import {getNullOrValue, setTable} from "../../../../utils/common";
+  import {getProjectWorkHourEmployee} from "../../../../api/employee";
+
   export default {
     components: {
       Pagination
@@ -249,6 +258,7 @@
         },
         options: {
           auditingStatusOptions: ['审核中', '已通过', '已驳回', '已撤回'],
+          employeeOptions: [],
           featureOptions: [],
           activityOptions: [],
           dateOptions: {
@@ -302,6 +312,10 @@
       this.getFeatures()
       // 初始化活动列表
       this.getActivities()
+      // 初始化员工选项
+      if (this.type !== 1) {
+        this.getProjectEmployees()
+      }
       // 获取工时信息
       this.getWorkHour()
     },
@@ -326,11 +340,9 @@
           size: this.table.limit,
           searchCondition: {
             projectId: this.project.id,
+            employeeId: this.table.searchCondition.employeeId,
             startTime: this.table.searchCondition.startTime,
             auditingStatus: this.table.searchCondition.auditingStatus,
-            employeeBasics: {
-              employeeId: this.table.searchCondition.employeeId
-            },
             type: this.type
           }
         }).then(response => {
@@ -367,8 +379,17 @@
       getActivities() {
         getActivities().then(response => {
           this.options.activityOptions = response.data
-        }).catch(error => {
-          console.error(error)
+        })
+      },
+      /**
+       * 获取所有员工
+       */
+      getProjectEmployees() {
+        getProjectWorkHourEmployee({
+          id: this.project.id,
+          isSubordinate: this.type === 2
+        }).then(response => {
+          this.options.employeeOptions = response.data
         })
       },
 
@@ -543,7 +564,7 @@
         date.setHours(0)
         date.setMinutes(0)
         date.setSeconds(0)
-        return row.auditingStatus === 0 && date.getTime() + 4 * 24 * 60 * 60 * 1000 > new Date().getTime()
+        return this.type !== 3 && row.auditingStatus === 0 && date.getTime() + 4 * 24 * 60 * 60 * 1000 > new Date().getTime()
       }
     }
   }

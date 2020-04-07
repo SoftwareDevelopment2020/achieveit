@@ -53,28 +53,21 @@ public class ManHourService extends BaseService {
                 searchCondition.setEmployeeId(currentUserDetail().getEmployeeId());
                 break;
             case 2: // 下属的
-                // 查询下属ID
-                List<ProjectEmployee> employeeBasics = iProjectEmployeeService.list(
-                        new QueryWrapper<ProjectEmployee>().eq("superior_id", currentUserDetail().getEmployeeId()));
-                if (CollectionUtils.isEmpty(employeeBasics)) {
-                    // 没有下属，直接返回
-                    return page;
-                }
-                // 查询员工ID
-                if (searchCondition.getEmployeeBasics() != null && !StringUtils.isEmpty(searchCondition.getEmployeeBasics().getEmployeeId())) {
-                    List<EmployeeBasics> searchEmployeeBasics = iEmployeeBasicsService.list(
-                            new QueryWrapper<EmployeeBasics>()
-                                    .in("id", employeeBasics.stream().map(ProjectEmployee::getEmployeeId).collect(Collectors.toList()))
-                                    .like("employee_id", searchCondition.getEmployeeBasics().getEmployeeId()));
-                    if (CollectionUtils.isEmpty(searchEmployeeBasics)) {
-                        // 没有，直接返回
+                if (searchCondition.getEmployeeId() == null) {
+                    // 查询所有下属ID
+                    List<ProjectEmployee> employeeBasics = iProjectEmployeeService.list(
+                            new QueryWrapper<ProjectEmployee>().eq("superior_id", currentUserDetail().getEmployeeId()));
+                    if (CollectionUtils.isEmpty(employeeBasics)) {
+                        // 没有下属，直接返回
                         return page;
                     }
-
-                    // 设置查询条件
-                    queryWrapper.in("employee_id", searchEmployeeBasics.stream().map(EmployeeBasics::getId).collect(Collectors.toList()));
+                    queryWrapper.in("employee_id", employeeBasics.stream().map(ProjectEmployee::getId).collect(Collectors.toList()));
                 }
                 // 无法看到下属已撤回的信息
+                queryWrapper.ne("auditing_status", 3);
+                break;
+            case 3: // 所有的
+                // 无法看到已撤回的信息
                 queryWrapper.ne("auditing_status", 3);
                 break;
         }
