@@ -130,7 +130,7 @@
             AND TB.employee_id LIKE '%${employeeId}%'
         </if>
         <if test="employeeName != null and employeeName != ''">
-            AND TB.name LIKE '%${empoyeeName}%'
+            AND TB.name LIKE '%${employeeName}%'
         </if>
         ORDER BY TA.exit_time, TA.join_time, TB.name
     </select>
