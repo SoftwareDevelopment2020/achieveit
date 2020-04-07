@@ -31,7 +31,9 @@
           v-for="(item,index) in options.auditingStatusOptions"
           :key="index"
           :label="item"
-          :value="index">
+          :value="index"
+          :disabled="type === 2 && index === 3"
+        >
         </el-option>
       </el-select>
       <el-button type="primary" style="margin-left: 10px" @click="search" @keyup.enter="search">

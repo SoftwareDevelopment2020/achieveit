@@ -74,6 +74,8 @@ public class ManHourService extends BaseService {
                     // 设置查询条件
                     queryWrapper.in("employee_id", searchEmployeeBasics.stream().map(EmployeeBasics::getId).collect(Collectors.toList()));
                 }
+                // 无法看到下属已撤回的信息
+                queryWrapper.ne("auditing_status", 3);
                 break;
         }
 
@@ -84,6 +86,8 @@ public class ManHourService extends BaseService {
         }
         // 其他条件
         queryWrapper.setEntity(searchCondition);
+        // 排序
+        queryWrapper.orderByDesc("start_time").orderByAsc("auditing_status");
 
         // 查询
         IPage<ManHour> result = iManHourService.page(new Page<>(request.getCurrent(), request.getSize()),queryWrapper);
