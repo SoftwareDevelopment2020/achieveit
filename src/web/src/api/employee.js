@@ -77,6 +77,7 @@ export function setPermission(data) {
   return post('/set_permission', data)
 }
 
+//获取project中的项目成员信息
 export function getEmployeesByProjectId(projectId) {
   return request({
     url: '/employee/employees_by_project_id',
@@ -84,5 +85,14 @@ export function getEmployeesByProjectId(projectId) {
     params: {
       'projectId': projectId
     }
+  })
+}
+
+//获取项目上级
+export function getAllSuperiors(data) {
+  return request({
+    url: '/employee/search_employee_by_global_roles',
+    method:'post',
+    data
   })
 }
