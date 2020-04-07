@@ -98,6 +98,7 @@ public class FeatureService extends BaseService {
             // 高层功能
             if (f.getSecondTierId() == 0) {
                 FeatureVO fvo = new FeatureVO();
+                fvo.setId(f.getId());
                 fvo.setLabel(f.getFeatureName());
                 fvo.setDetail(f.getFeatureDetail());
                 fvo.setChildren(new ArrayList<>());
@@ -108,6 +109,7 @@ public class FeatureService extends BaseService {
             // 低层功能
             if (f.getSecondTierId() != 0) {
                 FeatureVO fvo = new FeatureVO();
+                fvo.setId(f.getId());
                 fvo.setLabel(f.getFeatureName());
                 fvo.setDetail(f.getFeatureDetail());
                 fvo.setChildren(null);

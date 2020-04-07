@@ -1,8 +1,8 @@
 package com.softwaredevelopment.achieveit.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.softwaredevelopment.achieveit.PO.entity.Activity;
 import com.softwaredevelopment.achieveit.PO.entity.ManHour;
+import com.softwaredevelopment.achieveit.entity.ActivityVO;
 import com.softwaredevelopment.achieveit.entity.request.PageSearchRequest;
 import com.softwaredevelopment.achieveit.http.response.HttpResponse;
 import com.softwaredevelopment.achieveit.service.ManHourService;
@@ -30,15 +30,10 @@ public class ManHourController extends BaseController {
         return responseOK(manHourService.getManHourSearchPage(request));
     }
 
-
-    @ApiOperation("保存工时")
-    @PostMapping("save_manhour")
-    public HttpResponse<String> saveManHour(@RequestBody ManHour manHour) {
-        if (manHourService.saveManHour(manHour)) {
-            return responseOK("保存成功");
-        } else {
-            return responseFail("保存失败");
-        }
+    @ApiOperation("添加工时")
+    @PostMapping("add_manhour")
+    public HttpResponse<Boolean> addManHour(@RequestBody ManHour manHour) throws BussinessException {
+        return responseOK(manHourService.addManHour(manHour));
     }
 
     @ApiOperation("审批工时 只需工时里有id")
@@ -53,7 +48,7 @@ public class ManHourController extends BaseController {
 
     @ApiOperation("获取所有Activities")
     @GetMapping("activities")
-    public List<Activity> getAllActivities() {
-        return manHourService.getAllActivities();
+    public HttpResponse<List<ActivityVO>> getAllActivities() {
+        return responseOK(manHourService.getAllActivities());
     }
 }

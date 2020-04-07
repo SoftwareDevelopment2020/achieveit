@@ -15,7 +15,9 @@
 <script>
   import WorkHour from './work-hour'
   export default {
-    components: {WorkHour},
+    components: {
+      WorkHour
+    },
     data(){
       return{
         activeName: 'my',

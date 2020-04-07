@@ -114,6 +114,7 @@
               <span v-if="row.auditingStatus === 0">
                 <!-- 撤回自己的工时 -->
                 <span v-if="type === 1">
+                  <el-button type="text"  style="color: #E6A23C" @click="openUpdateWorkHourDialog(row)">修改</el-button>
                   <el-button type="text"  style="color: #E6A23C" @click="withdraw(row)">撤销</el-button>
                 </span>
                 <!-- 审核下属工时 -->
@@ -139,69 +140,77 @@
     <el-dialog
       :close-on-click-modal="false"
       :close-on-press-escape="false"
-      title="工时信息"
+      :title="addWorkHourDialog.title[addWorkHourDialog.type]"
       :visible.sync="addWorkHourDialog.show"
       width="500px"
       center
     >
       <el-form
         ref="addWorkHourForm"
-        :model="addWorkHour.data"
+        :model="addWorkHourDialog.data"
         :rules="addWorkHourDialog.rules"
         :hide-required-asterisk="true"
         label-width="120px"
       >
-        <!-- TODO 日期限定 -->
-        <el-form-item label="日期">
+        <el-form-item label="日期" prop="date">
           <el-date-picker
             v-model="addWorkHourDialog.data.date"
             name="addWorkHourDate"
             type="date"
-            format="yyyy-MM-dd"
+            :picker-options="options.dateOptions"
+            :clearable="false"
           >
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="起始时间">
+        <el-form-item label="起始时间" prop="startTime">
           <el-time-picker
             v-model="addWorkHourDialog.data.startTime"
             name="addWorkHourStartTime"
-            :picker-options="options.timeOptions"
+            :picker-options="options.startTimeOptions"
+            :clearable="false"
           >
           </el-time-picker>
         </el-form-item>
-        <el-form-item label="结束时间">
+        <el-form-item label="结束时间"  prop="endTime">
           <el-time-picker
             v-model="addWorkHourDialog.data.endTime"
             name="addWorkHourEndTime"
-            :picker-options="options.timeOptions"
+            :picker-options="{selectableRange: addWorkHourDialog.data.startTime + ' - 23:59:59'}"
+            :clearable="false"
           >
           </el-time-picker>
         </el-form-item>
-        <el-form-item label="功能名称">
-          <el-select v-model="addWorkHourDialog.data.featureId">
-            <!--TODO 和功能列表关联 -->
-            <el-option
-              v-for="item in options.featureOptions"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
+        <el-form-item label="功能名称"  prop="feature">
+            <el-cascader
+              v-model="addWorkHourDialog.data.feature"
+              name="addWorkHourActivity"
+              :options="options.featureOptions"
+              :props="{
+                expandTrigger: 'hover',
+                value: 'id',
+               }"
+              style="width: 300px"
             >
-            </el-option>
-          </el-select>
+            </el-cascader>
         </el-form-item>
-        <el-form-item label="活动名称">
+        <el-form-item label="活动名称"  prop="activity">
           <el-cascader
             v-model="addWorkHourDialog.data.activity"
             name="addWorkHourActivityId"
             :options="options.activityOptions"
-            :props="{ expandTrigger: 'hover' }"
+            :props="{
+               expandTrigger: 'hover',
+               value: 'id',
+               label: 'name'
+            }"
+            style="width: 300px"
           >
           </el-cascader>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="addWorkHourDialog.show = false">取 消</el-button>
-        <el-button type="primary" @click="addWorkHour">确 定</el-button>
+        <el-button type="primary" @click="addOrUpdateWorkHour">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -209,7 +218,9 @@
 
 <script>
   import Pagination from '@/components/Pagination/index'
-  import {dateToString, stringToChinese, stringToTime} from "../../../../utils/date";
+  import {stringToChinese, stringToTime} from "../../../../utils/date";
+  import {getFeatures} from "../../../../api/feature";
+  import {addWorkHour, getActivities} from "../../../../api/work-hour";
   export default {
     components: {
       Pagination
@@ -222,6 +233,8 @@
     },
     data () {
       return {
+        project: this.$store.getters.project,
+
         searchValue: {
           employeeOriginalId: '',
           startTime: '',
@@ -229,116 +242,18 @@
         },
         options: {
           manHourAuditingStatusOptions: ['审核中', '已通过', '已驳回', '已撤回'],
-          activityOptions: [
-            {
-              value: 0,
-              label: '工程活动',
-              children:[
-                {
-                value: 0,
-                label: '需求开发'
-                },
-                {
-                  value: 1,
-                  label: '设计'
-                },
-                {
-                  value: 2,
-                  label: '编码'
-                },
-                {
-                  value: 3,
-                  label: '单体测试'
-                },
-                {
-                  value: 4,
-                  label: '集成测试'
-                },
-                {
-                  value: 5,
-                  label: '系统测试'
-                },
-                {
-                  value: 6,
-                  label: '交付'
-                },
-                {
-                  value: 7,
-                  label: '维护'
-                }
-              ]
-            },
-            {
-              value: 1,
-              label: '管理活动',
-              children:[
-                {
-                  value: 0,
-                  label: '范围管理'
-                },
-                {
-                  value: 1,
-                  label: '计划与tiaozheng'
-                },
-                {
-                  value: 2,
-                  label: '监控与分析'
-                },
-                {
-                  value: 3,
-                  label: '联络与沟通'
-                }
-              ]
-            },
-            {
-              value: 2,
-              label: '外包活动',
-              children:[
-                {
-                  value: 0,
-                  label: '外包管理'
-                },
-                {
-                  value: 1,
-                  label: '外包验收'
-                },
-                {
-                  value: 2,
-                  label: '外包支持'
-                }
-              ]
-            },
-            {
-              value: 3,
-              label: '支持活动',
-              children:[
-                {
-                  value: 0,
-                  label: '配置管理'
-                },
-                {
-                  value: 1,
-                  label: 'QA审计'
-                },
-                {
-                  value: 2,
-                  label: '会议报告总结'
-                },
-                {
-                  value: 3,
-                  label: '培训'
-                },
-                {
-                  value: 4,
-                  label: '其他'
-                }
-              ]
-            }
-          ],
-          timeOptions: {
-            selectableRange: '08:00:00 - 23:59:59'
-          },
           featureOptions: [],
+          activityOptions: [],
+          dateOptions: {
+            disabledDate(time) {
+              // 三天前-今天
+              return time.getTime() < new Date().getTime() - 3600 * 1000 * 24 * 4
+                || time.getTime() > Date.now();
+            },
+          },
+          startTimeOptions: {
+            selectableRange: '00:00:00 - 23:59:59'
+          }
         },
 
         loading: false,
@@ -356,20 +271,32 @@
 
         addWorkHourDialog: {
           show: false,
+          title: ['添加工时信息', '修改工时信息'],
+          type: 0,
           data: {
+            id: '',
             date: '',
             startTime: '',
             endTime: '',
+            feature: [],
             featureId: '',
-            activity: '',
+            activity: [],
             activityId: ''
           },
-          rules: {}
+          rules: {
+            feature: [{required: true, message: '功能名称不能为空', trigger: 'blur'}],
+            activity: [{required: true, message: '活动名称不能为空', trigger: 'blur'}]
+          }
         }
       }
     },
     mounted() {
+      // 获取工时信息
       this.getWorkHour()
+      // 初始化功能列表
+      this.getFeatures()
+      // 初始化活动列表
+      this.getActivities()
     },
     methods: {
       /**
@@ -396,30 +323,117 @@
       },
 
       /**
-       * 添加工时信息
+       * 获取功能列表
        */
-      addWorkHour() {
-
+      getFeatures() {
+        getFeatures(this.project.projectId).then(response => {
+          this.options.featureOptions = response.data
+        })
       },
-      openAddWorkHourDialog() {
-        // TODO 获取功能列表
-
-        // 初始化数据
-        this.addWorkHourDialog.data.date = dateToString(new Date())
-        this.addWorkHourDialog.data.startTime = ''
-        this.addWorkHourDialog.data.endTime = ''
-        this.addWorkHourDialog.data.featureId = ''
-        this.addWorkHourDialog.data.activity = ''
-        this.addWorkHourDialog.data.activityId = ''
-
-        // 打开对话框
-        this.addWorkHourDialog.show = true
+      /**
+       * 获取活动列表
+       */
+      getActivities() {
+        getActivities().then(response => {
+          this.options.activityOptions = response.data
+        }).catch(error => {
+          console.error(error)
+        })
       },
 
       /**
-       * 更新工时审核状态
+       * 添加或修改工时信息
        */
-      updateAuditingStatus(params) {
+      addOrUpdateWorkHour() {
+        this.$refs.addWorkHourForm.validate(valid => {
+          if (valid) {
+            // region 转换数据格式
+            // 开始、结束时间
+            const date = this.addWorkHourDialog.data.date
+            const startTime = this.addWorkHourDialog.data.startTime
+            const endTime = this.addWorkHourDialog.data.endTime
+            this.addWorkHourDialog.data.startTime = new Date(date.getFullYear(), date.getMonth(), date.getDay(), startTime.getHours(), startTime.getMinutes(), startTime.getSeconds())
+            this.addWorkHourDialog.data.endTime = new Date(date.getFullYear(), date.getMonth(), date.getDay(), endTime.getHours(), endTime.getMinutes(), endTime.getSeconds())
+            // 功能
+            const feature = this.addWorkHourDialog.data.feature
+            this.addWorkHourDialog.data.featureId = feature[1]
+            // 活动
+            const activity = this.addWorkHourDialog.data.activity
+            this.addWorkHourDialog.data.activityId = activity[1]
+            // endregion
+
+            switch (this.addWorkHourDialog.type) {
+              case 0: // 添加
+                this.addWorkHour()
+                break;
+              case 1: // 修改
+                this.updateWorkHour(this.addWorkHourDialog.data)
+                break;
+            }
+
+            // 关闭对话框
+            this.addWorkHourDialog.show = false
+            // 刷新
+            this.getWorkHour()
+          }
+        })
+      },
+
+      /**
+       * 添加工时信息
+       */
+      addWorkHour() {
+        addWorkHour({
+          projectId: this.project.id,
+          ...this.addWorkHourDialog.data
+        }).then(response => {
+          this.$message.success('成功')
+        })
+      },
+      openAddWorkHourDialog() {
+        // 类型
+        this.addWorkHourDialog.type = 0
+        // 初始化数据
+        this.addWorkHourDialog.data.id = null
+        this.addWorkHourDialog.data.date = new Date()
+        this.addWorkHourDialog.data.startTime = new Date(1900, 1, 1, 0, 0, 0)
+        this.addWorkHourDialog.data.endTime = new Date(1900, 1, 1, 23, 59, 59)
+        this.addWorkHourDialog.data.feature = ''
+        this.addWorkHourDialog.data.featureId = ''
+        this.addWorkHourDialog.data.activity = ''
+        this.addWorkHourDialog.data.activityId = ''
+        // 打开对话框
+        this.addWorkHourDialog.show = true
+      },
+      openUpdateWorkHourDialog(row) {
+        // 类型
+        this.addWorkHourDialog.type = 1
+        // 初始化数据
+        this.addWorkHourDialog.data.id = row.id
+        this.addWorkHourDialog.data.date = new Date(row.startTime)
+        this.addWorkHourDialog.data.startTime = new Date(row.startTime)
+        this.addWorkHourDialog.data.endTime = new Date(row.endTime)
+        this.addWorkHourDialog.data.feature = this.getTreeValue(row.featureId)
+        this.addWorkHourDialog.data.featureId = row.featureId
+        this.addWorkHourDialog.data.activity = this.getTreeValue(row.activityId)
+        this.addWorkHourDialog.data.activityId = row.activityId
+        // 打开对话框
+        this.addWorkHourDialog.show = true
+      },
+      getTreeValue(options, id) {
+        options.forEach(option => {
+          option.children.forEach(child => {
+            if (child.id === id) {
+              return [option.id, child.id]
+            }
+          })
+        })
+      },
+
+      /**
+       * 修改工时信息
+       */
+      updateWorkHour(params) {
 
       },
       /**

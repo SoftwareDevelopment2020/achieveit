@@ -24,8 +24,8 @@ public class Feature implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-//    @ApiModelProperty("id (弃用）")
-//    private Integer id = 1;
+    @ApiModelProperty("id")
+    private Integer id;
 
     @ApiModelProperty(value = "项目ID")
     private Integer projectId;

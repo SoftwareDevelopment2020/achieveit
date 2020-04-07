@@ -5,6 +5,7 @@ import com.softwaredevelopment.achieveit.PO.entity.EmployeeBasics;
 import com.softwaredevelopment.achieveit.PO.entity.ManHour;
 import com.softwaredevelopment.achieveit.PO.entity.ProjectEmployee;
 import com.softwaredevelopment.achieveit.PO.entity.User;
+import com.softwaredevelopment.achieveit.controller.BussinessException;
 import com.softwaredevelopment.achieveit.entity.request.PageSearchRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,8 +51,8 @@ class ManHourServiceTest {
     }
 
     @Test
-    void saveManHour() {
-        service.saveManHour(mockManHour());
+    void saveManHour() throws BussinessException {
+        service.addManHour(mockManHour());
     }
 
     @Test

@@ -6,10 +6,15 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.softwaredevelopment.achieveit.PO.entity.Activity;
 import com.softwaredevelopment.achieveit.PO.entity.ManHour;
 import com.softwaredevelopment.achieveit.PO.entity.ProjectEmployee;
+import com.softwaredevelopment.achieveit.controller.BussinessException;
+import com.softwaredevelopment.achieveit.entity.ActivityVO;
 import com.softwaredevelopment.achieveit.entity.request.PageSearchRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author RainkQ
@@ -23,17 +28,50 @@ public class ManHourService extends BaseService {
                 new QueryWrapper<>(request.getSearchCondition()));
     }
 
-    public boolean saveManHour(ManHour manHour) {
+    /**
+     * 添加工时信息
+     */
+    public boolean addManHour(ManHour manHour) throws BussinessException {
+        // 设置员工key
+        manHour.setEmployeeId(currentUserDetail().getEmployeeId());
+        // 设置审核状态
+        manHour.setAuditingStatus(0);
+
+        // TODO 检查工时冲突
+
         return iManHourService.save(manHour);
     }
 
     /**
      * 获取所有Activity
-     *
-     * @return
      */
-    public List<Activity> getAllActivities() {
-        return iActivityService.list();
+    public List<ActivityVO> getAllActivities() {
+        List<Activity> activities = iActivityService.list();
+
+        // 转换为TREE
+        // root
+        Map<Integer, ActivityVO> map = new HashMap<>();
+        for (Activity activity : activities) {
+            if (activity.getSecondId() == 0) {
+                ActivityVO activityVO = new ActivityVO();
+                activityVO.setId(activity.getId());
+                activityVO.setName(activity.getName());
+                activityVO.setChildren(new ArrayList<>());
+                map.put(activity.getFirstId(), activityVO);
+            }
+        }
+        // children
+        for (Activity activity : activities) {
+            if (activity.getSecondId() != 0) {
+                ActivityVO activityVO = new ActivityVO();
+                activityVO.setId(activity.getId());
+                activityVO.setName(activity.getName());
+                if (map.containsKey(activity.getFirstId())) {
+                    map.get(activity.getFirstId()).getChildren().add(activityVO);
+                }
+            }
+        }
+        return new ArrayList<>(map.values());
     }
 
     /**
