@@ -5,6 +5,7 @@
         v-model="searchValue.employeeId"
         placeholder="员工ID"
         style="width: 20%;min-width: 200px"
+        name="employeeIdSearch"
         clearable
       >
       </el-input>
@@ -12,6 +13,7 @@
         v-model="searchValue.employeeName"
         placeholder="员工姓名"
         style="width: 20%;min-width: 200px"
+        name="employeeNameSearch"
         clearable
       >
       </el-input>
@@ -20,20 +22,23 @@
         multiple
         placeholder="员工角色"
         style="width: 30%;min-width: 120px"
+        name="employeeRolesSearch"
         clearable
       >
         <el-option
           v-for="item in roleOptions"
           :key="item.name"
           :label="item.detail"
+          name="employeeRolesSearchOption"
           :value="item.name">
         </el-option>
       </el-select>
-      <el-button type="primary" style="margin-left: 10px" @click="search" @keyup.enter="search">
+      <el-button type="primary" style="margin-left: 10px" @click="search" @keyup.enter="search" name="employeeSearch">
         <i class="el-icon-search"></i>
         <span>搜索</span>
       </el-button>
-      <el-button v-if="canEdit()" v-permission="['ROLE_PM']" type="primary" @click="openAddParticipantDialog">
+      <el-button v-if="canEdit()" v-permission="['ROLE_PM']" type="primary" @click="openAddParticipantDialog"
+                 name="openAddEmployeeDialog">
         <i class="el-icon-plus"></i>
         <span>添加人员</span>
       </el-button>
@@ -119,10 +124,13 @@
           min-width="200">
           <template slot-scope="{ row }">
             <span v-if="row.exitTime === null">
-              <span v-if="canEdit()"  v-permission="['ROLE_PM']">
-                <el-button type="text" size="mini" @click="openSetRoleDialog(row)">设置角色</el-button>
-                <el-button type="text" size="mini" @click="openSetPermissionDialog(row)">设置权限</el-button>
-                <el-button type="text" size="mini" @click="deleteParticipant(row)">删除</el-button>
+              <span v-if="canEdit()" v-permission="['ROLE_PM']">
+                <el-button type="text" size="mini" @click="openSetRoleDialog(row)"
+                           name="openSetRolesDialogButton">设置角色</el-button>
+                <el-button type="text" size="mini" @click="openSetPermissionDialog(row)"
+                           name="openSetPermissionsDialogButton">设置权限</el-button>
+                <el-button type="text" size="mini" @click="deleteParticipant(row)"
+                           name="deleteEmployeeButton">删除</el-button>
               </span>
             </span>
             <span v-else style="color: red; font-size: 13px">
@@ -132,7 +140,8 @@
         </el-table-column>
       </el-table>
 
-      <pagination :total="table.total" :page.sync="table.page" :limit.sync="table.limit" @pagination="getParticipants"></pagination>
+      <pagination :total="table.total" :page.sync="table.page" :limit.sync="table.limit"
+                  @pagination="getParticipants"></pagination>
     </div>
 
     <!-- 添加人员 -->
@@ -153,45 +162,51 @@
         style="width: 80%"
       >
         <el-form-item label="员工ID" prop="employeeId">
-          <el-input v-model="dialog.addParticipant.data.employeeId" name="employeeId" clearable></el-input>
+          <el-input v-model="dialog.addParticipant.data.employeeId" name="addEmployeeId" clearable></el-input>
         </el-form-item>
         <el-form-item label="角色" prop="roles">
-          <el-select v-model="dialog.addParticipant.data.roles" style="width: 100%" multiple clearable  @change="autoSetPermission">
+          <el-select v-model="dialog.addParticipant.data.roles" style="width: 100%" name="addEmployeeRoles" multiple
+                     clearable @change="autoSetPermission">
             <el-option
               v-for="item in roleOptions.slice(1, roleOptions.length)"
               :key="item.name"
               :label="item.detail"
+              name="addEmployeeRolesOption"
               :value="item.name">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="权限" prop="permissions">
-          <el-select v-model="dialog.addParticipant.data.permissions" style="width: 100%" multiple clearable @clear="autoSetPermission">
+          <el-select v-model="dialog.addParticipant.data.permissions" name="addEmployeePermissions" style="width: 100%"
+                     multiple clearable @clear="autoSetPermission">
             <el-option
               v-for="item in permissionOptions"
               :key="item.name"
               :label="item.detail"
               :value="item.name"
+              name="addEmployeePermissionsOption"
               :disabled="item.name === 'bug'">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="项目上级ID" prop="superiorKey">
-          <el-select v-model="dialog.addParticipant.data.superiorKey" style="width: 100%" clearable>
+          <el-select v-model="dialog.addParticipant.data.superiorKey" name="addEmployeeSuperior" style="width: 100%"
+                     clearable>
             <el-option
               v-for="item in dialog.addParticipant.superiorOptions"
               :key="item.id"
               :label="item.name + '（' + item.employeeId + '）'"
               :value="item.id"
               :disabled="item.employeeId === dialog.addParticipant.data.employeeId"
+              name="addEmployeeSuperiorOption"
             >
             </el-option>
           </el-select>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialog.addParticipant.show = false">取 消</el-button>
-        <el-button type="primary" @click="addParticipant">确 定</el-button>
+        <el-button @click="dialog.addParticipant.show = false" name="addEmployeeCancelSubmit">取 消</el-button>
+        <el-button type="primary" @click="addParticipant" name="addEmployeeSubmit">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -209,6 +224,7 @@
           v-for="item in roleOptions"
           :key="item.name"
           :label="item.name"
+          :name="item.name"
           :disabled="item.name === 'ROLE_PM'"
           style="width: 70%;margin-left: 20%;"
         >
@@ -216,8 +232,8 @@
         </el-checkbox>
       </el-checkbox-group>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialog.setRole.show = false">取 消</el-button>
-        <el-button type="primary" @click="setRole">确 定</el-button>
+        <el-button @click="dialog.setRole.show = false" name="setRolesCancelSubmit">取 消</el-button>
+        <el-button type="primary" @click="setRole" name="setRolesSubmit">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -234,6 +250,7 @@
         <el-checkbox
           v-for="item in permissionOptions"
           :key="item.name"
+          :name="item.name"
           :label="item.name"
           :disabled="item.name === 'bug'"
           style="width: 70%;margin-left: 20%;"
@@ -242,8 +259,8 @@
         </el-checkbox>
       </el-checkbox-group>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialog.setPermission.show = false">取 消</el-button>
-        <el-button type="primary" @click="setPermission">确 定</el-button>
+        <el-button @click="dialog.setPermission.show = false" name="setPermissionsCancelSubmit">取 消</el-button>
+        <el-button type="primary" @click="setPermission" name="setPermissionSubmit">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -261,13 +278,14 @@
     setRole
   } from "../../../../api/employee";
   import {getNullOrValue, setTable} from "../../../../utils/common";
+
   export default {
     components: {
       Pagination
     },
     data() {
       const checkRoles = (rule, value, callback) => {
-        if (value.length === 0){
+        if (value.length === 0) {
           callback(new Error('角色不能为空'))
         }
         callback()
@@ -304,7 +322,7 @@
             },
             superiorOptions: [],
             rules: {
-              employeeId:  [
+              employeeId: [
                 {required: true, message: '员工ID不能为空', trigger: 'blur'}
               ],
               roles: [
@@ -342,7 +360,7 @@
        * 行号
        */
       indexMethod(index) {
-        return index+1
+        return index + 1
       },
 
       /**
@@ -397,7 +415,11 @@
               projectKey: this.project.id,
               ...this.dialog.addParticipant.data
             }).then(() => {
-
+              this.$message({
+                message: '添加成功',
+                type: 'success',
+                duration: 2 * 1000
+              })
             }).catch((error) => {
               console.error(error)
             }).finally(() => {
@@ -407,6 +429,11 @@
               this.getParticipants()
             })
           } else {
+            this.$message({
+              message: '请完整填写所需字段',
+              type: 'error',
+              duration: 2 * 1000
+            })
             return false
           }
         })
@@ -513,7 +540,7 @@
       autoSetPermission() {
         // 已选权限中获取追踪管理权限下标
         const bugPermissionIndex = this.dialog.addParticipant.data.permissions.indexOf('bug')
-        if(this.dialog.addParticipant.data.roles.some(
+        if (this.dialog.addParticipant.data.roles.some(
           role => (role === 'ROLE_PM' || role === 'ROLE_DEVLEADER' || role === 'ROLE_TESTLEADER'))) {
           // 如果有产品经理、开发Leader、测试Leader角色，在权限中添加缺陷追踪管理
           if (bugPermissionIndex === -1) {
