@@ -61,4 +61,14 @@ public class RiskController extends BaseController {
         return responseOK(riskService.getAllGlobalRisks());
     }
 
+    @ApiOperation("更新风险信息")
+    @PostMapping("update_risk")
+    public HttpResponse<String> updateRisk(@RequestBody Risk risk, @RequestParam String projectId) {
+        if (riskService.updateRisk(risk, projectId)) {
+            return responseOK("更新成功");
+        } else {
+            return responseFail("更新失败");
+        }
+    }
+
 }

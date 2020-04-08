@@ -174,4 +174,17 @@ public class RiskService extends BaseService {
     public List<GlobalRisk> getAllGlobalRisks() {
         return iGlobalRiskService.list();
     }
+
+    /**
+     * 更新risk
+     *
+     * @param risk
+     * @param projectId
+     * @return
+     */
+    public boolean updateRisk(Risk risk, String projectId) {
+        Integer id = projectIdToId(projectId);
+        risk.setProjectId(id);
+        return iRiskService.updateById(risk);
+    }
 }
