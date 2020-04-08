@@ -21,3 +21,21 @@ export function addRisk(projectId, risk) {
     }
   })
 }
+
+export function importRisk() {
+  return request({
+    method: 'get',
+    url: '/risk/global_risks'
+  })
+}
+
+export function updateRisk(projectId, data) {
+  return request({
+    url: '/risk/update_risk',
+    method: 'post',
+    params: {
+      'projectId': projectId
+    },
+    data: data
+  })
+}

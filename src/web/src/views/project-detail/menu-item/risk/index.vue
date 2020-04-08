@@ -28,7 +28,8 @@
       >
       </el-input>
       <el-select v-model="searchValue.status" placeholder="风险状态" name="riskStatusSearch" clearable>
-        <el-option v-for="state in riskStatus" :key="state.id" :label="state.value" :value="state.id" name="riskStatusOptionSearch">
+        <el-option v-for="state in riskStatus" :key="state.id" :label="state.value" :value="state.id"
+                   name="riskStatusOptionSearch">
         </el-option>
       </el-select>
       <el-button icon="el-icon-search" circle @click="getRisk" name="searchRiskButton">
@@ -54,7 +55,8 @@
             <el-col :span="12">
               <el-form-item label="风险状态" :label-width="formLabelWidth" prop="status">
                 <el-select v-model="newRisk.status" placeholder="风险状态" name="riskStatus">
-                  <el-option v-for="state in riskStatus" :key="state.id" :label="state.value" :value="state.id" name="newRiskStatusOption">
+                  <el-option v-for="state in riskStatus" :key="state.id" :label="state.value" :value="state.id"
+                             name="newRiskStatusOption">
                   </el-option>
                 </el-select>
               </el-form-item>
@@ -65,7 +67,8 @@
             <el-col :span="12">
               <el-form-item label="风险级别" :label-width="formLabelWidth" prop="level">
                 <el-select v-model="newRisk.level" placeholder="风险级别" name="riskLevel">
-                  <el-option v-for="level in riskLevel" :key="level.id" :label="level.value" :value="level.id" name="newRiskLevelOption">
+                  <el-option v-for="level in riskLevel" :key="level.id" :label="level.value" :value="level.id"
+                             name="newRiskLevelOption">
                   </el-option>
                 </el-select>
               </el-form-item>
@@ -87,7 +90,8 @@
             <el-col :span="12">
               <el-form-item label="风险影响度" :label-width="formLabelWidth" prop="affect">
                 <el-select v-model="newRisk.affect" placeholder="风险影响度" name="riskAffect">
-                  <el-option v-for="affect in riskAffect" :key="affect.id" :label="affect.value" :value="affect.id" name="newRiskAffectOption">
+                  <el-option v-for="affect in riskAffect" :key="affect.id" :label="affect.value" :value="affect.id"
+                             name="newRiskAffectOption">
                   </el-option>
                 </el-select>
               </el-form-item>
@@ -101,7 +105,8 @@
           </el-row>
           <el-row>
             <el-form-item label="风险相关者" :label-width="formLabelWidth">
-              <el-select v-model="newRisk.related" placeholder="风险相关者" multiple style="width: 100%" name="riskRelated" filterable>
+              <el-select v-model="newRisk.related" placeholder="风险相关者" multiple style="width: 100%" name="riskRelated"
+                         filterable>
                 <el-option v-for="employee in employees" :key="employee.id" :label="employee.name" :value="employee.id"
                            name="newRiskRelatedOption">
                   <span style="float: left">{{ employee.name }}</span>
@@ -144,16 +149,142 @@
         </div>
       </el-dialog>
 
-      <el-button type="primary" @click="dialogFormVisible_2 = true" name="openImportRiskButton" v-permission="['ROLE_PM']">
+      <el-dialog title="编辑风险" :visible.sync="editRiskDialogVisible">
+        <el-form :model="editRisk" :rules="riskRules" ref="editRisk">
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="风险类型" :label-width="formLabelWidth" prop="type">
+                <el-autocomplete
+                  class="inline-input"
+                  v-model="editRisk.type"
+                  :fetch-suggestions="querySearch"
+                  placeholder="请填写风险类型"
+                  name="editRiskType"
+                ></el-autocomplete>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="风险状态" :label-width="formLabelWidth" prop="status">
+                <el-select v-model="editRisk.status" placeholder="风险状态" name="editRiskStatus">
+                  <el-option v-for="state in riskStatus" :key="state.id" :label="state.value" :value="state.id"
+                             name="editRiskStatusOption">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="风险级别" :label-width="formLabelWidth" prop="level">
+                <el-select v-model="editRisk.level" placeholder="风险级别" name="editRiskLevel">
+                  <el-option v-for="level in riskLevel" :key="level.id" :label="level.value" :value="level.id"
+                             name="editRiskLevelOption">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="风险责任人" :label-width="formLabelWidth" prop="responsible">
+                <el-select v-model="editRisk.responsible" placeholder="风险责任人" name="editRiskResponsible" filterable>
+                  <el-option v-for="employee in employees" :key="employee.id" :label="employee.name"
+                             :value="employee.id" name="editRiskResponsibleOption">
+                    <span style="float: left">{{ employee.name }}</span>
+                    <span style="float: right; color: #8492a6; font-size: 13px">{{ employee.id }}</span>
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="风险影响度" :label-width="formLabelWidth" prop="affect">
+                <el-select v-model="editRisk.affect" placeholder="风险影响度" name="editRiskAffect">
+                  <el-option v-for="affect in riskAffect" :key="affect.id" :label="affect.value" :value="affect.id"
+                             name="editRiskAffectOption">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="风险跟踪频度(天)" :label-width="formLabelWidth" required>
+                <el-input-number v-model="editRisk.trackFreq" :min="1" :max="9999" label="天数"
+                                 name="editRiskTrackFreq"></el-input-number>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-form-item label="风险相关者" :label-width="formLabelWidth">
+              <el-select v-model="editRisk.related" placeholder="风险相关者" multiple style="width: 100%"
+                         name="editRiskRelated"
+                         filterable>
+                <el-option v-for="employee in employees" :key="employee.id" :label="employee.name" :value="employee.id"
+                           name="editRiskRelatedOption">
+                  <span style="float: left">{{ employee.name }}</span>
+                  <span style="float: right; color: #8492a6; font-size: 13px">{{ employee.id }}</span>
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-row>
+
+          <el-form-item label="风险应对" :label-width="formLabelWidth" prop="react">
+            <el-input
+              placeholder="风险应对方法"
+              v-model="editRisk.react"
+              name="editRiskReact"
+              clearable>
+            </el-input>
+          </el-form-item>
+          <el-form-item label="应对策略" :label-width="formLabelWidth" prop="strategy">
+            <el-input
+              placeholder="风险应对策略"
+              v-model="editRisk.strategy"
+              name="editRiskStrategy"
+              clearable>
+            </el-input>
+          </el-form-item>
+
+          <el-form-item label="风险描述" :label-width="formLabelWidth" prop="description">
+            <el-input
+              type="textarea"
+              :rows="4"
+              placeholder="请输入风险的描述内容"
+              name="editRiskDescription"
+              v-model="editRisk.description">
+            </el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="editRiskDialogVisible = false" name="editRiskCancelSubmitButton">取 消</el-button>
+          <el-button type="primary" @click="submitEditRisk" name="editRiskSubmitButton">确 定</el-button>
+        </div>
+      </el-dialog>
+      <el-button type="primary" @click="importRisk" name="openImportRiskButton" v-permission="['ROLE_PM']">
         导入已有风险<i class="el-icon-upload el-icon--right"></i>
       </el-button>
 
-      <el-dialog title="导入风险" :visible.sync="dialogFormVisible_2">
-        <el-form :model="form_2">
-          <el-form-item label="风险ID" :label-width="formLabelWidth">
-            <el-input v-model="form_2.riskId" autocomplete="off"></el-input>
-          </el-form-item>
-        </el-form>
+      <el-dialog title="组织标准库" :visible.sync="dialogFormVisible_2">
+        <!--        <el-form :model="form_2">-->
+        <!--          <el-form-item label="风险ID" :label-width="formLabelWidth">-->
+        <!--            <el-input v-model="form_2.riskId" autocomplete="off"></el-input>-->
+        <!--          </el-form-item>-->
+        <!--        </el-form>-->
+        <el-table :data="standardRisks">
+          <el-table-column label="风险类型" prop="type"></el-table-column>
+          <el-table-column label="风险应对" prop="react"></el-table-column>
+          <el-table-column label="风险策略" prop="strategy"></el-table-column>
+          <el-table-column label="风险描述" prop="description"></el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button
+                size="mini"
+                type="primary"
+                @click="handleImport(scope.row)">导入风险
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible_2 = false" name="cancelImportButton">取 消</el-button>
           <el-button type="primary" @click="dialogFormVisible_2 = false" name="importButton">确 定</el-button>
@@ -226,9 +357,9 @@
           <template slot-scope="scope">
             <el-button
               size="mini"
-              type="danger"
-              icon="el-icon-delete" circle
-              @click="handleDelete(scope.$index, scope.row)"></el-button>
+              v-permission="['ROLE_PM']"
+              @click="handleEdit(scope.row)" :disabled="scope.row.status=='CLOSED'" name="openEditDialogButton">编辑
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -269,8 +400,23 @@
         loading: false,
         dialogFormVisible_1: false,
         dialogFormVisible_2: false,
+        editRiskDialogVisible: false,
         form_2: {
           riskId: ''
+        },
+        editRisk: {
+          "affect": 0,
+          "description": "",
+          "id": 0,
+          "level": 0,
+          "projectId": 0,
+          "react": "",
+          "related": "",
+          "responsible": "",
+          "status": 0,
+          "strategy": "",
+          "trackFreq": 0,
+          "type": ""
         },
         formLabelWidth: '150px',
         risks: [],
@@ -279,6 +425,7 @@
         riskLevel: this.Constant.riskLevel,
         riskStatus: this.Constant.status,
         riskRules: this.Constant.riskRules,
+        standardRisks: null,
         newRisk: {
           "affect": "",
           "description": "",
@@ -312,6 +459,10 @@
           'size': this.table.limit,
           'searchCondition': this.searchValue
         }
+        if (this.searchValue.id.length !== 0 || this.searchValue.name.length !== 0 ||
+          this.searchValue.status.length !== 0 || this.searchValue.type.length !== 0) {
+          data.current = 1;
+        }
         this.$store.dispatch('risk/getRisks', data).then(response => {
           this.risks = response.records
           this.table.total = response.total
@@ -337,16 +488,16 @@
       },
       //打开新增风险对话框
       openNewRiskDialog() {
-        this.dialogFormVisible_1 = true
         if (this.employees == null) {
-          console.log('后端获取人员信息')
           getEmployeesByProjectId(this.$store.getters.projectId).then(res => {
             this.employees = res.data
+            this.dialogFormVisible_1 = true
             return this.employees
           }).catch(error => {
 
           })
         } else {
+          this.dialogFormVisible_1 = true
           return this.employees
         }
       },
@@ -376,6 +527,103 @@
             return false
           }
         })
+      },
+      importRisk() {
+        if (this.standardRisks == null) {
+          this.$store.dispatch('risk/importRisk').then(res => {
+            this.dialogFormVisible_2 = true
+            this.standardRisks = res
+          }).catch(error => {
+
+          })
+        } else {
+          this.dialogFormVisible_2 = true
+        }
+      },
+      handleImport(row) {
+        this.newRisk = row
+        this.dialogFormVisible_2 = false
+        this.openNewRiskDialog()
+      },
+      handleEdit(row) {
+        if (this.employees == null) {
+          getEmployeesByProjectId(this.$store.getters.projectId).then(res => {
+            this.employees = res.data
+            this.setEditRisk(row)
+            this.editRiskDialogVisible = true
+          }).catch(error => {
+
+          })
+        } else {
+          this.setEditRisk(row)
+          this.editRiskDialogVisible = true
+        }
+      },
+      submitEditRisk() {
+        this.$refs['editRisk'].validate((valid) => {
+          if (valid) {
+            this.$store.dispatch('risk/updateRisk',this.editRisk).then(() => {
+              this.reload()
+              this.$message({
+                type: 'success',
+                message: '更新成功',
+                duration: 2 * 1000
+              })
+            })
+          } else {
+            this.$message({
+              type: 'error',
+              message: '请完整填写所需字段',
+              duration: 2 * 1000
+            })
+          }
+        })
+      },
+      setEditRisk(row) {
+        var statusId = 0;
+        if (row.status === 'OPENED') {
+          statusId = 1;
+        } else if (row.status === 'PROCESSED') {
+          statusId = 2;
+        } else if (row.status === 'SOLVED') {
+          statusId = 3;
+        } else if (row.status === 'CLOSED') {
+          statusId = 4;
+        }
+        var affect = 0
+        if (row.affect === '较大影响') {
+          affect = 1;
+        } else if (row.affect === '中等影响') {
+          affect = 2;
+        } else if (row.affect === '较小影响') {
+          affect = 3;
+        } else if (row.affect === '可忽略影响') {
+          affect = 4;
+        }
+        var riskLevel = 0
+        if (row.level === "中") {
+          riskLevel = 1
+        } else if (row.level === "低") {
+          riskLevel = 2
+        }
+        this.editRisk.id = row.id
+        this.editRisk.description = row.description
+        this.editRisk.level = riskLevel.toString()
+        this.editRisk.react = row.react
+        this.editRisk.strategy = row.strategy
+        this.editRisk.trackFreq = row.trackFreq
+        this.editRisk.type = row.type
+        this.editRisk.affect = affect.toString()
+        this.editRisk.status = statusId
+        this.editRisk.responsible = row.responsible.id
+        var relatedId = []
+        row.related.forEach((item) => {
+          relatedId.push(item.id)
+        })
+        this.editRisk.related = relatedId
+
+        this.editRisk.status = statusId.toString()
+
       }
     },
     mounted() {

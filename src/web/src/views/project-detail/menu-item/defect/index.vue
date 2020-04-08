@@ -47,7 +47,7 @@
           <i class="el-icon-search"></i>
           <span>搜索</span>
         </el-button>
-        <el-button type="primary" @click="openNewBugDialog" name="bugOpenAddBugDialogButton">
+        <el-button type="primary" @click="openNewBugDialog" name="bugOpenAddBugDialogButton" v-permission="['ROLE_PM']">
           <i class="el-icon-plus"></i>
           <span>添加缺陷</span>
         </el-button>
@@ -160,7 +160,7 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="缺陷状态" :label-width="formLabelWidth">
-                <el-select v-model="editBug.status" placeholder="请选择缺陷状态" :disabled="editBug.status==4" name="editBugStatus">
+                <el-select v-model="editBug.status" placeholder="请选择缺陷状态" name="editBugStatus">
                   <el-option v-for="item in statusOptions" :key="item.id" :label="item.value" name="editBugStatusOption"
                              :value="item.id"></el-option>
                 </el-select>
@@ -265,18 +265,19 @@
             <span style="margin-left: 10px">{{ dateFormat(scope.row.startTime) }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column align="right">
           <template slot-scope="scope">
             <el-button
+              v-permission="['ROLE_PM']"
               size="mini"
               @click="handleEdit(scope.$index, scope.row)" :disabled="scope.row.status=='CLOSED'" name="openEditDialogButton">编辑
             </el-button>
-            <el-button
-              size="mini"
-              type="danger"
-              name="bugDeleteButton"
-              @click="handleDelete(scope.$index, scope.row)">删除
-            </el-button>
+<!--            <el-button-->
+<!--              size="mini"-->
+<!--              type="danger"-->
+<!--              name="bugDeleteButton"-->
+<!--              @click="handleDelete(scope.$index, scope.row)">删除-->
+<!--            </el-button>-->
           </template>
         </el-table-column>
       </el-table>
@@ -373,6 +374,10 @@
           current: this.bugs.current,
           size: this.bugs.size,
           searchCondition: this.searchValue
+        }
+        if (this.searchValue.id.length !== 0 || this.searchValue.status.length !== 0 ||
+          this.searchValue.bugTitle.length !== 0 || this.searchValue.bugIntroducer.length !== 0) {
+          data.current = 1;
         }
         getBugs(this.$store.getters.projectId, data).then(response => {
           this.bugs = response.data
