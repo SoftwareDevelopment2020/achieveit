@@ -1,6 +1,7 @@
 package com.softwaredevelopment.achieveit.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.softwaredevelopment.achieveit.PO.entity.GlobalRisk;
 import com.softwaredevelopment.achieveit.PO.entity.Risk;
 import com.softwaredevelopment.achieveit.entity.RiskVO;
 import com.softwaredevelopment.achieveit.entity.request.PageSearchRequest;
@@ -53,4 +54,11 @@ public class RiskController extends BaseController {
     public void sendRiskMail() {
         riskService.sendRiskMail();
     }
+
+    @ApiOperation("所有组织标准库中风险")
+    @GetMapping("global_risks")
+    public HttpResponse<List<GlobalRisk>> allGlobalRisks() {
+        return responseOK(riskService.getAllGlobalRisks());
+    }
+
 }

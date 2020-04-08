@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.softwaredevelopment.achieveit.PO.entity.EmployeeBasics;
+import com.softwaredevelopment.achieveit.PO.entity.GlobalRisk;
 import com.softwaredevelopment.achieveit.PO.entity.Risk;
 import com.softwaredevelopment.achieveit.controller.BussinessException;
 import com.softwaredevelopment.achieveit.entity.BugStatus;
@@ -11,6 +12,8 @@ import com.softwaredevelopment.achieveit.entity.MailBean;
 import com.softwaredevelopment.achieveit.entity.RiskVO;
 import com.softwaredevelopment.achieveit.entity.request.PageSearchRequest;
 import com.softwaredevelopment.achieveit.utils.StringHelper;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -23,6 +26,7 @@ import static com.softwaredevelopment.achieveit.entity.BugStatus.statusToString;
  * @date 2020/3/30 15:06
  */
 @Service
+@CacheConfig(cacheNames = "risk")
 public class RiskService extends BaseService {
 
     /**
@@ -164,5 +168,10 @@ public class RiskService extends BaseService {
         }
         riskVOPage.setRecords(records);
         return riskVOPage;
+    }
+
+    @Cacheable(key = "#root.methodName")
+    public List<GlobalRisk> getAllGlobalRisks() {
+        return iGlobalRiskService.list();
     }
 }

@@ -63,6 +63,8 @@ public class BaseService {
     IPermissionBasicsService iPermissionBasicsService;
     @Autowired
     IActivityService iActivityService;
+    @Autowired
+    IGlobalRiskService iGlobalRiskService;
 
     @Autowired
     RedisUtils redisUtils;

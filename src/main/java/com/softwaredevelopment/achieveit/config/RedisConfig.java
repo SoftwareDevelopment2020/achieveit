@@ -67,6 +67,7 @@ public class RedisConfig {
         Map<String, RedisCacheConfiguration> redisCacheConfigurationMap = new HashMap<>();
         //SsoCache和BasicDataCache进行过期时间配置
         redisCacheConfigurationMap.put("userDetail", this.getRedisCacheConfigurationWithTtl(600));//自定义设置缓存时间
+        redisCacheConfigurationMap.put("risk", this.getRedisCacheConfigurationWithTtl(600));//自定义设置缓存时间
 
         return redisCacheConfigurationMap;
     }
