@@ -119,7 +119,6 @@
           </el-table-column>
           <el-table-column
             fixed="right"
-            label="操作"
             align="center"
           >
             <template slot-scope="{row}">
@@ -569,7 +568,3 @@
     }
   }
 </script>
-
-<style scoped>
-
-</style>
