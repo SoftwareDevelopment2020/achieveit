@@ -29,7 +29,7 @@ public class GlobalRisk implements Serializable {
     private String type;
 
     @ApiModelProperty(value = "风险描述")
-    private String decription;
+    private String description;
 
     @ApiModelProperty(value = "风险应对")
     private String react;
