@@ -106,6 +106,11 @@ public class EmployeeService extends BaseService {
         // 获取项目员工ID
         List<ProjectEmployee> projectEmployees = iProjectEmployeeService.list(qw);
 
+        // 如果项目中没有人 直接返回空列表 不继续查了
+        if (projectEmployees.size() == 0) {
+            return new ArrayList<>();
+        }
+
         // 需要填写工时信息的角色
         List<RoleBasics> roleBasics = iRoleBasicsService.list(
                 new QueryWrapper<RoleBasics>().in("name",
