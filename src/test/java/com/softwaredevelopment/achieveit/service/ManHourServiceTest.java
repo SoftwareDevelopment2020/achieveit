@@ -1,12 +1,9 @@
 package com.softwaredevelopment.achieveit.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.softwaredevelopment.achieveit.PO.entity.EmployeeBasics;
 import com.softwaredevelopment.achieveit.PO.entity.ManHour;
-import com.softwaredevelopment.achieveit.PO.entity.ProjectEmployee;
-import com.softwaredevelopment.achieveit.PO.entity.User;
 import com.softwaredevelopment.achieveit.controller.BussinessException;
 import com.softwaredevelopment.achieveit.entity.request.PageSearchRequest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,6 +22,11 @@ class ManHourServiceTest {
     ManHourService service;
     @Autowired
     AuthService authService;
+
+    @BeforeEach
+    void setUp() {
+        authService.login("zhangsan", "123456");
+    }
 
     ManHour mockManHour() {
         ManHour manHour = new ManHour();

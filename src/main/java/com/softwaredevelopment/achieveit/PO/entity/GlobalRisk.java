@@ -1,5 +1,7 @@
 package com.softwaredevelopment.achieveit.PO.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -24,6 +26,7 @@ public class GlobalRisk implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @ApiModelProperty("id")
+    @TableId(type = IdType.AUTO)
     private Integer id;
     @ApiModelProperty(value = "风险类型")
     private String type;

@@ -103,7 +103,7 @@ public class ProjectService extends BaseService {
         // 如果没有Global的role 就找project_employee里面的 我参加的项目
         if (!global) {
             List<ProjectEmployee> projectForMe = iProjectEmployeeService.list(
-                    new QueryWrapper<ProjectEmployee>().lambda().eq(ProjectEmployee::getId, userDetail.getEmployeeId()));
+                    new QueryWrapper<ProjectEmployee>().lambda().eq(ProjectEmployee::getEmployeeId, userDetail.getEmployeeId()));
             List<Integer> projectForMeId = new ArrayList<>();
             for (ProjectEmployee pe : projectForMe) {
                 projectForMeId.add(pe.getProjectId());
