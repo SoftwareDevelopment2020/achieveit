@@ -71,8 +71,8 @@ public class ProjectController extends BaseController {
 
     @ApiOperation("审批或否决项目")
     @PostMapping("examine_project")
-    public HttpResponse<String> examineProject(@RequestParam(name = "project_id") String projectId,
-                                               @RequestParam(name = "approved") Boolean approved) throws Exception {
+    public HttpResponse<ProjectBasics> examineProject(@RequestParam(name = "project_id") String projectId,
+                                                      @RequestParam(name = "approved") Boolean approved) throws Exception {
         return responseOK(projectService.examineProject(projectId, approved));
     }
 

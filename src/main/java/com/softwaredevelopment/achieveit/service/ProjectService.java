@@ -340,7 +340,7 @@ public class ProjectService extends BaseService {
      * @return
      * @throws BussinessException
      */
-    public String examineProject(String projectId, Boolean approved) throws Exception {
+    public ProjectBasics examineProject(String projectId, Boolean approved) throws Exception {
         ProjectBasics pb = getProjectBasicsByProjectId(projectId);
         // 如果pb为空
         if (pb == null) {
@@ -390,7 +390,7 @@ public class ProjectService extends BaseService {
         } catch (Exception e) {
             throw new BussinessException(e.getMessage(), e.getCause(), "审核失败");
         }
-        return approved ? "通过成功" : "驳回成功";
+        return pb;
     }
 
     /**
