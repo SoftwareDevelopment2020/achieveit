@@ -51,3 +51,26 @@ export function updateProject(projectBasics) {
 export function addProject(data) {
   return post('/new_project', data)
 }
+
+//审批或否决项目
+export function examineProject(projectId, approved) {
+  return request({
+    method: 'post',
+    url: '/project/examine_project',
+    params: {
+      'approved': approved,
+      'project_id': projectId
+    }
+  })
+}
+
+//分配EPG,QA,建立配置库
+export function allot(projectId) {
+  return request({
+    url: '/project/init_project',
+    method: 'post',
+    params: {
+      'project_id': projectId
+    }
+  })
+}

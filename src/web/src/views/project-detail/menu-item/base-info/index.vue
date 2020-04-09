@@ -58,8 +58,8 @@
           <div align="center">
             <!-- 审核中 -->
             <div v-permission="['ROLE_SUPERIOR']" v-if="form.statusId === 1">
-              <el-button type="primary">通过审核</el-button>
-              <el-button type="primary">拒绝立项</el-button>
+              <el-button type="primary" @click="examineProject(true)">通过审核</el-button>
+              <el-button type="primary" @click="examineProject(false)">拒绝立项</el-button>
             </div>
             <!-- 进行中 -->
             <div v-if="getStatusId(form.statusId) === 3">
@@ -69,15 +69,15 @@
               <div v-else>
                 <span v-permission="['ROLE_GLOBAL_CONFIG']"
                       v-if="getStatusId(form.statusId) === 3 && form.statusId.toString().charAt(1) === '0'">
-                  <el-button type="primary">建立配置库</el-button>
+                  <el-button type="primary" @click="allot">建立配置库</el-button>
                 </span>
                 <span v-permission="['ROLE_GLOBAL_EPGLEADER']"
                       v-if="getStatusId(form.statusId) === 3 && form.statusId.toString().charAt(2) === '0'">
-                  <el-button type="primary">分配EPG</el-button>
+                  <el-button type="primary" @click="allot">分配EPG</el-button>
                 </span>
                 <span v-permission="['ROLE_GLOBAL_QAM']"
                       v-if="getStatusId(form.statusId) === 3 && form.statusId.toString().charAt(3) === '0'">
-                  <el-button type="primary">分配QA</el-button>
+                  <el-button type="primary" @click="allot">分配QA</el-button>
                 </span>
               </div>
             </div>
@@ -142,6 +142,26 @@
             return false
           }
 
+        })
+      },
+      examineProject(approved) {
+        this.$store.dispatch('project/examineProject', approved).then(() => {
+          this.$message({
+            type: 'success',
+            message: '成功',
+            duration: 2 * 1000
+          })
+          this.reload()
+        })
+      },
+      allot() {
+        this.$store.dispatch('project/allot').then(() => {
+          this.$message({
+            type: 'success',
+            message: '成功',
+            duration: 2 * 1000
+          })
+          this.reload()
         })
       }
     }

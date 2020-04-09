@@ -1,4 +1,4 @@
-import {updateProject, getProjects} from "@/api/project";
+import {updateProject, getProjects, examineProject, allot} from "@/api/project";
 import {Message} from 'element-ui'
 import {getProjectById} from "../../api/project";
 import store from "../index";
@@ -61,6 +61,8 @@ const actions = {
         }
         // 设定角色信息
         const {userDetail, roles} = project
+        console.log('getCurrentProject')
+        console.log(project)
         await store.dispatch('user/setInfo', {userDetail, roles}, {root: true})
 
         resolve(project)
@@ -75,7 +77,30 @@ const actions = {
     commit('SET_PROJECT', null)
     console.log('clear')
   },
-
+  examineProject({dispatch}, approved) {
+    return new Promise((resolve, reject) => {
+      examineProject(store.getters.projectId, approved).then(response => {
+        dispatch('setProject', response.data).then(() => {
+          console.log('更新项目信息成功')
+          resolve()
+        })
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+  allot({dispatch}) {
+    return new Promise((resolve, reject) => {
+      allot(store.getters.projectId).then(response => {
+        dispatch('setProject', response.data).then(() => {
+          console.log('更新项目信息成功')
+          resolve()
+        })
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  }
 }
 
 export default {

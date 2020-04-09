@@ -8,6 +8,7 @@
         v-model="searchValue.employeeId"
         placeholder="选择员工"
         style="width: 15%;min-width: 200px"
+        name="employeeIdSearch"
         clearable
       >
         <el-option
@@ -15,12 +16,13 @@
           :key="item.id"
           :label="item.name + '（' + item.employeeId + '）'"
           :value="item.id"
+          name="employeeIdSearchOption"
         >
         </el-option>
       </el-select>
       <el-date-picker
         v-model="searchValue.startTime"
-        name="date"
+        name="dateSearch"
         type="date"
         format="yyyy-MM-dd"
         placeholder="日期"
@@ -32,6 +34,7 @@
         v-model="searchValue.auditingStatus"
         placeholder="审核状态"
         style="width: 15%;min-width: 120px"
+        name="auditingStatusSearch"
         clearable
       >
         <el-option
@@ -39,15 +42,16 @@
           :key="index"
           :label="item"
           :value="index"
+          name="auditingStatusSearchOption"
           :disabled="type === 2 && index === 3"
         >
         </el-option>
       </el-select>
-      <el-button type="primary" style="margin-left: 10px" @click="search" @keyup.enter="search">
+      <el-button type="primary" style="margin-left: 10px" @click="search" @keyup.enter="search" name="workHourSearchButton">
         <i class="el-icon-search"></i>
         <span>搜索</span>
       </el-button>
-      <el-button  v-if="type===1" type="primary" @click="openAddWorkHourDialog" >
+      <el-button  v-if="type===1" type="primary" @click="openAddWorkHourDialog" name="openAddWorkHourDialogButton">
         <i class="el-icon-plus"></i>
         <span>添加工时信息</span>
       </el-button>
@@ -195,7 +199,7 @@
         <el-form-item label="功能名称"  prop="feature">
             <el-cascader
               v-model="addWorkHourDialog.data.feature"
-              name="addWorkHourActivity"
+              name="addWorkHourFunction"
               :options="options.featureOptions"
               :props="{
                 expandTrigger: 'hover',
@@ -222,7 +226,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="addWorkHourDialog.show = false">取 消</el-button>
-        <el-button type="primary" @click="addOrUpdateWorkHour">确 定</el-button>
+        <el-button type="primary" @click="addOrUpdateWorkHour" name="addWorkHourSubmitButton">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -421,6 +425,8 @@
                 this.updateWorkHour(this.addWorkHourDialog.data)
                 break;
             }
+          }else {
+            this.$message.error("请完整填写所需字段")
           }
         })
       },

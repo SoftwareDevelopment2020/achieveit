@@ -9,6 +9,7 @@
       label-width="90px"
       label-position="left"
       :hide-required-asterisk="true"
+      v-loading="loading"
     >
       <el-form
         :model="project"
@@ -18,7 +19,7 @@
         :hide-required-asterisk="true"
       >
         <el-form-item label="客户ID" prop="clientId" label-width="90px">
-          <el-input v-model="project.clientId"></el-input>
+          <el-input v-model="project.clientId" name="newProjectClientId"></el-input>
         </el-form-item>
         <el-form-item label="研发类型" prop="projectId" style="margin-left: 20px;">
           <el-select v-model="project.projectId">
@@ -32,7 +33,7 @@
         </el-form-item>
       </el-form>
       <el-form-item label="项目名称" prop="name">
-        <el-input v-model="project.name"></el-input>
+        <el-input v-model="project.name" name="newProjectName"></el-input>
       </el-form-item>
       <el-form  :inline="true">
         <el-form-item label="预定时间" prop="scheduledDate" label-width="90px">
@@ -41,6 +42,7 @@
             value-format="yyyy-MM-dd"
             type="date"
             :clearable="false"
+            name="newProjectScheduledDate"
             :picker-options="{
             disabledDate (time) {
               return time.getTime() < today;
@@ -49,22 +51,29 @@
           >
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="交付日" prop="scheduledDate" style="margin-left: 20px;">
+        <el-form-item label="交付日" prop="deliveryDate" style="margin-left: 20px;">
           <el-date-picker
             v-model="project.deliveryDate"
             value-format="yyyy-MM-dd"
             type="date"
+            name="newProjectDeliveryDate"
             :clearable="false"
             :picker-options="{
             disabledDate (time) {
-              return time.getTime() < project.scheduledDate;
+              return time.getTime() < new Date(project.scheduledDate);
              }
           }">
           </el-date-picker>
         </el-form-item>
       </el-form>
       <el-form-item label="项目上级" prop="superior">
-        <el-input v-model="project.superior"></el-input>
+        <el-select v-model="project.superior" name="newProjectSuperior" filterable>
+          <el-option v-for="superior in superiorOptions" :key="superior.id" :value="superior.id"
+                     :label="superior.name" name="NewProjectSuperiorOption">
+            <span style="float: left">{{superior.name}}</span>
+            <span style="float: right; color: #8492a6; font-size: 13px">{{superior.id}}</span>
+          </el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="主要里程碑" prop="majorMilestone">
         <el-input
@@ -73,6 +82,7 @@
           resize="none"
           :rows="5"
           maxlength="500"
+          name="newProjectMajorMilestone"
           show-word-limit
         >
         </el-input>
@@ -83,6 +93,7 @@
           type="textarea"
           resize="none"
           :rows="5"
+          name="newProjectMainTechnique"
           maxlength="500"
           show-word-limit
         >
@@ -95,6 +106,7 @@
           resize="none"
           :rows="5"
           maxlength="500"
+          name="newProjectBusinessField"
           show-word-limit
         >
         </el-input>
@@ -106,6 +118,7 @@
           resize="none"
           :rows="8"
           maxlength="1000"
+          name="newProjectMainFunction"
           show-word-limit
         >
         </el-input>
@@ -113,7 +126,7 @@
     </el-form>
     <div align="center">
       <el-button type="primary" @click="resetForm">重置</el-button>
-      <el-button type="primary" @click="addProject">添加</el-button>
+      <el-button type="primary" @click="addProject" name="newProjectSubmitButton">添加</el-button>
     </div>
   </div>
 
@@ -122,6 +135,7 @@
 <script>
   import {addProject} from "../../../api/project";
   import {dateToString} from "../../../utils/date";
+  import {getAllSuperiors} from "../../../api/employee";
 
   export default {
     data () {
@@ -136,19 +150,33 @@
           majorMilestone: '',
           mainTechnique: '',
           businessField: '',
-          mainFunction: ''
+          mainFunction: '',
         },
         addProjectRules: this.Constant.projectRules,
         projectTypeOptions: this.Constant.projectType,
         today: null,
+        superiorOptions: [],
+        loading:false
       }
     },
     mounted () {
+      this.loading=true
       let today = new Date()
       today.setHours(0,0,0,0)
       this.today = today.getTime()
       this.project.scheduledDate = dateToString(today)
       this.project.deliveryDate = dateToString(today)
+      const data = {
+        current: -1,
+        size: 0,
+        searchCondition: 'ROLE_SUPERIOR'
+      }
+      getAllSuperiors(data).then(response => {
+        this.superiorOptions = response.data.records
+      }).finally(() => {
+        this.loading=false
+      })
+
     },
     methods: {
       goBack () {
@@ -161,6 +189,7 @@
         this.$refs.projectInline.validate(valid1 => {
           this.$refs.project.validate(valid2 => {
             if (!valid1 || !valid2) {
+              this.$message.error('请完整填写所需字段')
               return false
             }
 
