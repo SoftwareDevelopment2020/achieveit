@@ -97,13 +97,13 @@ class ProjectServiceTest {
     @Test
     void examineProject() throws Exception {
         authService.login("wangwu", "123456");
-        service.examineProject("23456789012", true);
+        System.out.println(service.examineProject("23456789012", true));
     }
 
     @Test
     void initProject() throws Exception {
         authService.login("epg_leader", "123456");
-        service.initProject("12310239109");
+        System.out.println(service.initProject("12310239109"));
     }
 
     @Test

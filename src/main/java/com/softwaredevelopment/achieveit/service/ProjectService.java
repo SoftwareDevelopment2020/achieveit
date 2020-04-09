@@ -400,7 +400,7 @@ public class ProjectService extends BaseService {
      * @param role
      * @return
      */
-    public String initProject(String projectId) throws Exception {
+    public ProjectBasics initProject(String projectId) throws Exception {
         int role;
         List<RoleBasics> roles = currentUserDetail().getRoles();
         RoleBasics roleBasics = roles.get(0);
@@ -482,7 +482,7 @@ public class ProjectService extends BaseService {
             // 去锁
             redisUtils.delete(key);
         }
-        return "确认完毕";
+        return pb;
 
 
     }

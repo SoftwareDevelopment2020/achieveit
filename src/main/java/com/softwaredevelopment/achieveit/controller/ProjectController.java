@@ -78,7 +78,7 @@ public class ProjectController extends BaseController {
 
     @ApiOperation("三个Global级的配置之后各自通过")
     @PostMapping("init_project")
-    public HttpResponse<String> initProject(@RequestParam(name = "project_id") String projectId) throws Exception {
+    public HttpResponse<ProjectBasics> initProject(@RequestParam(name = "project_id") String projectId) throws Exception {
         return responseOK(projectService.initProject(projectId));
     }
 }
