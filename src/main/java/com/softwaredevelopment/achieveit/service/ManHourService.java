@@ -1,6 +1,5 @@
 package com.softwaredevelopment.achieveit.service;
 
-import com.alibaba.druid.util.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -61,7 +60,7 @@ public class ManHourService extends BaseService {
                         // 没有下属，直接返回
                         return page;
                     }
-                    queryWrapper.in("employee_id", employeeBasics.stream().map(ProjectEmployee::getId).collect(Collectors.toList()));
+                    queryWrapper.in("employee_id", employeeBasics.stream().map(ProjectEmployee::getEmployeeId).collect(Collectors.toList()));
                 }
                 // 无法看到下属已撤回的信息
                 queryWrapper.ne("auditing_status", 3);
