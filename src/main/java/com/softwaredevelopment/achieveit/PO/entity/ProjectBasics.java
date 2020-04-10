@@ -14,6 +14,7 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -86,56 +87,56 @@ public class ProjectBasics implements Serializable {
     @ApiModelProperty(value = "项目是否归档 暂时废弃")
     private Boolean isArchived;
 
-    @ApiModelProperty(value = "项目基础数据表是否提交")
-    private Boolean projectBasicDatasheet;
+    @ApiModelProperty(value = "项目基础数据表")
+    private LocalDateTime projectBasicDatasheet;
 
-    @ApiModelProperty(value = "项目提案书是否提交")
-    private Boolean projectProposal;
+    @ApiModelProperty(value = "项目提案书")
+    private LocalDateTime projectProposal;
 
-    @ApiModelProperty(value = "项目报价书是否提交")
-    private Boolean projectQuotation;
+    @ApiModelProperty(value = "项目报价书")
+    private LocalDateTime projectQuotation;
 
     @ApiModelProperty(value = "项目估算表")
-    private Boolean projectEstimates;
+    private LocalDateTime projectEstimates;
 
     @ApiModelProperty(value = "项目计划书")
-    private Boolean projectPlan;
+    private LocalDateTime projectPlan;
 
     @ApiModelProperty(value = "项目过程裁剪表")
-    private Boolean projectProcessCropTable;
+    private LocalDateTime projectProcessCropTable;
 
     @ApiModelProperty(value = "项目成本管理表")
-    private Boolean projectCostManagementTable;
+    private LocalDateTime projectCostManagementTable;
 
     @ApiModelProperty(value = "项目需求变更管理表")
-    private Boolean projectRequirementsChangeManagementTable;
+    private LocalDateTime projectRequirementsChangeManagementTable;
 
     @ApiModelProperty(value = "项目风险管理表")
-    private Boolean projectRiskManagementTable;
+    private LocalDateTime projectRiskManagementTable;
 
     @ApiModelProperty(value = "客户验收问题表")
-    private Boolean clientCheckProblemsTable;
+    private LocalDateTime clientCheckProblemsTable;
 
     @ApiModelProperty(value = "客户验收报告")
-    private Boolean clientCheckReport;
+    private LocalDateTime clientCheckReport;
 
     @ApiModelProperty(value = "项目总结")
-    private Boolean projectSummary;
+    private LocalDateTime projectSummary;
 
     @ApiModelProperty(value = "最佳经验和教训")
-    private Boolean experienceAndLessons;
+    private LocalDateTime experienceAndLessons;
 
     @ApiModelProperty(value = "开发工具")
-    private Boolean developmentTools;
+    private LocalDateTime developmentTools;
 
     @ApiModelProperty(value = "开发模板")
-    private Boolean developmentTemplates;
+    private LocalDateTime developmentTemplates;
 
     @ApiModelProperty(value = "各阶段检查单")
-    private Boolean checkSheets;
+    private LocalDateTime checkSheets;
 
     @ApiModelProperty(value = "QA总结")
-    private Boolean qaSummary;
+    private LocalDateTime qaSummary;
 
     @ApiModelProperty(value = "角色")
     @TableField(exist = false)
