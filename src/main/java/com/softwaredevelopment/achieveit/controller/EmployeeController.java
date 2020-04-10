@@ -33,6 +33,7 @@ public class EmployeeController extends BaseController {
     @Autowired
     ProjectEmployeeService projectEmployeeService;
 
+    @ApiOperation("返回项目中还在的成员 不包括这个项目的上级")
     @GetMapping("employees_by_project_id")
     public HttpResponse<List<EmployeeBasics>> getEmployeesByProjectId(String projectId) throws BussinessException {
         return responseOK(employeeService.getEmployeesByProjectId(projectId));

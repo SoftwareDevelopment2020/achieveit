@@ -5,10 +5,14 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.softwaredevelopment.achieveit.PO.entity.*;
 import com.softwaredevelopment.achieveit.controller.BussinessException;
+import com.softwaredevelopment.achieveit.entity.ProjectEmployeeVO;
 import com.softwaredevelopment.achieveit.entity.request.PageSearchRequest;
+import com.softwaredevelopment.achieveit.entity.request.ProjectEmployeeRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -20,6 +24,10 @@ import java.util.stream.Collectors;
  */
 @Service
 public class EmployeeService extends BaseService {
+
+    @Autowired
+    ProjectEmployeeService projectEmployeeService;
+
 //    public List<EmployeeBasics> getEmployeesByProjectId(String projectId) throws BussinessException {
 //        Integer id = projectIdToId(projectId);
 //        if (id == null) {
@@ -42,16 +50,30 @@ public class EmployeeService extends BaseService {
         if (id == null) {
             throw new BussinessException("查找失败", new Exception(), "没有这个项目");
         }
-        // 先从project_employee中查找这个项目的employee_id
-        List<ProjectEmployee> projectEmployees = iProjectEmployeeService.list(
-                new QueryWrapper<ProjectEmployee>().lambda().eq(ProjectEmployee::getProjectId, id));
-        List<Integer> employeeIds = new ArrayList<>();
-        for (ProjectEmployee pe :
-                projectEmployees) {
-            employeeIds.add(pe.getEmployeeId());
-        }
-        // 再从EmployeeBasics中查找这些员工
-        return iEmployeeBasicsService.list(new QueryWrapper<EmployeeBasics>().lambda().in(EmployeeBasics::getId, employeeIds));
+//        // 先从project_employee中查找这个项目的employee_id
+//        List<ProjectEmployee> projectEmployees = iProjectEmployeeService.list(
+//                new QueryWrapper<ProjectEmployee>().lambda().eq(ProjectEmployee::getProjectId, id));
+//        List<Integer> employeeIds = new ArrayList<>();
+//        for (ProjectEmployee pe :
+//                projectEmployees) {
+//            employeeIds.add(pe.getEmployeeId());
+//        }
+//        // 再从EmployeeBasics中查找这些员工
+//        return iEmployeeBasicsService.list(new QueryWrapper<EmployeeBasics>().lambda().in(EmployeeBasics::getId, employeeIds));
+
+        // 改为调用另一个方法
+        ProjectEmployeeRequest projectEmployeeRequest = new ProjectEmployeeRequest();
+        // 只有projectId条件
+        projectEmployeeRequest.setProjectId(id);
+
+        PageSearchRequest<ProjectEmployeeRequest> request = new PageSearchRequest<>();
+        request.setSearchCondition(projectEmployeeRequest);
+        List<ProjectEmployeeVO> vos = projectEmployeeService.getProjectEmployeeVO(request).getRecords();
+        return
+                vos.stream().filter(
+                        // 没设置退出时间或者退出时间在现在之后
+                        s -> s.getExitTime() == null || s.getExitTime().isAfter(LocalDate.now())
+                ).map(ProjectEmployeeVO::getEmployeeBasics).collect(Collectors.toList());
     }
 
     public IPage<EmployeeBasics> searchEmployeeByGlobalRoles(PageSearchRequest<String> request) throws BussinessException {
