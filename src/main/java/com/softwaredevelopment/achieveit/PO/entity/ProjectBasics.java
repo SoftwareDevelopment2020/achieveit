@@ -146,6 +146,32 @@ public class ProjectBasics implements Serializable {
     @TableField(exist = false)
     private UserDetail userDetail;
 
+    /**
+     * 是否全部提交归档了
+     *
+     * @return
+     */
+    public boolean AllArchived() {
+        return projectBasicDatasheet != null &&
+                projectProposal != null &&
+                projectQuotation != null &&
+                projectEstimates != null &&
+                projectPlan != null &&
+                projectProcessCropTable != null &&
+                projectCostManagementTable != null &&
+                projectRequirementsChangeManagementTable != null &&
+                projectRiskManagementTable != null &&
+                clientCheckProblemsTable != null &&
+                clientCheckReport != null &&
+                projectSummary != null &&
+                experienceAndLessons != null &&
+                developmentTools != null &&
+                developmentTemplates != null &&
+                checkSheets != null &&
+                qaSummary != null;
+    }
+
+
     @Override
     public String toString() {
         return "ProjectBasics{" + "\n" +

@@ -215,6 +215,14 @@ public class ProjectService extends BaseService {
                 new QueryWrapper<ProjectBasics>().lambda().eq(ProjectBasics::getProjectId, projectId));
         if (byProjectId != null) {
             projectBasics.setId(byProjectId.getId());
+            // 如果所有归档都提交了
+            if (projectBasics.AllArchived()) {
+                // 设置状态为已归档
+                projectBasics.setStatusId(0);
+                // 这个属性已经废弃了 不过安全起见设置一下
+                projectBasics.setIsArchived(true);
+            }
+
             return iProjectBasicsService.updateById(projectBasics);
         } else {
             return false;
