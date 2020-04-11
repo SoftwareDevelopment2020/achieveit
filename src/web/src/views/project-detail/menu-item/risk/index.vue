@@ -280,6 +280,7 @@
               <el-button
                 size="mini"
                 type="primary"
+                name="importRiskButton"
                 @click="handleImport(scope.row)">导入风险
               </el-button>
             </template>
@@ -287,7 +288,6 @@
         </el-table>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible_2 = false" name="cancelImportButton">取 消</el-button>
-          <el-button type="primary" @click="dialogFormVisible_2 = false" name="importButton">确 定</el-button>
         </div>
       </el-dialog>
     </div>

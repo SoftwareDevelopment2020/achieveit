@@ -31,7 +31,7 @@
                 align="center"
               >
                 <template slot-scope="{row}">
-                  <el-button v-permission="['ROLE_GLOBAL_FILE']" type="text" size="mini" @click="updateFile(row)">提交</el-button>
+                  <el-button v-permission="['ROLE_GLOBAL_FILE']" type="text" name="updateFileButton" size="mini" @click="updateFile(row)">提交</el-button>
                 </template>
               </el-table-column>
             </el-table>
