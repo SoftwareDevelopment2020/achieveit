@@ -117,6 +117,7 @@ public class ManHourService extends BaseService {
                         .eq("project_id", manHour.getProjectId())
                         .eq("employee_id", manHour.getEmployeeId())
                         .eq("DATE_FORMAT(start_time, '%Y%m%d')", manHour.getStartTime().format(DateTimeFormatter.ofPattern("yyyyMMdd")))
+                        .in("auditing_status", 0, 1)
                         .orderByAsc("start_time")
         );
         if (!checkManHourTime(manHours, manHour)) {
@@ -143,6 +144,7 @@ public class ManHourService extends BaseService {
                                 .eq("project_id", original.getProjectId())
                                 .eq("employee_id", original.getEmployeeId())
                                 .eq("DATE_FORMAT(start_time, '%Y%m%d')", manHour.getStartTime().format(DateTimeFormatter.ofPattern("yyyyMMdd")))
+                                .in("auditing_status", 0, 1)
                                 .orderByAsc("start_time")
                 );
                 if (!checkManHourTime(existManHours, manHour)) {
@@ -158,6 +160,10 @@ public class ManHourService extends BaseService {
      * 判断区间
      */
     private boolean checkManHourTime(List<ManHour> existManHour, ManHour checkManHour) {
+        if (checkManHour.getStartTime().isEqual(checkManHour.getEndTime())) {
+            return false;
+        }
+
         if (CollectionUtils.isEmpty(existManHour)) {
             return true;
         }
@@ -173,6 +179,10 @@ public class ManHourService extends BaseService {
             }
             // 左区间是上一项的end_time
             left = manHour.getEndTime();
+        }
+        // 最后一个区间，left<=start_time即可
+        if (!checkManHour.getStartTime().isBefore(left)) {
+            return true;
         }
 
         return false;
@@ -208,27 +218,5 @@ public class ManHourService extends BaseService {
             }
         }
         return new ArrayList<>(map.values());
-    }
-
-    public Boolean auditManHour(ManHour manHour) {
-        try {
-            Integer employeeId = manHour.getEmployeeId();
-            Integer projectId = manHour.getProjectId();
-            ProjectEmployee projectEmployee = iProjectEmployeeService.getOne(new QueryWrapper<ProjectEmployee>()
-                    .lambda().eq(ProjectEmployee::getProjectId, projectId).eq(ProjectEmployee::getEmployeeId, employeeId));
-            // 如果项目中上级是我的话
-            if (currentUserDetail().getEmployeeId().equals(projectEmployee.getEmployeeId())) {
-                // 设置为审批成功
-                manHour.setAuditingStatus(1);
-                // 保存
-                iManHourService.updateById(manHour);
-                return true;
-            }
-            return false;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
     }
 }
