@@ -125,6 +125,8 @@ public class EmployeeService extends BaseService {
         if (isSubordinate) {
             qw.eq("superior_id", currentUserDetail().getEmployeeId());
         }
+        // 未退出
+        qw.isNull("exit_time");
         // 获取项目员工ID
         List<ProjectEmployee> projectEmployees = iProjectEmployeeService.list(qw);
 

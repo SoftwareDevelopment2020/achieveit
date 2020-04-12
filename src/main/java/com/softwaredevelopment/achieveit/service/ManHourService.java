@@ -55,7 +55,10 @@ public class ManHourService extends BaseService {
                 if (searchCondition.getEmployeeId() == null) {
                     // 查询所有下属ID
                     List<ProjectEmployee> employeeBasics = iProjectEmployeeService.list(
-                            new QueryWrapper<ProjectEmployee>().eq("superior_id", currentUserDetail().getEmployeeId()));
+                            new QueryWrapper<ProjectEmployee>()
+                                    .eq("superior_id", currentUserDetail().getEmployeeId())
+                                    .isNull("exit_time")
+                    );
                     if (CollectionUtils.isEmpty(employeeBasics)) {
                         // 没有下属，直接返回
                         return page;

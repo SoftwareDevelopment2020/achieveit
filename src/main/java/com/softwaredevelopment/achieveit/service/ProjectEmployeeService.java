@@ -64,9 +64,10 @@ public class ProjectEmployeeService extends BaseService {
      */
     public List<RoleBasics> getRolesByPerson(Integer employeeId, Integer projectId) {
         ProjectEmployee one = iProjectEmployeeService.getOne(
-                new QueryWrapper<ProjectEmployee>().lambda()
-                        .eq(ProjectEmployee::getEmployeeId, employeeId)
-                        .eq(ProjectEmployee::getProjectId, projectId)
+                new QueryWrapper<ProjectEmployee>()
+                        .eq("employee_id", employeeId)
+                        .eq("project_id", projectId)
+                        .isNull("exit_time")
         );
         List<PersonRole> personRoles = iPersonRoleService.list(
                 new QueryWrapper<PersonRole>().lambda().eq(PersonRole::getProjectEmployeeId, one.getId())
