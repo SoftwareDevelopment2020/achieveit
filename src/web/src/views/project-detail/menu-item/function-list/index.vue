@@ -23,7 +23,7 @@
         导出Excel
       </el-button>
       <el-button :loading="uploadLoading" style="margin:0 0 20px 20px; float: right;" type="primary"
-                 icon="el-icon-document" @click="handleUpload" name="uploadFunctionList" v-permission="['ROLE_PM']">
+                 icon="el-icon-document" @click="handleUpload" name="uploadFunctionList" v-permission="['ROLE_PM']" v-if="canEdit()">
         上传Excel
       </el-button>
     </div>
@@ -44,6 +44,7 @@
         loading: false,
         tableData: [],
         tableHeader: [],
+        project: this.$store.getters.project,
         downloadLoading: false,
         functionList: [],
         defaultProps: {
@@ -70,6 +71,9 @@
       }
     },
     methods: {
+      canEdit() {
+        return this.project.statusId === 3111
+      },
       beforeUpload(file) {
         const isLt1M = file.size / 1024 / 1024 < 1
         if (isLt1M) {

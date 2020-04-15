@@ -34,7 +34,7 @@
       </el-select>
       <el-button icon="el-icon-search" circle @click="getRisk" name="searchRiskButton">
       </el-button>
-      <el-button type="primary" @click="openNewRiskDialog" name="openNewRiskButton" v-permission="['ROLE_PM']">
+      <el-button type="primary" @click="openNewRiskDialog" name="openNewRiskButton" v-permission="['ROLE_PM']" v-if="canEdit()">
         <i class="el-icon-plus"></i>
         <span>新建风险</span>
       </el-button>
@@ -260,7 +260,7 @@
           <el-button type="primary" @click="submitEditRisk" name="editRiskSubmitButton">确 定</el-button>
         </div>
       </el-dialog>
-      <el-button type="primary" @click="importRisk" name="openImportRiskButton" v-permission="['ROLE_PM']">
+      <el-button type="primary" @click="importRisk" name="openImportRiskButton" v-permission="['ROLE_PM']" v-if="canEdit()">
         导入已有风险<i class="el-icon-upload el-icon--right"></i>
       </el-button>
 
@@ -401,6 +401,7 @@
         dialogFormVisible_1: false,
         dialogFormVisible_2: false,
         editRiskDialogVisible: false,
+        project: this.$store.getters.project,
         form_2: {
           riskId: ''
         },
@@ -449,6 +450,9 @@
       }
     },
     methods: {
+      canEdit() {
+        return this.project.statusId === 3111
+      },
       handleDelete(index, row) {
         console.log(index, row);
       },

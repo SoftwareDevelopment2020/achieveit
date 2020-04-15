@@ -47,7 +47,7 @@
           <i class="el-icon-search"></i>
           <span>搜索</span>
         </el-button>
-        <el-button type="primary" @click="openNewBugDialog" name="bugOpenAddBugDialogButton" v-permission="['ROLE_PM']">
+        <el-button type="primary" @click="openNewBugDialog" name="bugOpenAddBugDialogButton" v-permission="['ROLE_PM']" v-if="canEdit()">
           <i class="el-icon-plus"></i>
           <span>添加缺陷</span>
         </el-button>
@@ -321,6 +321,7 @@
       return {
         loading: false,
         editBugDialogVisible: false,
+        project: this.$store.getters.project,
         searchValue: {
           id: '',
           status: '',
@@ -366,6 +367,9 @@
       this.getBugs()
     },
     methods: {
+      canEdit() {
+        return this.project.statusId === 3111
+      },
       getBugs() {
         this.loading = true
         console.log('查询bug页数为' + this.bugs.current)
