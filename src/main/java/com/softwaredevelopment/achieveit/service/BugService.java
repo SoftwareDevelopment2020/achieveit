@@ -99,6 +99,11 @@ public class BugService extends BaseService {
     }
 
     public Boolean saveBugByProjectId(String projectId, Bug bug) throws BussinessException {
+
+        if (!projectOngoing(projectId)) {
+            throw new BussinessException("项目未在进行中，无法修改", null, "项目未在进行中，无法修改");
+        }
+
         Integer id = projectIdToId(projectId);
         bug.setProjectId(id);
         // bug提出人就是自己

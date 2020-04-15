@@ -16,6 +16,8 @@ import com.softwaredevelopment.achieveit.utils.MailUtil;
 import com.softwaredevelopment.achieveit.utils.RedisUtils;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +33,7 @@ import java.util.stream.Collectors;
  */
 @Getter
 @Transactional
+@CacheConfig(cacheNames = "base")
 public class BaseService {
 
     @Autowired
@@ -96,6 +99,7 @@ public class BaseService {
         }
     }
 
+    @Cacheable(key = "projectId+#projectId")
     public Integer projectIdToId(String projectId) {
         ProjectBasics one = iProjectBasicsService.getOne(
                 new QueryWrapper<ProjectBasics>()
@@ -112,6 +116,8 @@ public class BaseService {
      * 获取角色定义
      */
     private Map<Integer, RoleBasics> roleBasicsMap = null;
+
+    @Cacheable(key = "#root.methodName")
     public Map<Integer, RoleBasics> getRoleBasicsMap() {
         if (roleBasicsMap == null) {
             // 先拿出所有的角色基本信息
@@ -153,5 +159,28 @@ public class BaseService {
         } else {
             return null;
         }
+    }
+
+    /**
+     * 项目正在进行状态吗
+     *
+     * @param projectId
+     * @return
+     */
+    public boolean projectOngoing(String projectId) {
+        return iProjectBasicsService
+                .getOne(
+                        new QueryWrapper<ProjectBasics>()
+                                .lambda()
+                                .select(ProjectBasics::getStatusId)
+                                .eq(ProjectBasics::getProjectId, projectId)
+                ).getStatusId() > 3;
+
+    }
+
+    public boolean projectOngoing(Integer id) {
+        return iProjectBasicsService
+                .getById(id).getStatusId() > 3;
+
     }
 }

@@ -77,6 +77,11 @@ public class PropertyService extends BaseService {
      * 添加设备
      */
     public boolean addProperty(Property property) throws BussinessException {
+
+        if (!projectOngoing(property.getProjectId())) {
+            throw new BussinessException("项目未在进行中，无法修改", null, "项目未在进行中，无法修改");
+        }
+
         // 设置资产管理者ID
         property.setManagerId(currentUserDetail().getEmployeeId());
         // 设置是否归还

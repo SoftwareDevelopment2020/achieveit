@@ -46,7 +46,12 @@ public class RiskService extends BaseService {
         return voList;
     }
 
-    public boolean saveRiskByProjectId(Risk risk, String projectId) {
+    public boolean saveRiskByProjectId(Risk risk, String projectId) throws BussinessException {
+        if (!projectOngoing(projectId)) {
+            throw new BussinessException("项目未在进行中，无法修改", null, "项目未在进行中，无法修改");
+        }
+
+
         Integer id = projectIdToId(projectId);
         risk.setProjectId(id);
         return iRiskService.save(risk);

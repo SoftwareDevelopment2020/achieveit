@@ -108,6 +108,11 @@ public class ManHourService extends BaseService {
      * 添加工时信息
      */
     public boolean addManHour(ManHour manHour) throws BussinessException {
+        if (!projectOngoing(manHour.getProjectId())) {
+            throw new BussinessException("项目未在进行中，无法修改", null, "项目未在进行中，无法修改");
+        }
+
+
         // 设置员工key
         manHour.setEmployeeId(currentUserDetail().getEmployeeId());
         // 设置审核状态
@@ -184,11 +189,7 @@ public class ManHourService extends BaseService {
             left = manHour.getEndTime();
         }
         // 最后一个区间，left<=start_time即可
-        if (!checkManHour.getStartTime().isBefore(left)) {
-            return true;
-        }
-
-        return false;
+        return !checkManHour.getStartTime().isBefore(left);
     }
 
     /**

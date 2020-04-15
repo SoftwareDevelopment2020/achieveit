@@ -46,6 +46,11 @@ public class FeatureService extends BaseService {
      * @throws Exception
      */
     public void uploadFeature(MultipartFile file, String projectId) throws IOException, BussinessException {
+
+        if (!projectOngoing(projectId)) {
+            throw new BussinessException("项目未在进行中，无法修改", null, "项目未在进行中，无法修改");
+        }
+
         Integer id = projectIdToId(projectId);
         List<String[]> strings = POIUtil.readExcel(file);
         List<Feature> features = new ArrayList<>();

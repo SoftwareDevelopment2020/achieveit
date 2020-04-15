@@ -43,7 +43,7 @@ public class RiskController extends BaseController {
 
     @ApiOperation("向project中添加risk")
     @PostMapping("save_risk")
-    public HttpResponse<String> saveRiskByProjectId(@RequestBody Risk risk, @RequestParam String projectId) {
+    public HttpResponse<String> saveRiskByProjectId(@RequestBody Risk risk, @RequestParam String projectId) throws BussinessException {
         if (riskService.saveRiskByProjectId(risk, projectId)) {
             return responseOK("添加成功");
         }

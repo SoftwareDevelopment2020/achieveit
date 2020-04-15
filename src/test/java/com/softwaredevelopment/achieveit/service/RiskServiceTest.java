@@ -50,7 +50,7 @@ class RiskServiceTest {
     }
 
     @Test
-    void saveRiskByProjectId() {
+    void saveRiskByProjectId() throws BussinessException {
         service.saveRiskByProjectId(
                 mockRisk(), "12345678901"
         );

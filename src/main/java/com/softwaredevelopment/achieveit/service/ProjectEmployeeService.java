@@ -85,6 +85,11 @@ public class ProjectEmployeeService extends BaseService {
      */
     @Transactional
     public boolean addProjectEmployee(AddProjectEmployeeRequest request) throws Exception {
+
+        if (!projectOngoing(request.getProjectKey())) {
+            throw new Exception("项目未在进行中，无法修改");
+        }
+
         ProjectEmployee projectEmployee = new ProjectEmployee();
 
         // 设置项目key

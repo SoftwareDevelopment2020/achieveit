@@ -35,7 +35,7 @@ class ManHourServiceTest {
         manHour.setActivityId(1);
         manHour.setEmployeeId(1);
         manHour.setStartTime(LocalDateTime.now());
-        manHour.setEndTime(LocalDateTime.now());
+        manHour.setEndTime(LocalDateTime.now().plusHours(1));
         manHour.setFeatureId(1);
         manHour.setFeatureName("nice");
         manHour.setProjectId(1);
