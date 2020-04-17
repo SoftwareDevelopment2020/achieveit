@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author RainkQ
@@ -297,13 +298,17 @@ public class ProjectService extends BaseService {
                     .getId()
             );
             iPersonRoleService.save(personRole);
-            // 设置权限
-            PersonPermission personPermission = new PersonPermission();
-            personPermission.setProjectEmployeeId(projectEmployee.getId());
-            personPermission.setPermissionId(iPermissionBasicsService.getOne(
-                    new QueryWrapper<PermissionBasics>().eq("name", "bug"))
-                    .getId()
-            );
+            // 设置权限 给pm所有权限
+            List<Integer> permissionIds = iPermissionBasicsService.list().stream().map(PermissionBasics::getId).collect(Collectors.toList());
+            List<PersonPermission> personPermissions = new ArrayList<>();
+            for (Integer permissionId :
+                    permissionIds) {
+                PersonPermission personPermission = new PersonPermission();
+                personPermission.setProjectEmployeeId(projectEmployee.getId());
+                personPermission.setPermissionId(permissionId);
+                personPermissions.add(personPermission);
+            }
+            iPersonPermissionService.saveBatch(personPermissions);
 
             // 上级添加到项目中
             ProjectEmployee superior = new ProjectEmployee();
@@ -325,6 +330,8 @@ public class ProjectService extends BaseService {
             // 去锁
             redisUtils.delete(key);
         }
+
+        //
 
         // 向项目上级异步发送邮件
         EmployeeBasics superior = iEmployeeBasicsService.getOne(

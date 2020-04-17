@@ -2,6 +2,7 @@ package com.softwaredevelopment.achieveit;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.softwaredevelopment.achieveit.PO.entity.*;
+import com.softwaredevelopment.achieveit.entity.UserDetail;
 import com.softwaredevelopment.achieveit.service.AuthService;
 import com.softwaredevelopment.achieveit.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ public class MockData {
     ProjectService s;
     @Autowired
     AuthService authService;
+
 
 
 //    @Test
@@ -187,5 +189,40 @@ public class MockData {
             }
         }
         s.getIRiskService().saveBatch(riskList);
+    }
+
+    //    @Test
+    void mockUserAndEmployees() {
+        int total = 100;
+        for (int i = 0; i < total; i++) {
+            UserDetail userDetail = new UserDetail();
+            userDetail.setUsername("testUser" + i);
+            userDetail.setPassword("123456");
+            List<RoleBasics> roleBasics = s.getIRoleBasicsService().list();
+            List<RoleBasics> role_global_pm = roleBasics.stream().filter(s -> s.getName().equals("ROLE_GLOBAL_PM")).collect(Collectors.toList());
+            List<RoleBasics> role_superior = roleBasics.stream().filter(s -> s.getName().equals("ROLE_SUPERIOR")).collect(Collectors.toList());
+            userDetail.setRoles(null);
+            // employee信息
+            userDetail.setDepartment("开发部门");
+            userDetail.setEmailAddress(userDetail.getUsername() + "@achieveit.com");
+            userDetail.setName("测试雇员" + i);
+            userDetail.setTel(String.valueOf(12345678911L + i));
+            authService.register(userDetail);
+        }
+        System.out.println("#############user############");
+        for (User u :
+                s.getIUserService().list()) {
+            System.out.println(u);
+        }
+        System.out.println("#############employee#######");
+        for (EmployeeBasics eb :
+                s.getIEmployeeBasicsService().list()) {
+            System.out.println(eb);
+        }
+        System.out.println("#############userRole######");
+        for (UserRole ur :
+                s.getIUserRoleService().list()) {
+            System.out.println(ur);
+        }
     }
 }

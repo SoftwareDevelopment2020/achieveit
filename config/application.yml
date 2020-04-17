@@ -17,9 +17,9 @@ server:
 
 #redis信息
 redis:
-  host: rainkq.tk
+  host: rainkqrainkq.redis.rds.aliyuncs.com
   port: 6379
-  password: pass
+  password: achieveit:Achieve1t
 
 #mail
 spring:

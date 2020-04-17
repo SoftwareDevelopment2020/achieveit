@@ -35,7 +35,7 @@
         <i class="el-icon-search"></i>
         <span>搜索</span>
       </el-button>
-      <el-button  v-permission="['ROLE_PM']" type="primary" @click="addProject" name="newProjectButton">
+      <el-button @click="addProject" name="newProjectButton" type="primary" v-permission="['ROLE_GLOBAL_PM']">
         <i class="el-icon-plus"></i>
         <span>新建项目</span>
       </el-button>
