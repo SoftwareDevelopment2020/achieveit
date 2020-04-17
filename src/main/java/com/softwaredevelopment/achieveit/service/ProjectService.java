@@ -366,6 +366,7 @@ public class ProjectService extends BaseService {
      * @return
      * @throws BussinessException
      */
+    @Transactional
     public ProjectBasics examineProject(String projectId, Boolean approved) throws Exception {
         ProjectBasics pb = getProjectBasicsByProjectId(projectId);
         // 如果pb为空
@@ -402,13 +403,13 @@ public class ProjectService extends BaseService {
             // EPG Leader
             emailAddress = iEmployeeBasicsService.getOne(
                     new QueryWrapper<EmployeeBasics>().lambda()
-                            .eq(EmployeeBasics::getName, "EPG Leader")).getEmailAddress();
+                            .eq(EmployeeBasics::getName, "组织级EPG Leader")).getEmailAddress();
             mailBean.setRecipient(emailAddress);
             mailUtil.sendSimpleMail(mailBean);
             // QA经理
             emailAddress = iEmployeeBasicsService.getOne(
                     new QueryWrapper<EmployeeBasics>().lambda()
-                            .eq(EmployeeBasics::getName, "QA经理")).getEmailAddress();
+                            .eq(EmployeeBasics::getName, "组织级QA经理")).getEmailAddress();
             mailBean.setRecipient(emailAddress);
             mailUtil.sendSimpleMail(mailBean);
             // 发送邮件完毕
@@ -426,6 +427,7 @@ public class ProjectService extends BaseService {
      * @param role
      * @return
      */
+    @Transactional
     public ProjectBasics initProject(String projectId) throws Exception {
         int role;
         List<RoleBasics> roles = currentUserDetail().getRoles();
