@@ -1,6 +1,7 @@
 package com.softwaredevelopment.achieveit.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.softwaredevelopment.achieveit.PO.entity.EmployeeBasics;
 import com.softwaredevelopment.achieveit.PO.entity.RoleBasics;
 import com.softwaredevelopment.achieveit.PO.entity.User;
 import com.softwaredevelopment.achieveit.PO.entity.UserRole;
@@ -93,6 +94,16 @@ public class UserDetailService extends BaseService implements UserDetailsService
      */
     @Transactional
     public UserDetail save(UserDetail userToAdd) {
+        EmployeeBasics employeeBasics = new EmployeeBasics();
+        employeeBasics.setDepartment(userToAdd.getDepartment());
+        employeeBasics.setEmailAddress(userToAdd.getEmailAddress());
+        employeeBasics.setName(userToAdd.getName());
+        employeeBasics.setTel(userToAdd.getTel());
+        // employee_id
+        iEmployeeBasicsService.save(employeeBasics);
+        userToAdd.setEmployeeId(employeeBasics.getId());
+
+
         User user = new User();
         user.setIsAccountNonExpired(true);
         user.setIsAccountNonLocked(true);
@@ -101,6 +112,7 @@ public class UserDetailService extends BaseService implements UserDetailsService
 
         user.setUsername(userToAdd.getUsername());
         user.setPassword(userToAdd.getPassword());
+        user.setEmployeeBasicsId(userToAdd.getEmployeeId());
         iUserService.save(user);
 
         userToAdd.setId(user.getId());
@@ -129,6 +141,8 @@ public class UserDetailService extends BaseService implements UserDetailsService
 //            ur.setRoleId(3);
 //            iUserRoleService.save(ur);
 //        }
+
+
         return userToAdd;
     }
 
