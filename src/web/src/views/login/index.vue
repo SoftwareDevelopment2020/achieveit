@@ -76,20 +76,20 @@
 </template>
 
 <script>
-// import { validUsername } from '@/utils/validate'
-import SocialSign from './components/SocialSignin'
+  // import { validUsername } from '@/utils/validate'
+  import SocialSign from './components/SocialSignin'
 
-export default {
-  name: 'Login',
-  components: { SocialSign },
-  data() {
-    // const validateUsername = (rule, value, callback) => {
-    //   if (!validUsername(value)) {
-    //     callback(new Error('Please enter the correct user name'))
-    //   } else {
-    //     callback()
-    //   }
-    // }
+  export default {
+    name: 'Login',
+    components: {SocialSign},
+    data() {
+      // const validateUsername = (rule, value, callback) => {
+      //   if (!validUsername(value)) {
+      //     callback(new Error('Please enter the correct user name'))
+      //   } else {
+      //     callback()
+      //   }
+      // }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
         callback(new Error('The password can not be less than 6 digits'))
@@ -99,7 +99,7 @@ export default {
     }
     return {
       loginForm: {
-        username: 'zhangsan',
+        username: 'testPM0',
         password: '123456'
       },
       loginRules: {
