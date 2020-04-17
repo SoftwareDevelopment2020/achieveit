@@ -108,6 +108,12 @@ public class ProjectService extends BaseService {
                             .eq("employee_id", userDetail.getEmployeeId())
                             .isNull("exit_time")
             );
+            if (projectForMe.size() == 0) {
+                // 如果不在任何一个项目中
+                page.setRecords(new ArrayList<>());
+                page.setTotal(0);
+                return page;
+            }
             List<Integer> projectForMeId = new ArrayList<>();
             for (ProjectEmployee pe : projectForMe) {
                 projectForMeId.add(pe.getProjectId());
