@@ -51,10 +51,10 @@ const projectRules = {
     {required: true, message: '项目上级不能为空', trigger: 'blur'}
   ],
   majorMilestone: [
-    {required: true, message: '采用技术不能为空', trigger: 'blur'}
+    {required: true, message: '主要里程碑不能为空', trigger: 'blur'}
   ],
   mainTechnique: [
-    {required: true, message: '主要里程碑不能为空', trigger: 'blur'}
+    {required: true, message: '采用技术不能为空', trigger: 'blur'}
   ],
   businessField: [
     {required: true, message: '业务领域不能为空', trigger: 'blur'}
