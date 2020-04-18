@@ -25,14 +25,50 @@
           @keyup.enter.native="getBugs"
           clearable
         ></el-input>
-        <el-input
-          v-model="searchValue.bugIntroducer"
+<!--        <el-input-->
+<!--          v-model="searchValue.bugIntroducer"-->
+<!--          placeholder="缺陷提出人"-->
+<!--          style="width: 15%;min-width: 200px"-->
+<!--          name="bugIntroducerSearch"-->
+<!--          @keyup.enter.native="getBugs"-->
+<!--          clearable-->
+<!--        ></el-input>-->
+        <el-select
+          v-model="searchValue.bugIntroducerId"
           placeholder="缺陷提出人"
           style="width: 15%;min-width: 200px"
           name="bugIntroducerSearch"
           @keyup.enter.native="getBugs"
+          filterable
           clearable
-        ></el-input>
+        >
+          <el-option
+            v-for="employee in employees"
+            :key="employee.id"
+            :label="employee.name"
+            :value="employee.id">
+            <span style="float: left">{{ employee.name }}</span>
+            <span style="float: right; color: #8492a6; font-size: 13px">{{ employee.id }}</span>
+          </el-option>
+        </el-select>
+        <el-select
+          v-model="searchValue.bugResponsibleId"
+          placeholder="缺陷负责人"
+          style="width: 15%;min-width: 200px"
+          name="bugResponsibleSearch"
+          @keyup.enter.native="getBugs"
+          filterable
+          clearable
+        >
+          <el-option
+            v-for="employee in employees"
+            :key="employee.id"
+            :label="employee.name"
+            :value="employee.id">
+            <span style="float: left">{{ employee.name }}</span>
+            <span style="float: right; color: #8492a6; font-size: 13px">{{ employee.id }}</span>
+          </el-option>
+        </el-select>
         <el-select
           v-model="searchValue.status"
           placeholder="状态"
@@ -193,7 +229,7 @@
         style="width: 100%; margin-top: 30px"
         empty-text="无缺陷条目"
       >
-        <el-table-column type="expand" fixed="left">
+        <el-table-column type="expand">
           <template slot-scope="props">
             <el-form label-position="left" inline class="demo-table-expand">
               <el-form-item label="缺陷标题">
@@ -227,15 +263,6 @@
           </template>
         </el-table-column>
         <el-table-column
-          fixed="left"
-          prop="id"
-          label="缺陷ID"
-          align="center"
-          min-width="50"
-        >
-        </el-table-column>
-        <el-table-column
-          fixed="left"
           prop="bugTitle"
           label="标题"
           align="center"
@@ -246,7 +273,15 @@
           label="提出人"
           width="150"
           align="center"
-        ></el-table-column>
+        >
+        </el-table-column>
+        <el-table-column
+          prop="bugResponsible.name"
+          label="负责人"
+          width="150"
+          align="center"
+        >
+        </el-table-column>
         <el-table-column
           prop="status"
           label="缺陷状态"
@@ -270,7 +305,7 @@
             <el-button
               v-permission="['ROLE_PM']"
               size="mini"
-              @click="handleEdit(scope.$index, scope.row)" :disabled="scope.row.status=='CLOSED'" name="openEditDialogButton">编辑
+              @click="handleEdit(scope.$index, scope.row)" :disabled="scope.row.status==='CLOSED'" name="openEditDialogButton">编辑
             </el-button>
 <!--            <el-button-->
 <!--              size="mini"-->
@@ -310,7 +345,7 @@
   import Pagination from '@/components/Pagination/index'
   import {getBugs, addBug, updateBug} from "../../../../api/bug";
   import dayjs from 'dayjs'
-  import {getEmployeesByProjectId} from "../../../../api/employee";
+  import {getAllProjectEmployeeBasics, getEmployeesByProjectId} from "../../../../api/employee";
 
   export default {
     inject: ['reload'],
@@ -326,7 +361,9 @@
           id: '',
           status: '',
           bugTitle: '',
-          bugIntroducer: ''
+          bugIntroducer: '',
+          bugIntroducerId: '',
+          bugResponsibleId: ''
         },
         statusOptions: this.Constant.status,
         employees: null,
@@ -365,6 +402,11 @@
     },
     mounted() {
       this.getBugs()
+      getAllProjectEmployeeBasics({
+        id: this.$store.getters.projectKey
+      }).then(res => {
+        this.employees = res.data
+      })
     },
     methods: {
       canEdit() {
@@ -398,15 +440,6 @@
       },
       openNewBugDialog() {
         this.dialogFormVisible = true
-        if (this.employees == null) {
-          console.log('后端获取人员信息')
-          getEmployeesByProjectId(this.$store.getters.projectId).then(res => {
-            this.employees = res.data
-          }).catch(error => {
-
-          })
-        } else {
-        }
       },
       submitBug() {
         this.$refs['newBug'].validate(valid => {
