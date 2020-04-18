@@ -264,6 +264,10 @@ public class ProjectEmployeeService extends BaseService {
      * 获取项目所有人员基本信息
      */
     public List<EmployeeBasics> getEmployeeBasics(Integer id) {
+        if (id == null ) {
+            return iEmployeeBasicsService.list();
+        }
+
         // 查询所有项目人员
         List<ProjectEmployee> projectEmployees = iProjectEmployeeService.list(
                 new QueryWrapper<ProjectEmployee>()

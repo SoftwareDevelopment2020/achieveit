@@ -45,7 +45,7 @@ export function getProjectEmployees(data) {
  * 获取所有项目人员基本信息
  */
 export function getAllProjectEmployeeBasics(data) {
-  return get('/get_project_employee_basics?id=' + data.id)
+  return get('/get_project_employee_basics?id=' + (data.id?data.id:''))
 }
 
 /**

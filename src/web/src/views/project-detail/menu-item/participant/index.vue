@@ -1,22 +1,20 @@
 <template>
   <div>
     <div>
-      <el-input
+      <el-select
         v-model="searchValue.employeeId"
         placeholder="员工ID"
         style="width: 20%;min-width: 200px"
         name="employeeIdSearch"
         clearable
       >
-      </el-input>
-      <el-input
-        v-model="searchValue.employeeName"
-        placeholder="员工姓名"
-        style="width: 20%;min-width: 200px"
-        name="employeeNameSearch"
-        clearable
-      >
-      </el-input>
+        <el-option
+          v-for="item in participantOptions"
+          :key="item.employeeId"
+          :label="item.name + '（' + item.employeeId + '）'"
+          :value="item.employeeId">
+        </el-option>
+      </el-select>
       <el-select
         v-model="searchValue.roles"
         multiple
@@ -162,7 +160,18 @@
         style="width: 80%"
       >
         <el-form-item label="员工ID" prop="employeeId">
-          <el-input v-model="dialog.addParticipant.data.employeeId" name="addEmployeeId" clearable></el-input>
+          <el-select v-model="dialog.addParticipant.data.employeeId" name="addEmployeeId" style="width: 100%"
+                     clearable>
+            <el-option
+              v-for="item in employeeOptions"
+              :key="item.id"
+              :label="item.name + '（' + item.employeeId + '）'"
+              :value="item.id"
+              :disabled="item.employeeId === dialog.addParticipant.data.employeeId"
+              name="addEmployeeOption"
+            >
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="角色" prop="roles">
           <el-select v-model="dialog.addParticipant.data.roles" style="width: 100%" name="addEmployeeRoles" multiple
@@ -193,7 +202,7 @@
           <el-select v-model="dialog.addParticipant.data.superiorKey" name="addEmployeeSuperior" style="width: 100%"
                      clearable>
             <el-option
-              v-for="item in dialog.addParticipant.superiorOptions"
+              v-for="item in participantOptions"
               :key="item.id"
               :label="item.name + '（' + item.employeeId + '）'"
               :value="item.id"
@@ -306,6 +315,8 @@
         },
         roleOptions: this.Constant.roles,
         permissionOptions: this.Constant.permissions,
+        employeeOptions: null,
+        participantOptions: [],
         searchValue: {
           employeeId: '',
           employeeName: '',
@@ -353,6 +364,7 @@
       }
     },
     mounted() {
+      this.getAllProjectEmployeeBasics()
       this.getParticipants()
     },
     methods: {
@@ -373,6 +385,13 @@
       /**
        * 获取项目人员
        */
+      getAllProjectEmployeeBasics() {
+        getAllProjectEmployeeBasics({
+          id: this.project.id
+        }).then(response => {
+          this.participantOptions = response.data
+        })
+      },
       getParticipants() {
         this.loading = true
         getProjectEmployees({
@@ -439,13 +458,14 @@
         })
       },
       openAddParticipantDialog() {
-        // 获取所有项目人员基本信息
-        this.dialog.addParticipant.superiorOptions = []
-        getAllProjectEmployeeBasics({
-          id: this.project.id
-        }).then(response => {
-          this.dialog.addParticipant.superiorOptions = response.data
-        })
+        // 获取所有人员信息
+        if (this.employeeOptions == null) {
+          getAllProjectEmployeeBasics({
+            id: null
+          }).then(response => {
+            this.employeeOptions = response.data
+          })
+        }
         // 初始化数据
         this.dialog.addParticipant.data.employeeId = ''
         this.dialog.addParticipant.data.roles = []
