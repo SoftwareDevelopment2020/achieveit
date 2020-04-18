@@ -111,8 +111,7 @@
                 FROM (
                     SELECT C.id
                         FROM role_basics C
-                        WHERE C.name &lt;&gt; 'ROLE_SUPERIOR'
-                            AND C.name NOT LIKE 'ROLE_GLOBAL_%'
+                        WHERE C.name NOT LIKE 'ROLE_GLOBAL_%'
                             <if test="roles != null and roles.size() > 0">
                                 AND C.name in
                                 <foreach collection="roles" item="role" open="(" close=")" separator=",">

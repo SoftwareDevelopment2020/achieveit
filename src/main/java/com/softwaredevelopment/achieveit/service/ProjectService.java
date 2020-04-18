@@ -324,7 +324,7 @@ public class ProjectService extends BaseService {
             iProjectEmployeeService.save(superior);
             // 设置角色
             PersonRole superiorRole = new PersonRole();
-            superiorRole.setProjectEmployeeId(projectEmployee.getId());
+            superiorRole.setProjectEmployeeId(superior.getId());
             superiorRole.setRoleId(iRoleBasicsService.getOne(
                     new QueryWrapper<RoleBasics>().eq("name", "ROLE_SUPERIOR"))
                     .getId());
