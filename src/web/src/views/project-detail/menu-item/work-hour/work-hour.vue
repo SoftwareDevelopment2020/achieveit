@@ -10,6 +10,7 @@
         style="width: 15%;min-width: 200px"
         name="employeeIdSearch"
         clearable
+        filterable
       >
         <el-option
           v-for="item in options.employeeOptions"

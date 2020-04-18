@@ -67,9 +67,12 @@
         </el-form-item>
       </el-form>
       <el-form-item label="项目上级" prop="superior">
-        <el-select v-model="project.superior" name="newProjectSuperior" filterable>
+        <el-select
+          v-model="project.superior"
+          name="newProjectSuperior"
+          filterable>
           <el-option v-for="superior in superiorOptions" :key="superior.id" :value="superior.id"
-                     :label="superior.name" name="NewProjectSuperiorOption">
+                     :label="superior.name" name="NewProjectSuperiorOption" filterable >
             <span style="float: left">{{superior.name}}</span>
             <span style="float: right; color: #8492a6; font-size: 13px">{{superior.id}}</span>
           </el-option>
@@ -135,7 +138,7 @@
 <script>
   import {addProject} from "../../../api/project";
   import {dateToString} from "../../../utils/date";
-  import {getAllSuperiors} from "../../../api/employee";
+  import {getAllProjectEmployeeBasics} from "../../../api/employee";
 
   export default {
     data () {
@@ -166,13 +169,10 @@
       this.today = today.getTime()
       this.project.scheduledDate = dateToString(today)
       this.project.deliveryDate = dateToString(today)
-      const data = {
-        current: -1,
-        size: 0,
-        searchCondition: 'ROLE_SUPERIOR'
-      }
-      getAllSuperiors(data).then(response => {
-        this.superiorOptions = response.data.records
+      getAllProjectEmployeeBasics({
+        id: null
+      }).then(response => {
+        this.superiorOptions = response.data
       }).finally(() => {
         this.loading=false
       })

@@ -7,6 +7,7 @@
         style="width: 20%;min-width: 200px"
         name="employeeIdSearch"
         clearable
+        filterable
       >
         <el-option
           v-for="item in participantOptions"
@@ -160,8 +161,12 @@
         style="width: 80%"
       >
         <el-form-item label="员工ID" prop="employeeId">
-          <el-select v-model="dialog.addParticipant.data.employeeId" name="addEmployeeId" style="width: 100%"
-                     clearable>
+          <el-select
+            v-model="dialog.addParticipant.data.employeeId"
+            name="addEmployeeId"
+            style="width: 100%"
+            filterable
+            clearable>
             <el-option
               v-for="item in employeeOptions"
               :key="item.id"
@@ -199,8 +204,12 @@
           </el-select>
         </el-form-item>
         <el-form-item label="项目上级ID" prop="superiorKey">
-          <el-select v-model="dialog.addParticipant.data.superiorKey" name="addEmployeeSuperior" style="width: 100%"
-                     clearable>
+          <el-select
+            v-model="dialog.addParticipant.data.superiorKey"
+            name="addEmployeeSuperior"
+            style="width: 100%"
+            filterable
+            clearable>
             <el-option
               v-for="item in participantOptions"
               :key="item.id"

@@ -89,7 +89,7 @@
 </template>
 
 <script>
-  import {getAllSuperiors} from "../../../../api/employee";
+  import {getAllProjectEmployeeBasics} from "../../../../api/employee";
 
   export default {
     inject: ['reload'],
@@ -112,13 +112,10 @@
     created() {
       this.loading = true
       this.form = {...this.$store.getters.project}
-      const data = {
-        current: -1,
-        size: 0,
-        searchCondition: 'ROLE_SUPERIOR'
-      }
-      getAllSuperiors(data).then(response => {
-        this.superiorOptions = response.data.records
+      getAllProjectEmployeeBasics({
+        id: null
+      }).then(response => {
+        this.superiorOptions = response.data
       }).finally(() => {
         this.loading = false
       })
