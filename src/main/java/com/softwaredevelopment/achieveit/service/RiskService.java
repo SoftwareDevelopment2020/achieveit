@@ -1,5 +1,6 @@
 package com.softwaredevelopment.achieveit.service;
 
+import com.alibaba.druid.util.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -151,10 +152,10 @@ public class RiskService extends BaseService {
         Page<Risk> page = new Page<>(pageSearchRequest.getCurrent(), pageSearchRequest.getSize());
         Map<String, String> searchCondition = pageSearchRequest.getSearchCondition();
         // 先按照名字查到这些EmployeeBasics
-        List<EmployeeBasics> listByNames = iEmployeeBasicsService.list(new QueryWrapper<EmployeeBasics>()
-                .lambda().eq(EmployeeBasics::getName, searchCondition.get("name")));
+//        List<EmployeeBasics> listByNames = iEmployeeBasicsService.list(new QueryWrapper<EmployeeBasics>()
+//                .lambda().eq(EmployeeBasics::getName, searchCondition.get("name")));
 
-        List<Integer> responsibleList = listByNames.stream().map(EmployeeBasics::getId).collect(Collectors.toList());
+//        List<Integer> responsibleList = listByNames.stream().map(EmployeeBasics::getId).collect(Collectors.toList());
 
         Page<Risk> riskPage = iRiskService.page(page,
                 new QueryWrapper<Risk>().lambda()
@@ -163,7 +164,8 @@ public class RiskService extends BaseService {
                         .like(searchCondition.get("id") != null, Risk::getId, searchCondition.get("id"))
                         .eq(getIntOrNull(searchCondition.get("status")) != null, Risk::getStatus, searchCondition.get("status"))
                         // 按名字查到的employeeBasics的id们
-                        .in(responsibleList.size() > 0, Risk::getResponsible, responsibleList));
+//                        .in(responsibleList.size() > 0, Risk::getResponsible, responsibleList));
+                        .eq(!StringUtils.isEmpty(searchCondition.get("responsible")), Risk::getResponsible, searchCondition.get("responsible")));
 
         // 从riskPage转riskVOPage
         Page<RiskVO> riskVOPage = new Page<>(riskPage.getCurrent(), riskPage.getSize(), riskPage.getTotal(), riskPage.isSearchCount());

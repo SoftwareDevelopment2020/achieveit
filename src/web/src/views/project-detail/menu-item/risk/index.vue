@@ -18,15 +18,33 @@
         name="riskTypeSearch"
         @keyup.enter.native="getRisk"
       ></el-autocomplete>
-      <el-input
-        v-model="searchValue.name"
+<!--      <el-input-->
+<!--        v-model="searchValue.name"-->
+<!--        placeholder="风险责任人"-->
+<!--        style="width: 20%;min-width: 200px"-->
+<!--        name="riskResponsibleSearch"-->
+<!--        @keyup.enter.native="getRisk"-->
+<!--        clearable-->
+<!--      >-->
+<!--      </el-input>-->
+      <el-select
+        v-model="searchValue.responsible"
         placeholder="风险责任人"
+        name="editRiskResponsible"
         style="width: 20%;min-width: 200px"
-        name="riskResponsibleSearch"
-        @keyup.enter.native="getRisk"
+        filterable
         clearable
       >
-      </el-input>
+        <el-option
+          v-for="employee in employees"
+          :key="employee.id"
+          :label="employee.name"
+          :value="employee.id"
+        >
+          <span style="float: left">{{ employee.name }}</span>
+          <span style="float: right; color: #8492a6; font-size: 13px">{{ employee.id }}</span>
+        </el-option>
+      </el-select>
       <el-select v-model="searchValue.status" placeholder="风险状态" name="riskStatusSearch" clearable>
         <el-option v-for="state in riskStatus" :key="state.id" :label="state.value" :value="state.id"
                    name="riskStatusOptionSearch">
@@ -387,7 +405,7 @@
 
 <script>
   import Pagination from '@/components/Pagination/index'
-  import {getEmployeesByProjectId} from "../../../../api/employee";
+  import {getAllProjectEmployeeBasics, getEmployeesByProjectId} from "../../../../api/employee";
 
   export default {
     inject: ['reload'],
@@ -444,7 +462,8 @@
           id: '',
           name: '',
           status: '',
-          type: ''
+          type: '',
+          responsible: ''
         },
         table: {total: 0, limit: 10, current: 1}
       }
@@ -492,18 +511,19 @@
       },
       //打开新增风险对话框
       openNewRiskDialog() {
-        if (this.employees == null) {
-          getEmployeesByProjectId(this.$store.getters.projectId).then(res => {
-            this.employees = res.data
-            this.dialogFormVisible_1 = true
-            return this.employees
-          }).catch(error => {
+        this.dialogFormVisible_1 = true
 
-          })
-        } else {
-          this.dialogFormVisible_1 = true
-          return this.employees
-        }
+        // if (this.employees == null) {
+        //   getEmployeesByProjectId(this.$store.getters.projectId).then(res => {
+        //     this.employees = res.data
+        //     this.dialogFormVisible_1 = true
+        //     return this.employees
+        //   }).catch(error => {
+        //
+        //   })
+        // } else {
+        //   return this.employees
+        // }
       },
       //新增风险
       submitRisk() {
@@ -632,6 +652,11 @@
     },
     mounted() {
       this.getRisk()
+      getAllProjectEmployeeBasics({
+        id: this.$store.getters.project.id
+      }).then(response => {
+        this.employees = response.data
+      })
     },
   }
 </script>
