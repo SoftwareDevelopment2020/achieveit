@@ -14,7 +14,7 @@ public class AddProjectEmployeeRequest {
     public Integer projectKey;
 
     @ApiModelProperty(value = "员工ID", required = true)
-    public String employeeId;
+    public Integer employeeId;
 
     @ApiModelProperty(value = "角色", required = true)
     public List<String> roles;

@@ -96,24 +96,15 @@ public class ProjectEmployeeService extends BaseService {
         projectEmployee.setProjectId(request.getProjectKey());
 
         // region 设置员工key
-        // 获取employee
-        EmployeeBasics employeeBasics = iEmployeeBasicsService.getOne(
-                new QueryWrapper<EmployeeBasics>()
+        // 判断当前项目是否已有该员工
+        if (iProjectEmployeeService.getOne(
+                new QueryWrapper<ProjectEmployee>()
+                        .eq("project_id", request.getProjectKey())
                         .eq("employee_id", request.getEmployeeId())
-        );
-        if (employeeBasics == null) {
-            employeeBasics = getOriginalEmployeeBasics(request.getEmployeeId());
-        } else {
-            // 判断当前项目是否已有该员工
-            if (iProjectEmployeeService.getOne(
-                    new QueryWrapper<ProjectEmployee>()
-                            .eq("project_id", request.getProjectKey())
-                            .eq("employee_id", employeeBasics.getId())
-                            .isNull("exit_time")) != null) {
-                throw new BussinessException("添加项目人员失败", new Exception(), "该员工已加入该项目");
-            }
+                        .isNull("exit_time")) != null) {
+            throw new BussinessException("添加项目人员失败", new Exception(), "该员工已加入该项目");
         }
-        projectEmployee.setEmployeeId(employeeBasics.getId());
+        projectEmployee.setEmployeeId(request.getEmployeeId());
         // endregion
 
         // 加入时间
@@ -264,7 +255,7 @@ public class ProjectEmployeeService extends BaseService {
      * 获取项目所有人员基本信息
      */
     public List<EmployeeBasics> getEmployeeBasics(Integer id) {
-        if (id == null ) {
+        if (id == null) {
             return iEmployeeBasicsService.list();
         }
 
