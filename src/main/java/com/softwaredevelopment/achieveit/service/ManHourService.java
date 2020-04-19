@@ -111,7 +111,17 @@ public class ManHourService extends BaseService {
         if (!projectOngoing(manHour.getProjectId())) {
             throw new BussinessException("项目未在进行中，无法修改", null, "项目未在进行中，无法修改");
         }
-
+        boolean hasPermission = false;
+        for (String s :
+                currentUserDetail().getPermissionsMap().get(manHour.getProjectId())) {
+            if (s.equals("manhour")) {
+                hasPermission = true;
+                break;
+            }
+        }
+        if (!hasPermission) {
+            throw new BussinessException("没有工时权限", null, "没有工时权限");
+        }
 
         // 设置员工key
         manHour.setEmployeeId(currentUserDetail().getEmployeeId());
