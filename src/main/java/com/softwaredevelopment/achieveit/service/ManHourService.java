@@ -132,7 +132,7 @@ public class ManHourService extends BaseService {
         // 获取当天已提交的工时
         List<ManHour> manHours = iManHourService.list(
                 new QueryWrapper<ManHour>()
-                        .eq("project_id", manHour.getProjectId())
+//                        .eq("project_id", manHour.getProjectId())
                         .eq("employee_id", manHour.getEmployeeId())
                         .eq("DATE_FORMAT(start_time, '%Y%m%d')", manHour.getStartTime().format(DateTimeFormatter.ofPattern("yyyyMMdd")))
                         .in("auditing_status", 0, 1)
@@ -159,7 +159,7 @@ public class ManHourService extends BaseService {
                 List<ManHour> existManHours = iManHourService.list(
                         new QueryWrapper<ManHour>()
                                 .ne("id", original.getId())
-                                .eq("project_id", original.getProjectId())
+//                                .eq("project_id", original.getProjectId())
                                 .eq("employee_id", original.getEmployeeId())
                                 .eq("DATE_FORMAT(start_time, '%Y%m%d')", manHour.getStartTime().format(DateTimeFormatter.ofPattern("yyyyMMdd")))
                                 .in("auditing_status", 0, 1)
